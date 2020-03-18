@@ -1,0 +1,54 @@
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const userSchema = new Schema({
+  firstName: {
+    type: String,
+    required: true
+  },
+  secondName: {
+    type: String,
+    required: true
+  },
+  gender: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  telephoneNumber: {
+    type: String,
+    required: true
+  },
+  country: {
+    type: Object,
+    required: true
+  },
+  address: {
+    type: String,
+    required: true
+  },
+  zipCode: {
+    type: String,
+    required: true
+  }
+});
+
+module.exports = {
+  userSchema
+};

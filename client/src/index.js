@@ -8,6 +8,7 @@ import logger from "redux-logger";
 import thunk from "redux-thunk";
 import rootReducer from "./store/reducers/";
 import App from "./App";
+import "../node_modules/aos/dist/aos.css";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 

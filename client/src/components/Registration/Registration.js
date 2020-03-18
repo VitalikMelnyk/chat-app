@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import AOS from "aos";
 import { useSelector, useDispatch } from "react-redux";
 import { Grid, Typography } from "@material-ui/core";
 import { useStyles } from "./styles";
@@ -86,6 +87,10 @@ const Registration = () => {
     }
   };
 
+  useEffect(() => {
+    AOS.init();
+  });
+
   const getStepContent = () => {
     switch (activeStep) {
       case 0:
@@ -122,10 +127,18 @@ const Registration = () => {
   return (
     <div>
       <Grid container className={classes.root}>
-        <Grid item xs={12} sm={8} md={6} lg={5} className={classes.signUpContainer}>
+        <Grid
+          data-aos="zoom-in"
+          item
+          xs={12}
+          sm={8}
+          md={6}
+          lg={5}
+          className={classes.signUpContainer}
+        >
           <div className={classes.signUpHeader}>
             <Typography
-              color="textPrimary"
+              color="secondary"
               variant="h1"
               className={classes.signUpTitle}
             >

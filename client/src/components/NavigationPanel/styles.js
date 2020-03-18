@@ -8,7 +8,11 @@ export const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   appBar: {
-    background: theme.palette.background.default
+    background: theme.palette.background.default,
+    width: "100%",
+    position: "absolute",
+    top: 0,
+    left: 0
   },
   active: {
     color: "red"

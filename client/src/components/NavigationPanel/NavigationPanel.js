@@ -21,10 +21,10 @@ const NavigationPanel = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="relative" className={classes.appBar}>
+      <AppBar position="absolute" className={classes.appBar}>
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
-            Logo
+          <Typography variant="h6" color="secondary" className={classes.title}>
+            ChatApp
           </Typography>
           <SelectLanguage name="language" />
           <FormControlSwitch

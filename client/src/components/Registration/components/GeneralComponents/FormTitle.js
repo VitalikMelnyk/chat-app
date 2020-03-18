@@ -11,7 +11,7 @@ export const FormTitle = ({ formTitle }) => {
   const { activeStep } = RegistrationReducer;
   return (
     <div className={classes.formTitle}>
-      <Typography variant="h5" color="textPrimary" component="h2">
+      <Typography variant="h5" color="secondary" component="h2">
         {formTitle}
       </Typography>
       <Typography variant="h5" component="p" color="textPrimary">
