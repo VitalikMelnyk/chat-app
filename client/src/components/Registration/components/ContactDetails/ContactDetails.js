@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button, ButtonGroup, Box } from "@material-ui/core";
 import { FormTitle } from "../GeneralComponents/FormTitle";
 import { useStyles } from "../../styles";
-import { setContactField } from "../../../../store/UserForm/ContactDetails/actions";
+import { setContactField } from "../../../../store/Registration/ContactDetails/actions";
 import { FormControlText } from "../FormFields";
 import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
 import { useTranslation } from "react-i18next";

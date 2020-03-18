@@ -9,10 +9,10 @@ import {
 } from "@material-ui/core";
 import NavigationPanel from "./components/NavigationPanel";
 import HomePage from "./components/HomePage";
+import Login from "./components/Login";
 import Registration from "./components/Registration";
 import { createTheme } from "./theme/config";
 import i18n from "./shared/i18n";
-import UserForm from "./components/UserForm/UserForm";
 
 const App = () => {
   const { ThemeReducer } = useSelector(state => state);
@@ -32,10 +32,10 @@ const App = () => {
                 <HomePage />
               </Route>
               <Route path="/register">
-                <UserForm />
+                <Registration />
               </Route>
               <Route path="/login">
-                <Registration />
+                <Login />
               </Route>
               <Redirect from="/" to="/home" />
             </Switch>

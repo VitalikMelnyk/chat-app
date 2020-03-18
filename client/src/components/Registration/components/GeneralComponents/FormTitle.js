@@ -7,8 +7,8 @@ import { getSteps } from "../../../../shared/functions";
 export const FormTitle = ({ formTitle }) => {
   const steps = getSteps();
   const classes = useStyles();
-  const { UserFormReducer } = useSelector(state => state);
-  const { activeStep } = UserFormReducer;
+  const { RegistrationReducer } = useSelector(state => state);
+  const { activeStep } = RegistrationReducer;
   return (
     <div className={classes.formTitle}>
       <Typography variant="h5" color="textPrimary" component="h2">

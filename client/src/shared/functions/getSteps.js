@@ -1,3 +1,3 @@
 export const getSteps = () => {
-  return ["Let's start", "Contact", "Payment", "Welcome!"];
+  return ["Let's start", "Personal", "Contact", "Welcome!"];
 };

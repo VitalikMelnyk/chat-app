@@ -1,14 +1,14 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import DateFnsUtils from "@date-io/date-fns";
-import enLocale from "../../../../../node_modules/date-fns/locale/en-US";
-import ruLocale from "../../../../../node_modules/date-fns/locale/ru";
+import enLocale from "date-fns/locale/en-US";
+import ruLocale from "date-fns/locale/ru";
 
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from "@material-ui/pickers";
-import { setPersonalField } from "../../../../store/UserForm/PersonalDetails/actions";
+import { setPersonalField } from "../../../../store/Registration/PersonalDetails/actions";
 import { useTranslation } from "react-i18next";
 
 const locale = {

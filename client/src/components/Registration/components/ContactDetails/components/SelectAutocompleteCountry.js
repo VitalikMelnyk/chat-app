@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { countriesList } from "../../../../../shared/functions";
-import { setContactField } from "../../../../../store/UserForm/ContactDetails/actions";
+import { setContactField } from "../../../../../store/Registration/ContactDetails/actions";
 import { useTranslation } from "react-i18next";
 export const SelectAutocompleteCountry = ({ errors, idName }) => {
   const { t } = useTranslation();

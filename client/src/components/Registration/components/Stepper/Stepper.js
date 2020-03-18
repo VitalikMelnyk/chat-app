@@ -4,9 +4,7 @@ import { ColorlibStepIcon } from "./ColorlibStepIcon";
 import { useStyles, ColorlibConnector } from "./styles";
 import { useTranslation } from "react-i18next";
 import { getSteps } from "../../../../shared/functions";
-// const getSteps = () => {
-//   return ["Personal", "Contact", "Payment"];
-// };
+
 const StepperComponent = ({ activeStep }) => {
   const classes = useStyles();
   const { t } = useTranslation();

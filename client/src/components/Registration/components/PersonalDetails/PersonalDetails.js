@@ -7,7 +7,7 @@ import {
   FormControlSelect,
   FormControlText
 } from "../FormFields";
-import { setPersonalField } from "../../../../store/UserForm/PersonalDetails/actions";
+import { setPersonalField } from "../../../../store/Registration/PersonalDetails/actions";
 import { FormTitle } from "../GeneralComponents/FormTitle";
 import { useTranslation } from "react-i18next";
 

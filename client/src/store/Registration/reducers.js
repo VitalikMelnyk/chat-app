@@ -2,15 +2,18 @@ import {
   ACTIVE_STEP_INCREMENT,
   ACTIVE_STEP_DECRAMENT,
   ADD_DATA_TO_ALL_INFORMATION,
-  RESET_ALL_FORM,
+  RESET_ALL_FORM
 } from "../actionTypes";
 
 const initialState = {
-  activeStep: -1,
+  activeStep: 0,
   allUserInformation: {}
 };
 
-export const UserFormReducer = (state = initialState, { type, payload }) => {
+export const RegistrationReducer = (
+  state = initialState,
+  { type, payload }
+) => {
   switch (type) {
     case ACTIVE_STEP_INCREMENT:
       return { ...state, activeStep: state.activeStep + 1 };
@@ -23,9 +26,8 @@ export const UserFormReducer = (state = initialState, { type, payload }) => {
         ...state,
         allUserInformation: { ...state.allUserInformation, ...payload }
       };
-    
+
     default:
       return state;
   }
 };
-

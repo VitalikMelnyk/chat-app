@@ -4,7 +4,7 @@ import { FormTitle } from "../GeneralComponents/FormTitle";
 import { useStyles } from "../../styles";
 import { useSelector, useDispatch } from "react-redux";
 import { FormControlText } from "../FormFields";
-import { setPaymentField } from "../../../../store/UserForm/PaymentDetails/actions";
+import { setPaymentField } from "../../../../store/Registration/PaymentDetails/actions";
 import { FormControlRadio } from "../FormFields/FormControlRadio";
 import { useTranslation } from "react-i18next";
 
