@@ -257,12 +257,6 @@ export const countriesList = [
   { code: "ZW", label: "Zimbabwe", phone: "263" }
 ];
 
-export const radioItems = [
-  { value: "Master Card", label: "Master Card" },
-  { value: "Visa Card", label: "Visa Card" },
-  { value: "other", label: "Other" }
-];
-
 export const genderOptions = [
   { value: "male", label: "Male" },
   { value: "female", label: "Female" },

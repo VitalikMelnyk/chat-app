@@ -5,7 +5,6 @@ import { useStyles } from "./styles";
 import StepperComponent from "./components/Stepper";
 import PersonalDetails from "./components/PersonalDetails";
 import ContactDetails from "./components/ContactDetails";
-import PaymentDetails from "./components/PaymentDetails";
 import Introduction from "./components/Introduction";
 import Congratulation from "./components/Congratulation";
 import FormControlSwitch from "./components/FormFields/FormControlSwitch";
@@ -19,10 +18,6 @@ import {
   setContactErrors,
   resetContactStep
 } from "../../store/Registration/ContactDetails/actions";
-import {
-  setPaymentErrors,
-  resetPaymentStep
-} from "../../store/Registration/PaymentDetails/actions";
 import {
   handleActiveStepNext,
   handleActiveStepBack,
@@ -39,7 +34,6 @@ const Registration = () => {
     ThemeReducer,
     PersonalDetailsReducer,
     ContactDetailsReducer,
-    PaymentDetailsReducer
   } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
   const { themeType, checkedSwitch } = ThemeReducer;
@@ -62,9 +56,6 @@ const Registration = () => {
   const handleResetContactStep = () => {
     dispatch(resetContactStep());
   };
-  const handleResetPaymentStep = () => {
-    dispatch(resetPaymentStep());
-  };
 
   const handleResetForm = () => {
     dispatch(handleResetAllForm());
@@ -83,9 +74,6 @@ const Registration = () => {
         case ContactDetailsReducer:
           dispatch(setContactErrors(errors));
           break;
-        case PaymentDetailsReducer:
-          dispatch(setPaymentErrors(errors));
-          break;
         default:
           break;
       }
@@ -98,11 +86,6 @@ const Registration = () => {
         case ContactDetailsReducer:
           dispatch(addDataToAllInformation(nameOfReducer));
           handleNextStep();
-          break;
-        case PaymentDetailsReducer:
-          dispatch(addDataToAllInformation(nameOfReducer));
-          handleNextStep();
-          // alert(JSON.stringify(UserFormReducer, null, 4));
           break;
         default:
           break;
@@ -128,27 +111,14 @@ const Registration = () => {
       case 2:
         return (
           <ContactDetails
-            formTitle={
-              ("Contact Details")}
-            handleNextStep={handleNextStep}
+            formTitle={"Contact Details"}
             handleBackStep={handleBackStep}
             handleResetCurrentStep={handleResetContactStep}
-            handleSubmitFormData={handleSubmitDataToAllInformation(
+            handleSubmit={handleSubmitDataToAllInformation(
               ContactDetailsReducer
             )}
           />
         );
-      // case 2:
-      //   return (
-      //     <PaymentDetails
-      //       formTitle={t("Payment Details")}
-      //       handleBackStep={handleBackStep}
-      //       handleResetCurrentStep={handleResetPaymentStep}
-      //       handleSubmit={handleSubmitDataToAllInformation(
-      //         PaymentDetailsReducer
-      //       )}
-      //     />
-      //   );
       case 3:
         return <Congratulation handleResetAllForm={handleResetForm} />;
       default:

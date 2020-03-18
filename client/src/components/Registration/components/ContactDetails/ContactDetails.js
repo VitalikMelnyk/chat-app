@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 const ContactDetails = ({
   handleBackStep,
   handleResetCurrentStep,
-  handleSubmitFormData,
+  handleSubmit,
   formTitle
 }) => {
   const classes = useStyles();
@@ -99,12 +99,8 @@ const ContactDetails = ({
           </Button>
         </ButtonGroup>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmitFormData}
-        >
-          {t("Next")}
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          {t("Submit")}
         </Button>
       </ButtonGroup>
     </>
