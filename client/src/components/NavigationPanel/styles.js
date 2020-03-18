@@ -12,5 +12,10 @@ export const useStyles = makeStyles(theme => ({
   },
   active: {
     color: "red"
+  },
+  switchThemeToggle: {
+    "& .MuiTypography-root.MuiFormControlLabel-label": {
+      color: theme.palette.text.hint
+    }
   }
 }));

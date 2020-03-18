@@ -9,7 +9,7 @@ export const useStyles = makeStyles(theme => ({
   },
   signUpContainer: {},
   signUpHeader: {
-    margin: "40px 0 45px",
+    margin: "0px 0 45px",
     textAlign: "center",
     display: "flex",
     flexDirection: "column",
@@ -37,7 +37,7 @@ export const useStyles = makeStyles(theme => ({
     margin: "10px",
     padding: "30px 10px 30px",
     borderRadius: "20px",
-    minHeight: "450px",
+    // minHeight: "450px",
     "& .MuiButtonGroup-root": {
       justifyContent: "space-between"
     }

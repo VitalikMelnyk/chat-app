@@ -2,8 +2,8 @@ import i18n from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import XHR from "i18next-xhr-backend";
 
-import translationEng from "../locales/en/translation.json";
-import translationUa from "../locales/ua/translation.json";
+import translationEng from "../locale/en/translation.json";
+import translationUa from "../locale/ua/translation.json";
 
 i18n
   .use(XHR)

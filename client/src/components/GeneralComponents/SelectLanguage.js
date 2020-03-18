@@ -1,24 +1,18 @@
 import React from "react";
-import {
-  FormControl,
-  FormLabel,
-  FormControlLabel,
-  Radio,
-  RadioGroup
-} from "@material-ui/core";
-import { languageOptions } from "../../../../shared/functions";
-import { useStyles } from "../../styles";
+import { FormControl, MenuItem, Select } from "@material-ui/core";
+import { languageOptions } from "../../shared/functions";
+import { useStyles } from "./styles";
 import { useSelector, useDispatch } from "react-redux";
-import { setLanguageApp } from "../../../../store/Locale/actions";
+import { setLanguageApp } from "../../store/Locale/actions";
 import { useTranslation } from "react-i18next";
 
 export const SelectLanguage = ({ name }) => {
   const classes = useStyles();
+  const { t, i18n } = useTranslation();
   const { LocaleReducer } = useSelector(state => state);
   const { language } = LocaleReducer;
   console.log(language);
   const dispatch = useDispatch();
-  const { t, i18n } = useTranslation();
 
   const handleChangeLanguage = name => event => {
     const value = event.target.value;
@@ -29,25 +23,21 @@ export const SelectLanguage = ({ name }) => {
   };
 
   return (
-    <FormControl component="fieldset">
-      {/* <FormLabel component="legend">Select Language</FormLabel> */}
-      <RadioGroup
-        row
-        aria-label={name}
-        name={name}
+    <FormControl className={classes.formControl}>
+      <Select
+        color="secondary"
         value={language}
         onChange={handleChangeLanguage(name)}
       >
+        <MenuItem value="" disabled>
+          <em>Select language</em>
+        </MenuItem>
         {languageOptions.map(language => (
-          <FormControlLabel
-            value={language.value}
-            key={language.value}
-            label={language.label}
-            className={classes.selectLanguage}
-            control={<Radio />}
-          />
+          <MenuItem color="hint" value={language.value} key={language.value}>
+            {t(language.label)}
+          </MenuItem>
         ))}
-      </RadioGroup>
+      </Select>
     </FormControl>
   );
 };

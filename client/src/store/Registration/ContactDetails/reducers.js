@@ -9,7 +9,7 @@ import {
 
 const initialState = {
   telephoneNumber: "",
-  country: {},
+  country: null,
   city: "",
   address: "",
   zipCode: "",

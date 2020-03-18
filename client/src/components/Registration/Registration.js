@@ -7,8 +7,6 @@ import PersonalDetails from "./components/PersonalDetails";
 import ContactDetails from "./components/ContactDetails";
 import Introduction from "./components/Introduction";
 import Congratulation from "./components/Congratulation";
-import FormControlSwitch from "./components/FormFields/FormControlSwitch";
-import { SelectLanguage } from "./components/GeneralComponents/SelectLanguage";
 import { validateSchema } from "../../utils/validate";
 import {
   setPersonalErrors,
@@ -24,26 +22,21 @@ import {
   addDataToAllInformation,
   handleResetAllForm
 } from "../../store/Registration/actions";
-import { setThemeType } from "../../store/Theme/actions";
+
 import { useTranslation } from "react-i18next";
 
 const Registration = () => {
   const classes = useStyles();
   const {
     RegistrationReducer,
-    ThemeReducer,
     PersonalDetailsReducer,
-    ContactDetailsReducer,
+    ContactDetailsReducer
   } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
-  const { themeType, checkedSwitch } = ThemeReducer;
+
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const toggleTheme = () => {
-    const newThemeType = themeType === "light" ? "dark" : "light";
-    dispatch(setThemeType({ newThemeType, checkedSwitch }));
-  };
   const handleNextStep = () => {
     dispatch(handleActiveStepNext());
   };
@@ -129,23 +122,15 @@ const Registration = () => {
   return (
     <div>
       <Grid container className={classes.root}>
-        <Grid item xs={12} sm={8} md={5} className={classes.signUpContainer}>
+        <Grid item xs={12} sm={8} md={6} lg={5} className={classes.signUpContainer}>
           <div className={classes.signUpHeader}>
             <Typography
               color="textPrimary"
               variant="h1"
               className={classes.signUpTitle}
             >
-              {/* Sign up to Financial */}
-              {t("Sign Up To Financial")}
+              {t("Sign Up")}
             </Typography>
-            <FormControlSwitch
-              checkedSwitch={checkedSwitch}
-              toggleTheme={toggleTheme}
-              className={classes.switchThemeToggle}
-              label={t("Switch Theme")}
-            />
-            <SelectLanguage name="language" />
           </div>
           <div className={classes.signUpMain}>
             <StepperComponent activeStep={activeStep} />
