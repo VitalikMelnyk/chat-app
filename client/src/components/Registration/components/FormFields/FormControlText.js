@@ -5,13 +5,15 @@ import { useTranslation } from "react-i18next";
 
 export const FormControlText = ({
   maxLength = 25,
-  idName,
-  labelName,
-  fullWidth,
+  id,
+  name,
+  label,
   type,
+  onBlur,
+  helperText,
+  error,
   value,
-  onChange,
-  errors
+  onChange
 }) => {
   const { t } = useTranslation();
   const classes = useStyles();
@@ -21,17 +23,19 @@ export const FormControlText = ({
       classes={{
         root: classes.credentialFieldItem
       }}
-      error={errors[idName] ? true : false}
-      fullWidth={fullWidth}
+      fullWidth
       required
       color="secondary"
       type={type}
-      id={idName}
-      label={labelName}
       variant="standard"
+      name={name}
+      id={id}
+      label={label}
       value={value}
       onChange={onChange}
-      helperText={t(errors[idName])}
+      onBlur={onBlur}
+      helperText={helperText}
+      error={error}
     />
   );
 };

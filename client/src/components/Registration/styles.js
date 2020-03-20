@@ -101,5 +101,8 @@ export const useStyles = makeStyles(theme => ({
     "& .MuiButton-root": {
       marginRight: "15px"
     }
+  },
+  personalDetailsBtn: {
+    display: "flex"
   }
 }));

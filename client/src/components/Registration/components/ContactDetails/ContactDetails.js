@@ -1,108 +1,174 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button, ButtonGroup, Box } from "@material-ui/core";
-import { FormTitle } from "../GeneralComponents/FormTitle";
-import { useStyles } from "../../styles";
-import { setContactField } from "../../../../store/Registration/ContactDetails/actions";
-import { FormControlText } from "../FormFields";
-import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
 import { useTranslation } from "react-i18next";
+import { Formik, Field, Form } from "formik";
+import { useStyles } from "../../styles";
+import { Button, ButtonGroup, Box } from "@material-ui/core";
 
-const ContactDetails = ({
-  handleBackStep,
-  handleResetCurrentStep,
-  handleSubmit,
-  formTitle
-}) => {
+import {
+  FormControlDate,
+  FormControlSelect,
+  FormControlText
+} from "../FormFields";
+import { FormTitle } from "../GeneralComponents/FormTitle";
+import { ContactDetailsSchema } from "../../../../utils/yupFormikValidation";
+import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
+
+const ContactDetails = ({ formTitle, handleSubmitData, handleBackStep }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { ContactDetailsReducer } = useSelector(state => state);
-  const {
-    telephoneNumber,
-    address,
-    city,
-    zipCode,
-    errors
-  } = ContactDetailsReducer;
-  const dispatch = useDispatch();
 
-  const handleChangeField = name => event => {
-    const value = event.target.value;
-    const payload = { value, name };
-    console.log(payload);
-    dispatch(setContactField(payload));
+  const handleSubmitting = fields => {
+    console.log(fields);
+    handleSubmitData(fields, true);
   };
   return (
     <>
       <FormTitle formTitle={formTitle} />
-      <form action="" className={classes.DetailsForm}>
-        <div className={classes.credentialFields}>
-          <FormControlText
-            errors={errors}
-            idName="city"
-            value={city}
-            onChange={handleChangeField("city")}
-            fullWidth={true}
-            labelName={t("City")}
-            type="text"
-          />
-          <FormControlText
-            errors={errors}
-            idName="telephoneNumber"
-            value={telephoneNumber}
-            onChange={handleChangeField("telephoneNumber")}
-            fullWidth={true}
-            type="tel"
-            labelName={t("Telephone Number")}
-          />
-        </div>
-        <div className={classes.credentialFields}>
-          <SelectAutocompleteCountry errors={errors} idName="country" />
-        </div>
-        <div className={classes.credentialFields}>
-          <FormControlText
-            errors={errors}
-            idName="address"
-            value={address}
-            onChange={handleChangeField("address")}
-            fullWidth={true}
-            labelName={t("Address")}
-            type="text"
-          />
-          <FormControlText
-            errors={errors}
-            idName="zipCode"
-            value={zipCode}
-            onChange={handleChangeField("zipCode")}
-            fullWidth={true}
-            labelName={t("Zip Code")}
-            type="text"
-          />
-        </div>
-      </form>
-      <ButtonGroup>
-        <ButtonGroup>
-          <Box mr={2}>
-            {props => (
-              <Button
-                {...props}
-                color="secondary"
-                variant="contained"
-                onClick={handleResetCurrentStep}
-              >
-                {t("Reset")}
-              </Button>
-            )}
-          </Box>
-          <Button variant="contained" color="primary" onClick={handleBackStep}>
-            {t("Back")}
-          </Button>
-        </ButtonGroup>
+      <Formik
+        initialValues={{
+          birthdayDate: null,
+          telephoneNumber: "",
+          country: {
+            code: "",
+            label: "",
+            phone: ""
+          },
+          city: "",
+          address: "",
+          zipCode: ""
+        }}
+        validationSchema={ContactDetailsSchema}
+        onSubmit={handleSubmitting}
+      >
+        {({
+          errors,
+          isValid,
+          touched,
+          handleSubmit,
+          handleReset,
+          dirty,
+          values,
+          handleChange,
+          handleBlur,
+          setFieldValue
+        }) => {
+          console.log(2222, errors);
+          return (
+            <Form className={classes.DetailsForm}>
+              <div className={classes.credentialFields}>
+                <FormControlText
+                  name="city"
+                  id="city"
+                  label="City"
+                  type="text"
+                  value={values.city}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  helperText={touched.city ? errors.city : ""}
+                  error={touched.city && Boolean(errors.city)}
+                />
 
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          {t("Submit")}
-        </Button>
-      </ButtonGroup>
+                <FormControlText
+                  name="telephoneNumber"
+                  id="telephoneNumber"
+                  label="Telephone Number"
+                  type="text"
+                  value={values.telephoneNumber}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  helperText={
+                    touched.telephoneNumber ? errors.telephoneNumber : ""
+                  }
+                  error={
+                    touched.telephoneNumber && Boolean(errors.telephoneNumber)
+                  }
+                />
+              </div>
+              <div className={classes.credentialFields}>
+                <SelectAutocompleteCountry
+                  name="country"
+                  id="country"
+                  label="Chooose a country"
+                  setFieldValue={setFieldValue}
+                  value={values.country}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  helperText={
+                    touched.country && touched.country.label
+                      ? errors.country && errors.country.label
+                      : ""
+                  }
+                  error={
+                    touched.country &&
+                    touched.country.label &&
+                    Boolean(errors.country) && Boolean(errors.country.label)
+                  }
+                />
+                <Field name="birthdayDate" component={FormControlDate} />
+              </div>
+
+              <div className={classes.credentialFields}>
+                <FormControlText
+                  name="address"
+                  id="address"
+                  label="Address"
+                  type="text"
+                  value={values.address}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  helperText={touched.address ? errors.address : ""}
+                  error={touched.address && Boolean(errors.address)}
+                />
+                <FormControlText
+                  name="zipCode"
+                  id="zipCode"
+                  label="Zip Code"
+                  type="text"
+                  value={values.zipCode}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  helperText={touched.zipCode ? errors.zipCode : ""}
+                  error={touched.zipCode && Boolean(errors.zipCode)}
+                />
+              </div>
+              <ButtonGroup classes={{ root: classes.personalDetailsBtn }}>
+                <ButtonGroup>
+                  <Box mr={2}>
+                    {props => (
+                      <Button
+                        {...props}
+                        color="secondary"
+                        variant="contained"
+                        onClick={handleReset}
+                        disabled={!dirty}
+                      >
+                        {t("Reset")}
+                      </Button>
+                    )}
+                  </Box>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleBackStep}
+                  >
+                    {t("Back")}
+                  </Button>
+                </ButtonGroup>
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={!isValid || !dirty}
+                >
+                  {t("Submit")}
+                </Button>
+              </ButtonGroup>
+            </Form>
+          );
+        }}
+      </Formik>
     </>
   );
 };

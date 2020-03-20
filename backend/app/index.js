@@ -21,4 +21,10 @@ app.get("/", function(req, res) {
   res.send("Hello World!");
 });
 
+app.post("/register", async (req, res, next) => {
+  console.log(req.body);
+  const { email, password, date, city, gender } = req.body;
+  return res.status(200);
+});
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

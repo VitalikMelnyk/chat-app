@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
 import {
   Select,
   MenuItem,
@@ -11,11 +10,16 @@ import { genderOptions } from "../../../../shared/functions";
 import { useStyles } from "./styles";
 import { useTranslation } from "react-i18next";
 
-export const FormControlSelect = ({ onChange, errors, idName }) => {
+export const FormControlSelect = ({
+  onChange,
+  idName,
+  value,
+  onBlur,
+  error,
+  helperText
+}) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { PersonalDetailsReducer } = useSelector(state => state);
-  const { gender } = PersonalDetailsReducer;
   const inputLabel = useRef(null);
   const [labelWidth, setLabelWidth] = useState(0);
   useEffect(() => {
@@ -24,20 +28,23 @@ export const FormControlSelect = ({ onChange, errors, idName }) => {
   return (
     <FormControl
       className={classes.genderLabel}
-      error={errors[idName] ? true : false}
+      error={error}
       required
       variant="standard"
       fullWidth
+     
     >
       <InputLabel ref={inputLabel} id={idName}>
         {t("Gender")}
       </InputLabel>
       <Select
         color="secondary"
+        name="gender"
         labelId={idName}
-        id={idName}
-        value={gender}
+        id="gender"
+        value={value}
         onChange={onChange}
+        onBlur={onBlur}
         labelWidth={labelWidth}
       >
         <MenuItem value="" disabled>
@@ -49,7 +56,7 @@ export const FormControlSelect = ({ onChange, errors, idName }) => {
           </MenuItem>
         ))}
       </Select>
-      <FormHelperText>{t(errors[idName])}</FormHelperText>
+      <FormHelperText>{helperText}</FormHelperText>
     </FormControl>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AOS from "aos";
 import { useSelector, useDispatch } from "react-redux";
 import { Grid, Typography } from "@material-ui/core";
@@ -8,35 +8,26 @@ import PersonalDetails from "./components/PersonalDetails";
 import ContactDetails from "./components/ContactDetails";
 import Introduction from "./components/Introduction";
 import Congratulation from "./components/Congratulation";
-import { validateSchema } from "../../utils/validate";
 import {
-  setPersonalErrors,
-  resetPersonalStep
-} from "../../store/Registration/PersonalDetails/actions";
-import {
-  setContactErrors,
-  resetContactStep
-} from "../../store/Registration/ContactDetails/actions";
-import {
+  resetStep,
+  setFormErrors,
+  setFormFields,
   handleActiveStepNext,
   handleActiveStepBack,
   addDataToAllInformation,
-  handleResetAllForm
+  handleResetAllForm,
+  sendData
 } from "../../store/Registration/actions";
 
 import { useTranslation } from "react-i18next";
 
 const Registration = () => {
   const classes = useStyles();
-  const {
-    RegistrationReducer,
-    PersonalDetailsReducer,
-    ContactDetailsReducer
-  } = useSelector(state => state);
-  const { activeStep } = RegistrationReducer;
-
-  const dispatch = useDispatch();
   const { t } = useTranslation();
+  const [registrationInfo, setRegistrationInfo] = useState({});
+  const { RegistrationReducer } = useSelector(state => state);
+  const { activeStep } = RegistrationReducer;
+  const dispatch = useDispatch();
 
   const handleNextStep = () => {
     dispatch(handleActiveStepNext());
@@ -44,46 +35,17 @@ const Registration = () => {
   const handleBackStep = () => {
     dispatch(handleActiveStepBack());
   };
-  const handleResetPersonalStep = () => {
-    dispatch(resetPersonalStep());
-  };
-  const handleResetContactStep = () => {
-    dispatch(resetContactStep());
-  };
-
   const handleResetForm = () => {
     dispatch(handleResetAllForm());
   };
-  const handleSubmitDataToAllInformation = nameOfReducer => event => {
-    event.preventDefault();
-    console.log(nameOfReducer);
-    const errors = validateSchema(nameOfReducer);
-    console.log(errors);
-    console.log(Object.keys(errors).length);
-    if (Object.keys(errors).length) {
-      switch (nameOfReducer) {
-        case PersonalDetailsReducer:
-          dispatch(setPersonalErrors(errors));
-          break;
-        case ContactDetailsReducer:
-          dispatch(setContactErrors(errors));
-          break;
-        default:
-          break;
-      }
+
+  const handleSubmit = (newData, shouldSendData = false) => {
+    const latestData = { ...registrationInfo, ...newData };
+    console.log(latestData);
+    if (shouldSendData) {
+      setRegistrationInfo(latestData);
     } else {
-      switch (nameOfReducer) {
-        case PersonalDetailsReducer:
-          dispatch(addDataToAllInformation(nameOfReducer));
-          handleNextStep();
-          break;
-        case ContactDetailsReducer:
-          dispatch(addDataToAllInformation(nameOfReducer));
-          handleNextStep();
-          break;
-        default:
-          break;
-      }
+      setRegistrationInfo(latestData);
     }
   };
 
@@ -98,23 +60,17 @@ const Registration = () => {
       case 1:
         return (
           <PersonalDetails
-            formTitle={t("Personal Details")}
             handleNextStep={handleNextStep}
-            handleResetCurrentStep={handleResetPersonalStep}
-            handleSubmitFormData={handleSubmitDataToAllInformation(
-              PersonalDetailsReducer
-            )}
+            handleSubmitData={handleSubmit}
+            formTitle={t("Personal Details")}
           />
         );
       case 2:
         return (
           <ContactDetails
+            handleSubmitData={handleSubmit}
             formTitle={"Contact Details"}
             handleBackStep={handleBackStep}
-            handleResetCurrentStep={handleResetContactStep}
-            handleSubmit={handleSubmitDataToAllInformation(
-              ContactDetailsReducer
-            )}
           />
         );
       case 3:

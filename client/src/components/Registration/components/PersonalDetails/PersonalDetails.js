@@ -1,113 +1,151 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import { Formik, Field, Form } from "formik";
 import { useStyles } from "../../styles";
 import { Button, ButtonGroup } from "@material-ui/core";
+
 import {
   FormControlDate,
   FormControlSelect,
   FormControlText
 } from "../FormFields";
-import { setPersonalField } from "../../../../store/Registration/PersonalDetails/actions";
 import { FormTitle } from "../GeneralComponents/FormTitle";
-import { useTranslation } from "react-i18next";
+import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
 
-const PersonalDetails = ({
-  handleResetCurrentStep,
-  handleSubmitFormData,
-  formTitle
-}) => {
+const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { PersonalDetailsReducer } = useSelector(state => state);
-  const {
-    firstName,
-    secondName,
-    email,
-    password,
-    errors
-  } = PersonalDetailsReducer;
-  const dispatch = useDispatch();
-  const handleChangeField = name => event => {
-    const value = event.target.value;
-    const payload = { value, name };
-    console.log(payload);
 
-    dispatch(setPersonalField(payload));
+  const handleSubmitting = fields => {
+    console.log(fields);
+    handleSubmitData(fields, false);
+    handleNextStep();
   };
   return (
     <>
       <FormTitle formTitle={formTitle} />
-      <form
-        action=""
-        className={classes.DetailsForm}
-        onSubmit={handleSubmitFormData}
+      <Formik
+        initialValues={{
+          firstName: "",
+          secondName: "",
+          gender: "",
+          email: "",
+          password: "",
+          confirmPassword: ""
+        }}
+        validationSchema={PersonalDetailsSchema}
+        onSubmit={handleSubmitting}
       >
-        <div className={classes.credentialFields}>
-          <FormControlText
-            idName="firstName"
-            errors={errors}
-            value={firstName}
-            onChange={handleChangeField("firstName")}
-            fullWidth={true}
-            type="text"
-            labelName={t("First Name")}
-          />
-          <FormControlText
-            errors={errors}
-            idName="secondName"
-            value={secondName}
-            onChange={handleChangeField("secondName")}
-            fullWidth={true}
-            labelName={t("Second Name")}
-            type="text"
-          />
-        </div>
-        <div className={classes.credentialFields}>
-          <FormControlSelect
-            idName="gender"
-            errors={errors}
-            onChange={handleChangeField("gender")}
-          />
-          <FormControlDate />
-        </div>
-        <div className={classes.credentialFields}>
-          <FormControlText
-            errors={errors}
-            idName="email"
-            value={email}
-            onChange={handleChangeField("email")}
-            fullWidth={true}
-            labelName={t("Email")}
-            type="email"
-          />
-          <FormControlText
-            errors={errors}
-            idName="password"
-            value={password}
-            onChange={handleChangeField("password")}
-            fullWidth={true}
-            labelName={t("Password")}
-            type="password"
-          />
-        </div>
-      </form>
-      <ButtonGroup>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleResetCurrentStep}
-        >
-          {t("Reset")}
-        </Button>
+        {({
+          errors,
+          isValid,
+          touched,
+          handleSubmit,
+          handleReset,
+          dirty,
+          values,
+          handleChange,
+          handleBlur
+        }) => (
+          <Form className={classes.DetailsForm}>
+            <div className={classes.credentialFields}>
+              <FormControlText
+                name="firstName"
+                id="firstName"
+                label="First Name"
+                type="text"
+                value={values.firstName}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.firstName ? errors.firstName : ""}
+                error={touched.firstName && Boolean(errors.firstName)}
+              />
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmitFormData}
-        >
-          {t("Next")}
-        </Button>
-      </ButtonGroup>
+              <FormControlText
+                name="secondName"
+                id="secondName"
+                label="Second Name"
+                type="text"
+                value={values.secondName}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.secondName ? errors.secondName : ""}
+                error={touched.secondName && Boolean(errors.secondName)}
+              />
+              <FormControlSelect
+                idName="gender"
+                value={values.gender}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.gender ? errors.gender : ""}
+                error={touched.gender && Boolean(errors.gender)}
+              />
+            </div>
+            <div className={classes.credentialFields}>
+              <FormControlText
+                name="email"
+                id="email"
+                label="Email"
+                type="text"
+                value={values.email}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.email ? errors.email : ""}
+                error={touched.email && Boolean(errors.email)}
+              />
+              {/* <Field name="birthdayDate" component={FormControlDate} /> */}
+            </div>
+
+            <div className={classes.credentialFields}>
+              <FormControlText
+                name="password"
+                id="password"
+                label="Password"
+                type="password"
+                value={values.password}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={touched.password ? errors.password : ""}
+                error={touched.password && Boolean(errors.password)}
+              />
+              <FormControlText
+                name="confirmPassword"
+                id="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                value={values.confirmPassword}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                helperText={
+                  touched.confirmPassword ? errors.confirmPassword : ""
+                }
+                error={
+                  touched.confirmPassword && Boolean(errors.confirmPassword)
+                }
+              />
+            </div>
+            <ButtonGroup classes={{ root: classes.personalDetailsBtn }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleReset}
+                disabled={!dirty}
+              >
+                {t("Reset")}
+              </Button>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={!isValid || !dirty}
+              >
+                {t("Next")}
+              </Button>
+            </ButtonGroup>
+          </Form>
+        )}
+      </Formik>
     </>
   );
 };

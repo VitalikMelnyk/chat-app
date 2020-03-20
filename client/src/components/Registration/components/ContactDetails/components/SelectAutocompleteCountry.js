@@ -3,31 +3,39 @@ import { useDispatch, useSelector } from "react-redux";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { countriesList } from "../../../../../shared/functions";
-import { setContactField } from "../../../../../store/Registration/ContactDetails/actions";
+// import { setContactField } from "../../../../../store/Registration/ContactDetails/actions";
 import { useTranslation } from "react-i18next";
-export const SelectAutocompleteCountry = ({ errors, idName }) => {
+export const SelectAutocompleteCountry = ({
+  id,
+  name,
+  label,
+  value,
+  onBlur,
+  onChange,
+  helperText,
+  error,
+  setFieldValue
+}) => {
   const { t } = useTranslation();
-  const { ContactDetailsReducer } = useSelector(state => state);
-  const { country } = ContactDetailsReducer;
-  const dispatch = useDispatch();
-  console.log("country: ", country);
-  const handleChangeField = name => (event, value) => {
-    const payload = { value, name };
-    console.log(payload);
-    dispatch(setContactField(payload));
-  };
+  console.log(value);
 
   return (
     <Autocomplete
       //   freeSolo
       color="secondary"
       id="selectCountry"
-      autoComplete={true}
-      style={{ width: 300 }}
+      name={name}
+      helperText={helperText}
+      error={error}
+      autoComplete
+      style={{ width: "100%", marginRight: "20px" }}
       options={countriesList}
       autoHighlight
-      value={country}
-      onChange={handleChangeField("country")}
+      value={value}
+      onBlur={onBlur}
+      onChange={(e, value) => {
+        setFieldValue("country", value);
+      }}
       getOptionLabel={option => option.label}
       renderOption={option => (
         <>
@@ -37,13 +45,12 @@ export const SelectAutocompleteCountry = ({ errors, idName }) => {
       renderInput={params => (
         <TextField
           color="secondary"
-          error={errors[idName] ? true : false}
-          helperText={t(errors[idName])}
+          id={id}
+          name={name}
           fullWidth
           required
-          id={idName}
           {...params}
-          label={t("Choose a country")}
+          label={label}
           variant="standard"
           inputProps={{
             ...params.inputProps

@@ -5,7 +5,8 @@ import { I18nextProvider } from "react-i18next";
 import {
   MuiThemeProvider,
   StylesProvider,
-  createMuiTheme
+  createMuiTheme,
+  CssBaseline
 } from "@material-ui/core";
 import NavigationPanel from "./components/NavigationPanel";
 import HomePage from "./components/HomePage";
@@ -26,6 +27,7 @@ const App = () => {
       <StylesProvider injectFirst>
         <I18nextProvider i18n={i18n}>
           <MuiThemeProvider theme={muiTheme}>
+            <CssBaseline />
             <NavigationPanel />
             <Switch>
               <Route exact path="/home">
