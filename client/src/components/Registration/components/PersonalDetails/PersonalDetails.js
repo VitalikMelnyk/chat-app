@@ -1,24 +1,25 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useTranslation } from "react-i18next";
-import { Formik, Field, Form } from "formik";
+import { Formik, Form } from "formik";
 import { useStyles } from "../../styles";
 import { Button, ButtonGroup } from "@material-ui/core";
 
-import {
-  FormControlDate,
-  FormControlSelect,
-  FormControlText
-} from "../FormFields";
+import { FormControlSelect, FormControlText } from "../FormFields";
 import { FormTitle } from "../GeneralComponents/FormTitle";
 import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
+import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
 
-const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {
+const PersonalDetails = ({
+  formTitle,
+  handleNextStep,
+  handleSubmitData,
+  error
+}) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const handleSubmitting = fields => {
-    console.log(fields);
     handleSubmitData(fields, false);
     handleNextStep();
   };
@@ -146,6 +147,11 @@ const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {
           </Form>
         )}
       </Formik>
+      <ModalMessage
+        errorMessage={error.errorMessage}
+        show={error.show}
+        handleClose={error.handleClose}
+      />
     </>
   );
 };

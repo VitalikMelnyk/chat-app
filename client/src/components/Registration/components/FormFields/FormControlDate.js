@@ -19,7 +19,7 @@ export const FormControlDate = ({ field, form, ...other }) => {
   const { LocaleReducer } = useSelector(state => state);
   const { language } = LocaleReducer;
   const { t } = useTranslation();
-  console.log(field.value);
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={locale[language]}>
       <KeyboardDatePicker

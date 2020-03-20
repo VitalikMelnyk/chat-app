@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Typography } from "@material-ui/core";
 import { useStyles } from "./styles";
 import { useTranslation } from "react-i18next";
 
-const Congratulation = ({ handleResetAllForm }) => {
+const Congratulation = ({ handleResetStep }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   return (
@@ -12,11 +12,7 @@ const Congratulation = ({ handleResetAllForm }) => {
         {t("Congratulations!")}
       </Typography>
       <ButtonGroup>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleResetAllForm}
-        >
+        <Button variant="contained" color="primary" onClick={handleResetStep}>
           {t("Reset Steps")}
         </Button>
       </ButtonGroup>

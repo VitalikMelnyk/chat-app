@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import AOS from "aos";
 import { useSelector, useDispatch } from "react-redux";
 import { Grid, Typography } from "@material-ui/core";
@@ -9,41 +10,63 @@ import ContactDetails from "./components/ContactDetails";
 import Introduction from "./components/Introduction";
 import Congratulation from "./components/Congratulation";
 import {
-  resetStep,
-  setFormErrors,
-  setFormFields,
   handleActiveStepNext,
   handleActiveStepBack,
-  addDataToAllInformation,
-  handleResetAllForm,
-  sendData
+  handleActiveStepReset
 } from "../../store/Registration/actions";
 
 import { useTranslation } from "react-i18next";
+import { SERVER_URL } from "../../shared/constants";
 
 const Registration = () => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [registrationInfo, setRegistrationInfo] = useState({});
+  const [errorMessage, setErrorMessage] = useState([]);
+  const [show, setShow] = useState(false);
+
   const { RegistrationReducer } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
   const dispatch = useDispatch();
-
+  const handleClose = () => setShow(false);
   const handleNextStep = () => {
     dispatch(handleActiveStepNext());
   };
   const handleBackStep = () => {
     dispatch(handleActiveStepBack());
   };
-  const handleResetForm = () => {
-    dispatch(handleResetAllForm());
+  const handleResetStep = () => {
+    dispatch(handleActiveStepReset());
   };
 
+  const sendData = latestData => {
+    setRegistrationInfo(latestData);
+    // console.log(data);
+    if (latestData) {
+      axios
+        .post(`${SERVER_URL}/register`, latestData)
+        .then(res => {
+          console.log(res);
+          console.log(res.status);
+          setRegistrationInfo({});
+          handleNextStep();
+        })
+        .catch(err => {
+          console.log(err.message);
+          if (err.message === "Network Error") {
+            setErrorMessage(
+              err.message + ": You need to launch backend server"
+            );
+            setShow(true);
+          }
+        });
+    }
+  };
   const handleSubmit = (newData, shouldSendData = false) => {
     const latestData = { ...registrationInfo, ...newData };
     console.log(latestData);
     if (shouldSendData) {
-      setRegistrationInfo(latestData);
+      sendData(latestData);
     } else {
       setRegistrationInfo(latestData);
     }
@@ -63,18 +86,32 @@ const Registration = () => {
             handleNextStep={handleNextStep}
             handleSubmitData={handleSubmit}
             formTitle={t("Personal Details")}
+            error={{
+              errorMessage,
+              setErrorMessage,
+              setShow,
+              show,
+              handleClose
+            }}
           />
         );
       case 2:
         return (
           <ContactDetails
             handleSubmitData={handleSubmit}
-            formTitle={"Contact Details"}
+            formTitle={t("Contact Details")}
             handleBackStep={handleBackStep}
+            error={{
+              errorMessage,
+              setErrorMessage,
+              setShow,
+              show,
+              handleClose
+            }}
           />
         );
       case 3:
-        return <Congratulation handleResetAllForm={handleResetForm} />;
+        return <Congratulation handleResetStep={handleResetStep} />;
       default:
         return "Unknown step";
     }

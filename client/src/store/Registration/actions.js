@@ -2,12 +2,9 @@ import axios from "axios";
 import {
   ACTIVE_STEP_INCREMENT,
   ACTIVE_STEP_DECRAMENT,
-  ADD_DATA_TO_ALL_INFORMATION,
-  RESET_ALL_FORM,
   SEND_DATA,
-  SET_FORM_ERRORS,
   SET_FORM_FIELDS,
-  RESET_STEP
+  ACTIVE_STEP_RESET
 } from "../actionTypes";
 import { SERVER_URL } from "../../shared/constants";
 
@@ -19,26 +16,13 @@ export const handleActiveStepBack = payload => ({
   type: ACTIVE_STEP_DECRAMENT
 });
 
-export const handleResetAllForm = payload => ({
-  type: RESET_ALL_FORM
-});
-
-export const resetStep = payload => ({
-  type: RESET_STEP,
+export const handleActiveStepReset = payload => ({
+  type: ACTIVE_STEP_RESET,
   payload
 });
 
 export const setFormFields = payload => ({
   type: SET_FORM_FIELDS,
-  payload
-});
-export const setFormErrors = payload => ({
-  type: SET_FORM_ERRORS,
-  payload
-});
-
-export const addDataToAllInformation = payload => ({
-  type: ADD_DATA_TO_ALL_INFORMATION,
   payload
 });
 

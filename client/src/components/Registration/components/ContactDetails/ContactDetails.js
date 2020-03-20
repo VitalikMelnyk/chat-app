@@ -1,20 +1,20 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Formik, Field, Form } from "formik";
 import { useStyles } from "../../styles";
 import { Button, ButtonGroup, Box } from "@material-ui/core";
-
-import {
-  FormControlDate,
-  FormControlSelect,
-  FormControlText
-} from "../FormFields";
+import { FormControlDate, FormControlText } from "../FormFields";
 import { FormTitle } from "../GeneralComponents/FormTitle";
 import { ContactDetailsSchema } from "../../../../utils/yupFormikValidation";
 import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
+import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
 
-const ContactDetails = ({ formTitle, handleSubmitData, handleBackStep }) => {
+const ContactDetails = ({
+  formTitle,
+  handleSubmitData,
+  handleBackStep,
+  error
+}) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -53,7 +53,6 @@ const ContactDetails = ({ formTitle, handleSubmitData, handleBackStep }) => {
           handleBlur,
           setFieldValue
         }) => {
-          console.log(2222, errors);
           return (
             <Form className={classes.DetailsForm}>
               <div className={classes.credentialFields}>
@@ -102,7 +101,8 @@ const ContactDetails = ({ formTitle, handleSubmitData, handleBackStep }) => {
                   error={
                     touched.country &&
                     touched.country.label &&
-                    Boolean(errors.country) && Boolean(errors.country.label)
+                    Boolean(errors.country) &&
+                    Boolean(errors.country.label)
                   }
                 />
                 <Field name="birthdayDate" component={FormControlDate} />
@@ -169,6 +169,11 @@ const ContactDetails = ({ formTitle, handleSubmitData, handleBackStep }) => {
           );
         }}
       </Formik>
+      <ModalMessage
+        errorMessage={error.errorMessage}
+        show={error.show}
+        handleClose={error.handleClose}
+      />
     </>
   );
 };
