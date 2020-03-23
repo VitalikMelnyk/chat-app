@@ -91,12 +91,11 @@ app.post("/checkExistEmailOfUserInDB", async (req, res, next) => {
     if (checkEmailFromDB) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
+    return res.send("Ok");
   } catch (error) {
     console.log(error);
     return handleError(error, res);
   }
-
-  // return res.send("Ok");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
