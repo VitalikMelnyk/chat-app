@@ -24,8 +24,7 @@ const initialState = {
     country: null,
     city: "",
     address: "",
-    zipCode: "",
-    errors: {}
+    zipCode: ""
   }
 };
 

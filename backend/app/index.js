@@ -9,6 +9,10 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models/mongoDB/localMongoDB");
 const { redisClient } = require("../models/redis");
 const { port } = require("../helpers/constants");
+const {
+  validateRegistration
+} = require("../helpers/validator/validateRegistration");
+const { validationResult, check } = require("express-validator");
 const app = express();
 app.use(cors());
 // support parsing of application/json type post data
@@ -21,9 +25,15 @@ app.get("/", function(req, res) {
   res.send("Hello World!");
 });
 
-app.post("/register", async (req, res, next) => {
+app.post("/register", validateRegistration(), async (req, res, next) => {
   console.log(req.body);
-  const { email, password, date, city, gender } = req.body;
+  // const { email, password, date, city, gender } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    return res.status(422).json({ errors: errors.array() });
+  }
   return res.status(200).send("Registered!");
 });
 
