@@ -5,11 +5,17 @@ const Alert = props => {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 };
 
-export const SnackBarMessage = ({ open, handleClose }) => {
+export const SnackBarMessage = ({
+  open,
+  handleClose,
+  severity,
+  duration,
+  text
+}) => {
   return (
-    <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-      <Alert onClose={handleClose} severity="success">
-        You are registered!
+    <Snackbar open={open} autoHideDuration={duration} onClose={handleClose}>
+      <Alert onClose={handleClose} severity={severity}>
+        {text}
       </Alert>
     </Snackbar>
   );

@@ -8,20 +8,14 @@ import { Button, ButtonGroup } from "@material-ui/core";
 import { FormControlSelect, FormControlText } from "../FormFields";
 import { FormTitle } from "../GeneralComponents/FormTitle";
 import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
-import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
 
-const PersonalDetails = ({
-  formTitle,
-  handleNextStep,
-  handleSubmitData,
-  error
-}) => {
+const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
   const handleSubmitting = fields => {
     handleSubmitData(fields, false);
-    handleNextStep();
+    // handleNextStep();
   };
   return (
     <>
@@ -147,11 +141,6 @@ const PersonalDetails = ({
           </Form>
         )}
       </Formik>
-      <ModalMessage
-        errorMessage={error.errorMessage}
-        show={error.show}
-        handleClose={error.handleClose}
-      />
     </>
   );
 };

@@ -169,11 +169,13 @@ const ContactDetails = ({
           );
         }}
       </Formik>
-      <ModalMessage
-        errorMessage={error.errorMessage}
-        show={error.show}
-        handleClose={error.handleClose}
-      />
+      {error.openModalMessage && (
+        <ModalMessage
+          errorMessage={error.errorMessage}
+          show={error.openModalMessage}
+          handleClose={error.handleCloseModalMessage}
+        />
+      )}
     </>
   );
 };

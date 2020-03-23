@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const { User } = require("../models/mongoDB/localMongoDB");
 const { redisClient } = require("../models/redis");
 const { port, saltRounds } = require("../helpers/constants");
+const { ErrorHandler, handleError } = require("../helpers/error");
 const {
   validateRegistration
 } = require("../helpers/validator/validateRegistration");
@@ -44,16 +45,8 @@ app.post("/register", validateRegistration(), async (req, res, next) => {
     const validateErrors = validationResult(req);
     if (!validateErrors.isEmpty()) {
       console.log(validateErrors);
-      return res.status(422).json({ errors: validateErrors.array() });
+      return res.status(400).send(validateErrors.errors);
     }
-
-    // Check email exist
-    let checkEmailFromDB = await User.findOne({ email });
-    console.log(checkEmailFromDB);
-    if (checkEmailFromDB) {
-      throw new ErrorHandler(400, "Such email is existed!");
-    }
-
     // await doesen't wait for bcrypt.hash because bcrypt.hash does not
     //  return a promise. Use the following method, which wraps bcrypt
     //  in a promise in order to use await.
@@ -85,7 +78,25 @@ app.post("/register", validateRegistration(), async (req, res, next) => {
     return res.status(200).send("You are Registered!");
   } catch (error) {
     console.log(error);
+    // return res.send(error);
   }
+});
+
+app.post("/checkExistEmailOfUserInDB", async (req, res, next) => {
+  const { email } = req.body;
+  console.log(email);
+  try {
+    let checkEmailFromDB = await User.findOne({ email });
+    console.log(checkEmailFromDB);
+    if (checkEmailFromDB) {
+      throw new ErrorHandler(400, "Such email is existed!");
+    }
+  } catch (error) {
+    console.log(error);
+    return handleError(error, res);
+  }
+
+  // return res.send("Ok");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

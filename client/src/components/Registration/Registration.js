@@ -25,12 +25,21 @@ const Registration = () => {
   const [registrationInfo, setRegistrationInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState([]);
   const [openModalMessage, setOpenModalMessage] = useState(false);
-  const [openSnackBarMessage, setOpenSnackBarMessage] = useState(false);
+  const [
+    isSuccessRegistrationMessage,
+    setIsSuccessRegistrationMessage
+  ] = useState(false);
+  const [isExistEmailMessage, setIsExistEmailMessage] = useState(false);
+  const [existEmailErrorMessage, setExistEmailErrorMessage] = useState("");
+  // REDUX
   const { RegistrationReducer } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
   const dispatch = useDispatch();
+  // FUNCTIONs
+  const handleCloseIsExistEmailMessage = () => setIsExistEmailMessage(false);
   const handleCloseModalMessage = () => setOpenModalMessage(false);
-  const handleCloseSnackBarMessage = () => setOpenSnackBarMessage(false);
+  const handleCloseSnackBarMessage = () =>
+    setIsSuccessRegistrationMessage(false);
   const handleNextStep = () => {
     dispatch(handleActiveStepNext());
   };
@@ -39,6 +48,27 @@ const Registration = () => {
   };
   const handleResetStep = () => {
     dispatch(handleActiveStepReset());
+  };
+
+  const checkExistingEmailAndSendData = latestData => {
+    setRegistrationInfo(latestData);
+    console.log(1141343141, latestData);
+    const { email } = latestData;
+    if (latestData) {
+      axios
+        .post(`${SERVER_URL}/checkExistEmailOfUserInDB`, { email: email })
+        .then(res => {
+          console.log(res);
+          handleNextStep();
+        })
+        .catch(err => {
+          console.log(err.response);
+          if (err.response.status === 400) {
+            setIsExistEmailMessage(true);
+            setExistEmailErrorMessage(err.response.data.message);
+          }
+        });
+    }
   };
 
   const sendData = latestData => {
@@ -51,7 +81,7 @@ const Registration = () => {
           console.log(res);
           console.log(res.status);
           setRegistrationInfo({});
-          setOpenSnackBarMessage(true);
+          setIsSuccessRegistrationMessage(true);
           handleNextStep();
         })
         .catch(err => {
@@ -71,7 +101,7 @@ const Registration = () => {
     if (shouldSendData) {
       sendData(latestData);
     } else {
-      setRegistrationInfo(latestData);
+      checkExistingEmailAndSendData(latestData);
     }
   };
 
@@ -86,16 +116,8 @@ const Registration = () => {
       case 1:
         return (
           <PersonalDetails
-            handleNextStep={handleNextStep}
             handleSubmitData={handleSubmit}
             formTitle={t("Personal Details")}
-            error={{
-              errorMessage,
-              setErrorMessage,
-              setOpenModalMessage,
-              openModalMessage,
-              handleCloseModalMessage
-            }}
           />
         );
       case 2:
@@ -148,10 +170,22 @@ const Registration = () => {
         </Grid>
       </Grid>
 
-      {openSnackBarMessage && (
+      {isSuccessRegistrationMessage && (
         <SnackBarMessage
-          open={openSnackBarMessage}
+          duration={3000}
+          severity="success"
+          open={isSuccessRegistrationMessage}
           handleClose={handleCloseSnackBarMessage}
+          text="You are registered!"
+        />
+      )}
+      {isExistEmailMessage && (
+        <SnackBarMessage
+          duration={null}
+          severity="error"
+          open={isExistEmailMessage}
+          handleClose={handleCloseIsExistEmailMessage}
+          text={existEmailErrorMessage}
         />
       )}
     </div>
