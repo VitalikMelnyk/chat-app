@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 // const { User } = require("../models/mongoDB/remoteMongoDB");
 const { User } = require("../models/mongoDB/localMongoDB");
 const { redisClient } = require("../models/redis");
-const { port } = require("../helpers/constants");
+const { port, saltRounds } = require("../helpers/constants");
 const {
   validateRegistration
 } = require("../helpers/validator/validateRegistration");
@@ -27,14 +27,65 @@ app.get("/", function(req, res) {
 
 app.post("/register", validateRegistration(), async (req, res, next) => {
   console.log(req.body);
-  // const { email, password, date, city, gender } = req.body;
+  const {
+    firstName,
+    secondName,
+    gender,
+    email,
+    password,
+    city,
+    telephoneNumber,
+    birthdayDate,
+    country,
+    address,
+    zipCode
+  } = req.body;
+  try {
+    const validateErrors = validationResult(req);
+    if (!validateErrors.isEmpty()) {
+      console.log(validateErrors);
+      return res.status(422).json({ errors: validateErrors.array() });
+    }
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    return res.status(422).json({ errors: errors.array() });
+    // Check email exist
+    let checkEmailFromDB = await User.findOne({ email });
+    console.log(checkEmailFromDB);
+    if (checkEmailFromDB) {
+      throw new ErrorHandler(400, "Such email is existed!");
+    }
+
+    // await doesen't wait for bcrypt.hash because bcrypt.hash does not
+    //  return a promise. Use the following method, which wraps bcrypt
+    //  in a promise in order to use await.
+    const hashedPassword = await new Promise((resolve, reject) => {
+      bcrypt.hash(password, saltRounds, (err, hash) => {
+        if (err) reject(err);
+        resolve(hash);
+      });
+    });
+    const userInfo = {
+      firstName,
+      secondName,
+      gender,
+      email,
+      password: hashedPassword,
+      city,
+      telephoneNumber,
+      birthdayDate,
+      address,
+      country,
+      zipCode
+    };
+    const insertUser = await User.create(userInfo, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log("Registered");
+    });
+    return res.status(200).send("You are Registered!");
+  } catch (error) {
+    console.log(error);
   }
-  return res.status(200).send("Registered!");
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

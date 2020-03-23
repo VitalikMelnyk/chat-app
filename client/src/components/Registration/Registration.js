@@ -17,18 +17,20 @@ import {
 
 import { useTranslation } from "react-i18next";
 import { SERVER_URL } from "../../shared/constants";
+import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 
 const Registration = () => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [registrationInfo, setRegistrationInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState([]);
-  const [show, setShow] = useState(false);
-
+  const [openModalMessage, setOpenModalMessage] = useState(false);
+  const [openSnackBarMessage, setOpenSnackBarMessage] = useState(false);
   const { RegistrationReducer } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
   const dispatch = useDispatch();
-  const handleClose = () => setShow(false);
+  const handleCloseModalMessage = () => setOpenModalMessage(false);
+  const handleCloseSnackBarMessage = () => setOpenSnackBarMessage(false);
   const handleNextStep = () => {
     dispatch(handleActiveStepNext());
   };
@@ -49,6 +51,7 @@ const Registration = () => {
           console.log(res);
           console.log(res.status);
           setRegistrationInfo({});
+          setOpenSnackBarMessage(true);
           handleNextStep();
         })
         .catch(err => {
@@ -57,7 +60,7 @@ const Registration = () => {
             setErrorMessage(
               err.message + ": You need to launch backend server"
             );
-            setShow(true);
+            setOpenModalMessage(true);
           }
         });
     }
@@ -89,9 +92,9 @@ const Registration = () => {
             error={{
               errorMessage,
               setErrorMessage,
-              setShow,
-              show,
-              handleClose
+              setOpenModalMessage,
+              openModalMessage,
+              handleCloseModalMessage
             }}
           />
         );
@@ -104,9 +107,9 @@ const Registration = () => {
             error={{
               errorMessage,
               setErrorMessage,
-              setShow,
-              show,
-              handleClose
+              setOpenModalMessage,
+              openModalMessage,
+              handleCloseModalMessage
             }}
           />
         );
@@ -144,6 +147,13 @@ const Registration = () => {
           </div>
         </Grid>
       </Grid>
+
+      {openSnackBarMessage && (
+        <SnackBarMessage
+          open={openSnackBarMessage}
+          handleClose={handleCloseSnackBarMessage}
+        />
+      )}
     </div>
   );
 };
