@@ -8,7 +8,12 @@ const jwt = require("jsonwebtoken");
 // const { User } = require("../models/mongoDB/remoteMongoDB");
 const { User } = require("../models/mongoDB/localMongoDB");
 const { redisClient } = require("../models/redis");
-const { port, saltRounds } = require("../helpers/constants");
+const {
+  port,
+  saltRounds,
+  accessTokenSecret,
+  refreshTokenSecret
+} = require("../helpers/constants");
 const { ErrorHandler, handleError } = require("../helpers/error");
 const {
   validateRegistration
@@ -92,6 +97,59 @@ app.post("/checkExistEmailOfUserInDB", async (req, res, next) => {
       throw new ErrorHandler(400, "Such email is existed!");
     }
     return res.send("Ok");
+  } catch (error) {
+    console.log(error);
+    return handleError(error, res);
+  }
+});
+
+app.post("/login", async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    // Check email exist on base entering credentials
+    const getUserFromDB = await User.findOne({ email: email });
+    console.log(getUserFromDB);
+    if (!getUserFromDB) {
+      throw new ErrorHandler(400, "Such email doesn't exist");
+    }
+    const {
+      email: userEmailFromDB,
+      password: userPasswordFromDB,
+      id: userId
+    } = getUserFromDB;
+    console.log("Email: ", userEmailFromDB);
+    console.log("Password", userPasswordFromDB);
+
+    const verifyPassword = await new Promise((resolve, reject) => {
+      bcrypt.compare(password, userPasswordFromDB, (err, success) => {
+        if (err) {
+          console.log(err);
+        }
+        resolve(success);
+      });
+    });
+    console.log(verifyPassword);
+    if (!verifyPassword) {
+      throw new ErrorHandler(400, "Password isn't correct!");
+    }
+    // Generate token to client
+    if (userEmailFromDB && verifyPassword) {
+      const accessToken = jwt.sign({ userId }, accessTokenSecret, {
+        algorithm: "HS256",
+        expiresIn: "1d"
+      });
+      const refreshToken = jwt.sign({ userId }, refreshTokenSecret, {
+        algorithm: "HS256",
+        expiresIn: "7d"
+      });
+      const expireDate = jwt.decode(accessToken).exp;
+
+      console.log("AccessToken:", accessToken);
+      console.log("RefreshToken:", refreshToken);
+      const options = { accessToken, refreshToken, expireDate };
+      redisClient.set(userId, JSON.stringify(options));
+      return res.send({ accessToken, refreshToken, expireDate });
+    }
   } catch (error) {
     console.log(error);
     return handleError(error, res);

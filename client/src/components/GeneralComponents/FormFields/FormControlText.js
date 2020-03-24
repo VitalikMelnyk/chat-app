@@ -4,7 +4,6 @@ import { useStyles } from "./styles";
 import { useTranslation } from "react-i18next";
 
 export const FormControlText = ({
-  maxLength = 25,
   id,
   name,
   fullWidth = true,
@@ -20,7 +19,6 @@ export const FormControlText = ({
   const classes = useStyles();
   return (
     <TextField
-      inputProps={{ maxLength: maxLength }}
       classes={{
         root: classes.credentialFieldItem
       }}

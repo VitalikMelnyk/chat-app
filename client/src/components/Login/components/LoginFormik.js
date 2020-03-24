@@ -6,12 +6,12 @@ import { FormControlText } from "../../GeneralComponents/FormFields";
 import { LoginPageSchema } from "../../../utils/yupFormikValidation";
 import { useStyles } from "../styles";
 
-const LoginFormik = () => {
+const LoginFormik = ({ sendLoginData }) => {
   const { t } = useTranslation();
   const classes = useStyles();
 
   const handleSubmitting = fields => {
-    // handleSubmitData(fields, false);
+    sendLoginData(fields);
     console.log(fields);
   };
   return (
@@ -64,14 +64,17 @@ const LoginFormik = () => {
 
           <ButtonGroup classes={{ root: classes.loginBtn }}>
             <Box marginRight={2}>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleReset}
-                disabled={!dirty}
-              >
-                {t("Reset")}
-              </Button>
+              {props => (
+                <Button
+                  {...props}
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleReset}
+                  disabled={!dirty}
+                >
+                  {t("Reset")}
+                </Button>
+              )}
             </Box>
             <Button
               variant="contained"

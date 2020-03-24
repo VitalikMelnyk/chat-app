@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
 import { useStyles } from "../../styles";
 import { Button, ButtonGroup } from "@material-ui/core";
-
+import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
 import {
   FormControlSelect,
   FormControlText
@@ -12,7 +12,12 @@ import {
 import { FormTitle } from "../../../GeneralComponents/FormTitle";
 import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
 
-const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {
+const PersonalDetails = ({
+  formTitle,
+  handleNextStep,
+  handleSubmitData,
+  error
+}) => {
   const classes = useStyles();
   const { t } = useTranslation();
 
@@ -144,6 +149,13 @@ const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {
           </Form>
         )}
       </Formik>
+      {error.openModalMessage && (
+        <ModalMessage
+          errorMessage={error.errorMessage}
+          show={error.openModalMessage}
+          handleClose={error.handleCloseModalMessage}
+        />
+      )}
     </>
   );
 };

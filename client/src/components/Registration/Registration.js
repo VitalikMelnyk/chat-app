@@ -23,23 +23,20 @@ const Registration = () => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [registrationInfo, setRegistrationInfo] = useState({});
-  const [errorMessage, setErrorMessage] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const [openModalMessage, setOpenModalMessage] = useState(false);
   const [
     isSuccessRegistrationMessage,
     setIsSuccessRegistrationMessage
   ] = useState(false);
   const [isExistEmailMessage, setIsExistEmailMessage] = useState(false);
-  const [existEmailErrorMessage, setExistEmailErrorMessage] = useState("");
   // REDUX
   const { RegistrationReducer } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
   const dispatch = useDispatch();
   // FUNCTIONs
-  const handleCloseIsExistEmailMessage = () => setIsExistEmailMessage(false);
   const handleCloseModalMessage = () => setOpenModalMessage(false);
-  const handleCloseSnackBarMessage = () =>
-    setIsSuccessRegistrationMessage(false);
+
   const handleNextStep = () => {
     dispatch(handleActiveStepNext());
   };
@@ -63,9 +60,14 @@ const Registration = () => {
         })
         .catch(err => {
           console.log(err.response);
-          if (err.response.status === 400) {
+          if (err.message === "Network Error") {
+            setErrorMessage(
+              err.message + ": You need to launch backend server"
+            );
+            setOpenModalMessage(true);
+          } else if (err.response.status === 400) {
             setIsExistEmailMessage(true);
-            setExistEmailErrorMessage(err.response.data.message);
+            setErrorMessage(err.response.data.message);
           }
         });
     }
@@ -73,7 +75,6 @@ const Registration = () => {
 
   const sendData = latestData => {
     setRegistrationInfo(latestData);
-    // console.log(data);
     if (latestData) {
       axios
         .post(`${SERVER_URL}/register`, latestData)
@@ -118,6 +119,13 @@ const Registration = () => {
           <PersonalDetails
             handleSubmitData={handleSubmit}
             formTitle={t("Personal Details")}
+            error={{
+              errorMessage,
+              setErrorMessage,
+              setOpenModalMessage,
+              openModalMessage,
+              handleCloseModalMessage
+            }}
           />
         );
       case 2:
@@ -175,7 +183,7 @@ const Registration = () => {
           duration={6000}
           severity="success"
           open={isSuccessRegistrationMessage}
-          handleClose={handleCloseSnackBarMessage}
+          handleClose={() => setIsSuccessRegistrationMessage(false)}
           text="You are registered!"
         />
       )}
@@ -184,8 +192,8 @@ const Registration = () => {
           duration={null}
           severity="error"
           open={isExistEmailMessage}
-          handleClose={handleCloseIsExistEmailMessage}
-          text={existEmailErrorMessage}
+          handleClose={() => setIsExistEmailMessage(false)}
+          text={errorMessage}
         />
       )}
     </div>
