@@ -36,3 +36,12 @@ export const ContactDetailsSchema = Yup.object().shape({
     .min(5, "Must be exactly 5 digits")
     .max(5, "Must be exactly 5 digits")
 });
+
+export const LoginPageSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Email is invalid")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required")
+});

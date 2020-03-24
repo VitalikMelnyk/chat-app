@@ -5,8 +5,11 @@ import { Formik, Form } from "formik";
 import { useStyles } from "../../styles";
 import { Button, ButtonGroup } from "@material-ui/core";
 
-import { FormControlSelect, FormControlText } from "../FormFields";
-import { FormTitle } from "../GeneralComponents/FormTitle";
+import {
+  FormControlSelect,
+  FormControlText
+} from "../../../GeneralComponents/FormFields";
+import { FormTitle } from "../../../GeneralComponents/FormTitle";
 import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
 
 const PersonalDetails = ({ formTitle, handleNextStep, handleSubmitData }) => {

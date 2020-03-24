@@ -3,8 +3,11 @@ import { useTranslation } from "react-i18next";
 import { Formik, Field, Form } from "formik";
 import { useStyles } from "../../styles";
 import { Button, ButtonGroup, Box } from "@material-ui/core";
-import { FormControlDate, FormControlText } from "../FormFields";
-import { FormTitle } from "../GeneralComponents/FormTitle";
+import {
+  FormControlDate,
+  FormControlText
+} from "../../../GeneralComponents/FormFields";
+import { FormTitle } from "../../../GeneralComponents/FormTitle";
 import { ContactDetailsSchema } from "../../../../utils/yupFormikValidation";
 import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
 import { ModalMessage } from "../../../GeneralComponents/ModalMessage";

@@ -1,12 +1,13 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
-import { useStyles } from "../../styles";
+import { useStyles } from "./styles";
 import { useTranslation } from "react-i18next";
 
 export const FormControlText = ({
   maxLength = 25,
   id,
   name,
+  fullWidth = true,
   label,
   type,
   onBlur,

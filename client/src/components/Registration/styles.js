@@ -24,7 +24,6 @@ export const useStyles = makeStyles(theme => ({
   signUpTitle: {
     fontSize: "35px",
     fontWeight: "900"
-    // textTransform: "capitalize"
   },
   signUpSubtitle: {},
   signUpFormBox: {
@@ -66,28 +65,8 @@ export const useStyles = makeStyles(theme => ({
       fontWeight: "700"
     }
   },
-  credentialFieldItem: {
-    margin: "0 5px 0 10px",
-    "& .MuiOutlinedInput-root": {
-      "& fieldset": {
-        borderColor: "#787979",
-        borderWidth: "2px"
-      },
-      "&.Mui-focused fieldset": {
-        borderColor: "green",
-        borderWidth: "2px"
-      }
-    }
-  },
-  genderSelectItem: {
-    margin: "10px"
-  },
+ 
   switchThemeToggle: {
-    "& .MuiTypography-root.MuiFormControlLabel-label": {
-      color: theme.palette.text.primary
-    }
-  },
-  paymentType: {
     "& .MuiTypography-root.MuiFormControlLabel-label": {
       color: theme.palette.text.primary
     }

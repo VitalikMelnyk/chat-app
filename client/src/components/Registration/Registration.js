@@ -172,7 +172,7 @@ const Registration = () => {
 
       {isSuccessRegistrationMessage && (
         <SnackBarMessage
-          duration={3000}
+          duration={6000}
           severity="success"
           open={isSuccessRegistrationMessage}
           handleClose={handleCloseSnackBarMessage}

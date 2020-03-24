@@ -6,7 +6,7 @@ import {
   FormControl,
   FormHelperText
 } from "@material-ui/core";
-import { genderOptions } from "../../../../shared/functions";
+import { genderOptions } from "../../../shared/functions";
 import { useStyles } from "./styles";
 import { useTranslation } from "react-i18next";
 
@@ -32,7 +32,6 @@ export const FormControlSelect = ({
       required
       variant="standard"
       fullWidth
-     
     >
       <InputLabel ref={inputLabel} id={idName}>
         {t("Gender")}

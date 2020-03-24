@@ -1,8 +1,16 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { useStyles } from "./styles";
 import { Typography } from "@material-ui/core";
-import { getSteps } from "../../../../shared/functions";
+import { getSteps } from "../../shared/functions";
+import { makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles({
+  formTitle: {
+    display: "flex",
+    justifyContent: "space-between",
+    fontSize: "25px"
+  }
+});
 
 export const FormTitle = ({ formTitle }) => {
   const steps = getSteps();
