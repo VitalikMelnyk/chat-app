@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import Cookies from "js-cookie";
+import jwt_decode from "jwt-decode";
 import AOS from "aos";
 import { useTranslation } from "react-i18next";
 import { Grid, Typography } from "@material-ui/core";
@@ -10,6 +12,8 @@ import LoginFormik from "./components/LoginFormik";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { ModalMessage } from "../GeneralComponents/ModalMessage";
 import { SERVER_URL } from "../../shared/constants";
+import { setCurrentUserInfo } from "../../store/Login/actions";
+import { setAuthToken } from "../../shared/functions";
 
 const LoginPage = () => {
   const history = useHistory();
@@ -21,6 +25,9 @@ const LoginPage = () => {
   const [isFailureLoginMessage, setIsFailureLoginMessage] = useState(false);
   const [openModalMessage, setOpenModalMessage] = useState(false);
 
+  const { LoginReducer } = useSelector(state => state);
+  const { userInfo, isAuthenticated } = LoginReducer;
+  const dispatch = useDispatch();
   const sendLoginData = latestData => {
     setLoginInfo(latestData);
     console.log(latestData);
@@ -33,19 +40,27 @@ const LoginPage = () => {
           setLoginInfo({});
           setIsSuccessLoginMessage(true);
           // SET COOKIES
+          const { accessToken, refreshToken, expireDate } = res.data;
           if (res.status === 200) {
-            Cookies.set("AccessToken", res.data.accessToken, {
-              expires: new Date(res.data.expireDate * 1000)
+            Cookies.set("AccessToken", accessToken, {
+              expires: new Date(expireDate * 1000)
             });
-            Cookies.set("RefreshToken", res.data.refreshToken);
+            Cookies.set("RefreshToken", refreshToken);
             let token = Cookies.get("AccessToken");
             if (!token) {
               console.log("Token is null");
             } else {
-              // history.push("home");
+              history.push("dashboard");
               console.log("success");
             }
           }
+          // localStorage.setItem("accessToken", accessToken);
+          // localStorage.setItem("refreshToken", refreshToken);
+          // setAuthToken(accessToken);
+          // // Decode token to get user data
+          // const decoded = jwt_decode(accessToken);
+          // console.log(decoded);
+          // dispatch(setCurrentUserInfo(decoded));
         })
         .catch(err => {
           console.log(err.message);

@@ -8,9 +8,10 @@ import {
   createMuiTheme,
   CssBaseline
 } from "@material-ui/core";
+import PrivateRoute from "./components/GeneralComponents/PrivateRoute";
 import NavigationPanel from "./components/NavigationPanel";
 import HomePage from "./components/HomePage";
-
+import Dashboard from "./components/Dashboard";
 import Registration from "./components/Registration";
 import { createTheme } from "./theme/config";
 import i18n from "./shared/i18n";
@@ -40,6 +41,7 @@ const App = () => {
               <Route path="/login">
                 <LoginPage />
               </Route>
+              <PrivateRoute path="/dashboard" component={Dashboard} />
               <Redirect from="/" to="/home" />
             </Switch>
           </MuiThemeProvider>

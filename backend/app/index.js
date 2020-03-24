@@ -32,7 +32,6 @@ app.get("/", function(req, res) {
 });
 
 app.post("/register", validateRegistration(), async (req, res, next) => {
-  console.log(req.body);
   const {
     firstName,
     secondName,
@@ -78,7 +77,6 @@ app.post("/register", validateRegistration(), async (req, res, next) => {
       if (err) {
         console.log(err);
       }
-      console.log("Registered");
     });
     return res.status(200).send("You are Registered!");
   } catch (error) {
@@ -89,10 +87,8 @@ app.post("/register", validateRegistration(), async (req, res, next) => {
 
 app.post("/checkExistEmailOfUserInDB", async (req, res, next) => {
   const { email } = req.body;
-  console.log(email);
   try {
     let checkEmailFromDB = await User.findOne({ email });
-    console.log(checkEmailFromDB);
     if (checkEmailFromDB) {
       throw new ErrorHandler(400, "Such email is existed!");
     }
@@ -104,11 +100,10 @@ app.post("/checkExistEmailOfUserInDB", async (req, res, next) => {
 });
 
 app.post("/login", async (req, res, next) => {
-  const { email, password } = req.body;
+  const { email: emailFromApp, password: passwordFromApp } = req.body;
   try {
     // Check email exist on base entering credentials
-    const getUserFromDB = await User.findOne({ email: email });
-    console.log(getUserFromDB);
+    const getUserFromDB = await User.findOne({ email: emailFromApp });
     if (!getUserFromDB) {
       throw new ErrorHandler(400, "Such email doesn't exist");
     }
@@ -117,18 +112,14 @@ app.post("/login", async (req, res, next) => {
       password: userPasswordFromDB,
       id: userId
     } = getUserFromDB;
-    console.log("Email: ", userEmailFromDB);
-    console.log("Password", userPasswordFromDB);
-
     const verifyPassword = await new Promise((resolve, reject) => {
-      bcrypt.compare(password, userPasswordFromDB, (err, success) => {
+      bcrypt.compare(passwordFromApp, userPasswordFromDB, (err, success) => {
         if (err) {
           console.log(err);
         }
         resolve(success);
       });
     });
-    console.log(verifyPassword);
     if (!verifyPassword) {
       throw new ErrorHandler(400, "Password isn't correct!");
     }
@@ -136,24 +127,78 @@ app.post("/login", async (req, res, next) => {
     if (userEmailFromDB && verifyPassword) {
       const accessToken = jwt.sign({ userId }, accessTokenSecret, {
         algorithm: "HS256",
-        expiresIn: "1d"
+        expiresIn: "1h"
       });
       const refreshToken = jwt.sign({ userId }, refreshTokenSecret, {
         algorithm: "HS256",
         expiresIn: "7d"
       });
       const expireDate = jwt.decode(accessToken).exp;
-
-      console.log("AccessToken:", accessToken);
-      console.log("RefreshToken:", refreshToken);
       const options = { accessToken, refreshToken, expireDate };
       redisClient.set(userId, JSON.stringify(options));
-      return res.send({ accessToken, refreshToken, expireDate });
+      return res.send(options);
     }
   } catch (error) {
     console.log(error);
     return handleError(error, res);
   }
+});
+
+const verifySync = async (token, tokenSecret) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, tokenSecret, (err, decoded) => {
+      console.log(err, decoded);
+      if (err) {
+        reject(err);
+      } else {
+        resolve(decoded);
+      }
+    });
+  });
+};
+
+const isAuth = async (req, res, next) => {
+  
+  const tokenFromBrowser = req.headers.authorization;
+  if (!tokenFromBrowser) {
+    res.status(401).send("Unauthorized: No token provided");
+  } else {
+    let decodedData;
+    try {
+      decodedData = await verifySync(tokenFromBrowser, accessTokenSecret);
+    } catch (err) {
+      // ,
+      res.status(401).send("User isn't authorized");
+    }
+    const user = await User.findOne({ _id: decodedData.userId });
+    if (!user) {
+      res.status(401).send("User didn't find ");
+    }
+
+    const tokenFromRedis = await new Promise((resolve, reject) => {
+      redisClient.get(user.id, (err, result) => {
+        if (err) {
+          reject(err);
+          throw err;
+        }
+        resolve(JSON.parse(result));
+      });
+    });
+
+    if (tokenFromBrowser === tokenFromRedis.accessToken) {
+      next();
+    } else {
+      res.status(401).send("Tokens aren't match ");
+    }
+  }
+};
+
+app.get("/dashboard", isAuth, async (req, res) => {
+  const users = await User.find({}, err => {
+    if (err) return console.log(err);
+  });
+
+  return res.status(200).send(users);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

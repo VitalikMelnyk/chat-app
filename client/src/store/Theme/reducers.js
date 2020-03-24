@@ -5,7 +5,7 @@ const initialState = {
   themeType: "dark"
 };
 
-export const ThemeReducer = (state = initialState, { type, payload }) => {
+const ThemeReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_THEME_TYPE:
       return {
@@ -18,3 +18,4 @@ export const ThemeReducer = (state = initialState, { type, payload }) => {
       return state;
   }
 };
+export default ThemeReducer;

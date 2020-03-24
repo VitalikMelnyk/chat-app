@@ -4,7 +4,7 @@ const initialState = {
   language: "en"
 };
 
-export const LocaleReducer = (state = initialState, { type, payload }) => {
+const LocaleReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_LANGUAGE_APP:
       return { ...state, [payload.name]: payload.value };
@@ -13,3 +13,5 @@ export const LocaleReducer = (state = initialState, { type, payload }) => {
       return state;
   }
 };
+
+export default LocaleReducer;

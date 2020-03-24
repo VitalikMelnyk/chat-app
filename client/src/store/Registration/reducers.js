@@ -1,37 +1,34 @@
 import {
   ACTIVE_STEP_INCREMENT,
   ACTIVE_STEP_DECRAMENT,
-  SEND_DATA_PENDING,
-  SEND_DATA_SUCCESS,
-  SEND_DATA_ERROR,
-  SET_FORM_FIELDS,
+  // SEND_DATA_PENDING,
+  // SEND_DATA_SUCCESS,
+  // SEND_DATA_ERROR,
+  // SET_FORM_FIELDS,
   ACTIVE_STEP_RESET
 } from "../actionTypes";
 
 const initialState = {
-  activeStep: 0,
-  isLoading: false,
-  error: null,
-  registrationInfo: {
-    firstName: "",
-    secondName: "",
-    gender: "",
-    birthdayDate: new Date(),
-    email: "",
-    password: "",
-    confirmPassword: "",
-    telephoneNumber: "",
-    country: null,
-    city: "",
-    address: "",
-    zipCode: ""
-  }
+  activeStep: 0
+  // isLoading: false,
+  // error: null,
+  // registrationInfo: {
+  //   firstName: "",
+  //   secondName: "",
+  //   gender: "",
+  //   birthdayDate: new Date(),
+  //   email: "",
+  //   password: "",
+  //   confirmPassword: "",
+  //   telephoneNumber: "",
+  //   country: null,
+  //   city: "",
+  //   address: "",
+  //   zipCode: ""
+  // }
 };
 
-export const RegistrationReducer = (
-  state = initialState,
-  { type, payload }
-) => {
+const RegistrationReducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case ACTIVE_STEP_INCREMENT:
       return {
@@ -43,20 +40,22 @@ export const RegistrationReducer = (
     case ACTIVE_STEP_RESET: {
       return { ...state, activeStep: 0 };
     }
-    case SET_FORM_FIELDS: {
-      return { ...state, registrationInfo: payload };
-    }
+    // case SET_FORM_FIELDS: {
+    //   return { ...state, registrationInfo: payload };
+    // }
 
-    case SEND_DATA_PENDING: {
-      return { ...state, isLoading: true };
-    }
-    case SEND_DATA_SUCCESS: {
-      return { ...state, isLoading: false };
-    }
-    case SEND_DATA_ERROR: {
-      return { ...state, isLoading: false, error: payload };
-    }
+    // case SEND_DATA_PENDING: {
+    //   return { ...state, isLoading: true };
+    // }
+    // case SEND_DATA_SUCCESS: {
+    //   return { ...state, isLoading: false };
+    // }
+    // case SEND_DATA_ERROR: {
+    //   return { ...state, isLoading: false, error: payload };
+    // }
     default:
       return state;
   }
 };
+
+export default RegistrationReducer;
