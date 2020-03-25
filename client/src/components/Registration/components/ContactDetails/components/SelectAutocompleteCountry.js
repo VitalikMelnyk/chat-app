@@ -2,7 +2,7 @@ import React from "react";
 import TextField from "@material-ui/core/TextField";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { countriesList } from "../../../../../shared/functions";
-import { useTranslation } from "react-i18next";
+
 export const SelectAutocompleteCountry = ({
   id,
   name,
@@ -13,10 +13,8 @@ export const SelectAutocompleteCountry = ({
   error,
   setFieldValue
 }) => {
-  const { t } = useTranslation();
   return (
     <Autocomplete
-      //   freeSolo
       color="secondary"
       id="selectCountry"
       name={name}

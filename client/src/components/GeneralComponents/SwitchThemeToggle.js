@@ -17,7 +17,6 @@ const FormControlSwitch = ({
         />
       }
       label={label}
-      // labelPlacement="bottom"
       className={className}
     />
   );

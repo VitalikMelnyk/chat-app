@@ -65,7 +65,7 @@ export const useStyles = makeStyles(theme => ({
       fontWeight: "700"
     }
   },
- 
+
   switchThemeToggle: {
     "& .MuiTypography-root.MuiFormControlLabel-label": {
       color: theme.palette.text.primary
@@ -83,5 +83,26 @@ export const useStyles = makeStyles(theme => ({
   },
   personalDetailsBtn: {
     display: "flex"
+  },
+  contactBtn: {
+    display: "flex",
+    justifyContent: "space-between"
+  },
+  contactBtnItem: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  buttonProgress: {
+    color: theme.palette.primary.main,
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: "relative"
   }
 }));

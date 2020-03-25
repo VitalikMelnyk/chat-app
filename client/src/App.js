@@ -22,8 +22,8 @@ const App = () => {
   const { themeType } = ThemeReducer;
   const theme = createTheme(themeType);
   const muiTheme = createMuiTheme(theme);
-  console.log(muiTheme);
-  console.log(i18n);
+  // console.log(muiTheme);
+  // console.log(i18n);
   return (
     <div>
       <StylesProvider injectFirst>

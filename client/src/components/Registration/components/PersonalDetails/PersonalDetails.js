@@ -1,9 +1,9 @@
 import React from "react";
-
+import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
 import { useStyles } from "../../styles";
-import { Button, ButtonGroup } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
 import {
   FormControlSelect,
@@ -12,18 +12,14 @@ import {
 import { FormTitle } from "../../../GeneralComponents/FormTitle";
 import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
 
-const PersonalDetails = ({
-  formTitle,
-  handleNextStep,
-  handleSubmitData,
-  error
-}) => {
+const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
   const classes = useStyles();
   const { t } = useTranslation();
+  const { RegistrationReducer } = useSelector(state => state);
+  const { isLoading } = RegistrationReducer;
 
   const handleSubmitting = fields => {
     handleSubmitData(fields, false);
-    // handleNextStep();
   };
   return (
     <>
@@ -64,7 +60,6 @@ const PersonalDetails = ({
                 helperText={touched.firstName ? errors.firstName : ""}
                 error={touched.firstName && Boolean(errors.firstName)}
               />
-
               <FormControlText
                 name="secondName"
                 id="secondName"
@@ -97,9 +92,7 @@ const PersonalDetails = ({
                 helperText={touched.email ? errors.email : ""}
                 error={touched.email && Boolean(errors.email)}
               />
-              {/* <Field name="birthdayDate" component={FormControlDate} /> */}
             </div>
-
             <div className={classes.credentialFields}>
               <FormControlText
                 name="password"
@@ -128,24 +121,34 @@ const PersonalDetails = ({
                 }
               />
             </div>
-            <ButtonGroup classes={{ root: classes.personalDetailsBtn }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleReset}
-                disabled={!dirty}
-              >
-                {t("Reset")}
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSubmit}
-                disabled={!isValid || !dirty}
-              >
-                {t("Next")}
-              </Button>
-            </ButtonGroup>
+            <div className={classes.contactBtn}>
+              <div className={classes.contactBtnItem}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleReset}
+                  disabled={!dirty}
+                >
+                  {t("Reset")}
+                </Button>
+              </div>
+              <div className={classes.wrapper}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleSubmit}
+                  disabled={!isValid || !dirty || isLoading}
+                >
+                  {t("Next")}
+                </Button>
+                {isLoading && (
+                  <CircularProgress
+                    size={24}
+                    className={classes.buttonProgress}
+                  />
+                )}
+              </div>
+            </div>
           </Form>
         )}
       </Formik>

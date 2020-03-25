@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import AOS from "aos";
 import {
   Grid,
   Card,
@@ -9,6 +8,7 @@ import {
   Button,
   CardMedia
 } from "@material-ui/core";
+import AOS from "aos";
 import { useStyles } from "./styles";
 import image from "../../assets/hero.png";
 

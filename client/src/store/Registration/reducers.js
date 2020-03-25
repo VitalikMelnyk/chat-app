@@ -1,31 +1,18 @@
 import {
   ACTIVE_STEP_INCREMENT,
   ACTIVE_STEP_DECRAMENT,
-  // SEND_DATA_PENDING,
-  // SEND_DATA_SUCCESS,
-  // SEND_DATA_ERROR,
-  // SET_FORM_FIELDS,
-  ACTIVE_STEP_RESET
+  SEND_DATA_PENDING,
+  SEND_DATA_SUCCESS,
+  SEND_DATA_ERROR,
+  ACTIVE_STEP_RESET,
+  CHECK_EXIST_EMAIL_AND_SEND_DATA_PENDING,
+  CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS,
+  CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR
 } from "../actionTypes";
 
 const initialState = {
-  activeStep: 0
-  // isLoading: false,
-  // error: null,
-  // registrationInfo: {
-  //   firstName: "",
-  //   secondName: "",
-  //   gender: "",
-  //   birthdayDate: new Date(),
-  //   email: "",
-  //   password: "",
-  //   confirmPassword: "",
-  //   telephoneNumber: "",
-  //   country: null,
-  //   city: "",
-  //   address: "",
-  //   zipCode: ""
-  // }
+  activeStep: 0,
+  isLoading: false
 };
 
 const RegistrationReducer = (state = initialState, { type, payload }) => {
@@ -40,19 +27,24 @@ const RegistrationReducer = (state = initialState, { type, payload }) => {
     case ACTIVE_STEP_RESET: {
       return { ...state, activeStep: 0 };
     }
-    // case SET_FORM_FIELDS: {
-    //   return { ...state, registrationInfo: payload };
-    // }
 
-    // case SEND_DATA_PENDING: {
-    //   return { ...state, isLoading: true };
-    // }
-    // case SEND_DATA_SUCCESS: {
-    //   return { ...state, isLoading: false };
-    // }
-    // case SEND_DATA_ERROR: {
-    //   return { ...state, isLoading: false, error: payload };
-    // }
+    case SEND_DATA_PENDING:
+      return { ...state, isLoading: true };
+
+    case SEND_DATA_SUCCESS:
+      return { ...state, isLoading: false };
+
+    case SEND_DATA_ERROR:
+      return { ...state, isLoading: false };
+
+    case CHECK_EXIST_EMAIL_AND_SEND_DATA_PENDING:
+      return { ...state, isLoading: true };
+
+    case CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS:
+      return { ...state, isLoading: false };
+
+    case CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR:
+      return { ...state, isLoading: false };
     default:
       return state;
   }

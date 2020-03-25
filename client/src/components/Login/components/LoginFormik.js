@@ -37,7 +37,6 @@ const LoginFormik = ({ sendLoginData }) => {
         <Form className={classes.LoginForm}>
           <div className={classes.credentialFields}>
             <FormControlText
-              // fullWidth={false}
               name="email"
               id="email"
               label="Email"
@@ -49,7 +48,6 @@ const LoginFormik = ({ sendLoginData }) => {
               error={touched.email && Boolean(errors.email)}
             />
             <FormControlText
-              // fullWidth={false}
               name="password"
               id="password"
               label="Password"

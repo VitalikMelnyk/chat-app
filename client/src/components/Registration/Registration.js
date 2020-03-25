@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import { useSelector, useDispatch, connect } from "react-redux";
+import { useTranslation } from "react-i18next";
 import AOS from "aos";
-import { useSelector, useDispatch } from "react-redux";
 import { Grid, Typography } from "@material-ui/core";
 import { useStyles } from "./styles";
 import StepperComponent from "./components/Stepper";
@@ -9,27 +9,26 @@ import PersonalDetails from "./components/PersonalDetails";
 import ContactDetails from "./components/ContactDetails";
 import Introduction from "./components/Introduction";
 import Congratulation from "./components/Congratulation";
+import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import {
   handleActiveStepNext,
   handleActiveStepBack,
-  handleActiveStepReset
+  handleActiveStepReset,
+  sendData,
+  checkEmailAndSendData
 } from "../../store/Registration/actions";
 
-import { useTranslation } from "react-i18next";
-import { SERVER_URL } from "../../shared/constants";
-import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
-
-const Registration = () => {
+const Registration = ({ sendData, checkEmailAndSendData }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [registrationInfo, setRegistrationInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [openModalMessage, setOpenModalMessage] = useState(false);
+  const [isExistEmailMessage, setIsExistEmailMessage] = useState(false);
   const [
     isSuccessRegistrationMessage,
     setIsSuccessRegistrationMessage
   ] = useState(false);
-  const [isExistEmailMessage, setIsExistEmailMessage] = useState(false);
   // REDUX
   const { RegistrationReducer } = useSelector(state => state);
   const { activeStep } = RegistrationReducer;
@@ -47,60 +46,45 @@ const Registration = () => {
     dispatch(handleActiveStepReset());
   };
 
-  const checkExistingEmailAndSendData = latestData => {
+  const checkExistingEmailAndSendData = async latestData => {
     setRegistrationInfo(latestData);
-    console.log(1141343141, latestData);
     const { email } = latestData;
-    if (latestData) {
-      axios
-        .post(`${SERVER_URL}/checkExistEmailOfUserInDB`, { email: email })
-        .then(res => {
-          console.log(res);
-          handleNextStep();
-        })
-        .catch(err => {
-          console.log(err.response);
-          if (err.message === "Network Error") {
-            setErrorMessage(
-              err.message + ": You need to launch backend server"
-            );
-            setOpenModalMessage(true);
-          } else if (err.response.status === 400) {
-            setIsExistEmailMessage(true);
-            setErrorMessage(err.response.data.message);
-          }
-        });
+    try {
+      const success = await checkEmailAndSendData(email);
+      if (success === 200) {
+        handleNextStep();
+      }
+    } catch (error) {
+      if (erorr.message === "Network Error") {
+        setErrorMessage(error.message + ": You need to launch backend server");
+        setOpenModalMessage(true);
+      } else if (error.response.status === 400) {
+        setIsExistEmailMessage(true);
+        setErrorMessage(error.response.data.message);
+      }
     }
   };
 
-  const sendData = latestData => {
+  const sendRegisterData = async latestData => {
     setRegistrationInfo(latestData);
-    if (latestData) {
-      axios
-        .post(`${SERVER_URL}/register`, latestData)
-        .then(res => {
-          console.log(res);
-          console.log(res.status);
-          setRegistrationInfo({});
-          setIsSuccessRegistrationMessage(true);
-          handleNextStep();
-        })
-        .catch(err => {
-          console.log(err.message);
-          if (err.message === "Network Error") {
-            setErrorMessage(
-              err.message + ": You need to launch backend server"
-            );
-            setOpenModalMessage(true);
-          }
-        });
+    try {
+      const success = await sendData(latestData);
+      if (success === 200) {
+        setRegistrationInfo({});
+        setIsSuccessRegistrationMessage(true);
+        handleNextStep();
+      }
+    } catch (error) {
+      if (error.message === "Network Error") {
+        setErrorMessage(error.message + ": You need to launch backend server");
+        setOpenModalMessage(true);
+      }
     }
   };
   const handleSubmit = (newData, shouldSendData = false) => {
-    const latestData = { ...registrationInfo, ...newData };
-    console.log(latestData);
+    const latestData = { ...registrationInfo, ...newData };;
     if (shouldSendData) {
-      sendData(latestData);
+      sendRegisterData(latestData);
     } else {
       checkExistingEmailAndSendData(latestData);
     }
@@ -199,5 +183,8 @@ const Registration = () => {
     </div>
   );
 };
+// How to used useDispatch hook in redux-thunk?
+const mapDispatch = { sendData, checkEmailAndSendData };
 
-export default Registration;
+// export default Registration;
+export default connect(null, mapDispatch)(Registration);

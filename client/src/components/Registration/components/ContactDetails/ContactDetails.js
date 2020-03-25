@@ -1,16 +1,17 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import { Formik, Field, Form } from "formik";
 import { useStyles } from "../../styles";
-import { Button, ButtonGroup, Box } from "@material-ui/core";
+import { Button, ButtonGroup, Box, CircularProgress } from "@material-ui/core";
 import {
   FormControlDate,
   FormControlText
 } from "../../../GeneralComponents/FormFields";
 import { FormTitle } from "../../../GeneralComponents/FormTitle";
-import { ContactDetailsSchema } from "../../../../utils/yupFormikValidation";
 import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
 import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
+import { ContactDetailsSchema } from "../../../../utils/yupFormikValidation";
 
 const ContactDetails = ({
   formTitle,
@@ -20,9 +21,9 @@ const ContactDetails = ({
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-
+  const { RegistrationReducer } = useSelector(state => state);
+  const { isLoading } = RegistrationReducer;
   const handleSubmitting = fields => {
-    console.log(fields);
     handleSubmitData(fields, true);
   };
   return (
@@ -124,6 +125,7 @@ const ContactDetails = ({
                   error={touched.address && Boolean(errors.address)}
                 />
                 <FormControlText
+                  maxLength={5}
                   name="zipCode"
                   id="zipCode"
                   label="Zip Code"
@@ -135,21 +137,17 @@ const ContactDetails = ({
                   error={touched.zipCode && Boolean(errors.zipCode)}
                 />
               </div>
-              <ButtonGroup classes={{ root: classes.personalDetailsBtn }}>
-                <ButtonGroup>
-                  <Box mr={2}>
-                    {props => (
-                      <Button
-                        {...props}
-                        color="secondary"
-                        variant="contained"
-                        onClick={handleReset}
-                        disabled={!dirty}
-                      >
-                        {t("Reset")}
-                      </Button>
-                    )}
-                  </Box>
+              <div className={classes.contactBtn}>
+                <div className={classes.contactBtnItem}>
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    onClick={handleReset}
+                    disabled={!dirty}
+                  >
+                    {t("Reset")}
+                  </Button>
+
                   <Button
                     variant="contained"
                     color="primary"
@@ -157,17 +155,25 @@ const ContactDetails = ({
                   >
                     {t("Back")}
                   </Button>
-                </ButtonGroup>
+                </div>
+                <div className={classes.wrapper}>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSubmit}
+                    disabled={!isValid || !dirty || isLoading}
+                  >
+                    {t("Submit")}
+                  </Button>
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleSubmit}
-                  disabled={!isValid || !dirty}
-                >
-                  {t("Submit")}
-                </Button>
-              </ButtonGroup>
+                  {isLoading && (
+                    <CircularProgress
+                      size={24}
+                      className={classes.buttonProgress}
+                    />
+                  )}
+                </div>
+              </div>
             </Form>
           );
         }}

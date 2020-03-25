@@ -5,10 +5,11 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import logger from "redux-logger";
 import thunk from "redux-thunk";
 import rootReducer from "./store/reducers";
-
+// this is config for redux-persist
 const persistConfig = {
   key: "root",
-  storage
+  storage,
+  blacklist: ["RegistrationReducer"]
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

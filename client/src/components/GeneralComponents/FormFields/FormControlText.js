@@ -1,12 +1,11 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
 import { useStyles } from "./styles";
-import { useTranslation } from "react-i18next";
 
 export const FormControlText = ({
+  maxLength = 50,
   id,
   name,
-  fullWidth = true,
   label,
   type,
   onBlur,
@@ -15,10 +14,10 @@ export const FormControlText = ({
   value,
   onChange
 }) => {
-  const { t } = useTranslation();
   const classes = useStyles();
   return (
     <TextField
+      inputProps={{ maxLength: maxLength }}
       classes={{
         root: classes.credentialFieldItem
       }}

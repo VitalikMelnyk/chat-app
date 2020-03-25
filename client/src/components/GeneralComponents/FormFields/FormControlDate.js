@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import DateFnsUtils from "@date-io/date-fns";
 import enLocale from "date-fns/locale/en-US";
 import ruLocale from "date-fns/locale/ru";
@@ -15,7 +15,7 @@ const locale = {
   ua: ruLocale
 };
 
-export const FormControlDate = ({ field, form, ...other }) => {
+export const FormControlDate = ({ field, form }) => {
   const { LocaleReducer } = useSelector(state => state);
   const { language } = LocaleReducer;
   const { t } = useTranslation();

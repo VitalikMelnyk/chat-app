@@ -17,7 +17,6 @@ export const SelectLanguage = ({ name }) => {
   const handleChangeLanguage = name => event => {
     const value = event.target.value;
     const payload = { value, name };
-    console.log(payload);
     dispatch(setLanguageApp(payload));
     i18n.changeLanguage(value);
   };

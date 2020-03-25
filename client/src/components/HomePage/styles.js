@@ -25,7 +25,7 @@ export const useStyles = makeStyles(theme => ({
   homeBtn: {
     borderRadius: "30px",
     "& .MuiButton-label": {
-      fontWeight: '700'
+      fontWeight: "700"
     }
   }
 }));

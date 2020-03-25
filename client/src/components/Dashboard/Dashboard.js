@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { SERVER_URL } from "../../shared/constants";
 import { Grid, Container, Typography, Box } from "@material-ui/core";
 import { useStyles } from "./styles";
+import { SERVER_URL } from "../../shared/constants";
 
 const Dashboard = () => {
   const classes = useStyles();
   const [users, setUsers] = useState([]);
-  console.log(users);
   const getUsers = () => {
     axios
       .get(`${SERVER_URL}/dashboard`, {
