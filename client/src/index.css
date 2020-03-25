@@ -9,7 +9,7 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
 	
-	transition: background-color 15000s;
+	transition: background-color 150000s;
 	-webkit-text-fill-color: #fff !important;
 } 
 

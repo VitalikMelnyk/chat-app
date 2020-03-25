@@ -47,6 +47,12 @@ const LoginPage = () => {
             });
             Cookies.set("RefreshToken", refreshToken);
             let token = Cookies.get("AccessToken");
+            setAuthToken(accessToken);
+            // Decode token to get user data
+            const decoded = jwt_decode(accessToken);
+            console.log(decoded);
+            dispatch(setCurrentUserInfo(decoded));
+
             if (!token) {
               console.log("Token is null");
             } else {
@@ -54,13 +60,7 @@ const LoginPage = () => {
               console.log("success");
             }
           }
-          // localStorage.setItem("accessToken", accessToken);
-          // localStorage.setItem("refreshToken", refreshToken);
-          // setAuthToken(accessToken);
-          // // Decode token to get user data
-          // const decoded = jwt_decode(accessToken);
-          // console.log(decoded);
-          // dispatch(setCurrentUserInfo(decoded));
+
         })
         .catch(err => {
           console.log(err.message);
