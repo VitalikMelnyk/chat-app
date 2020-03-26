@@ -2,10 +2,10 @@ import axios from "axios";
 import {
   ACTIVE_STEP_INCREMENT,
   ACTIVE_STEP_DECRAMENT,
-  SEND_DATA_PENDING,
-  SEND_DATA_ERROR,
-  SEND_DATA_SUCCESS,
   ACTIVE_STEP_RESET,
+  SEND_REGISTRATION_DATA_PENDING,
+  SEND_REGISTRATION_DATA_ERROR,
+  SEND_REGISTRATION_DATA_SUCCESS,
   CHECK_EXIST_EMAIL_AND_SEND_DATA_PENDING,
   CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS,
   CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR
@@ -36,27 +36,26 @@ export const handleError = actionType => ({
   type: actionType
 });
 
-export const sendData = latestData => async dispatch => {
-  dispatch(handlePending(SEND_DATA_PENDING));
+export const sendRegisterData = (latestData, route) => async dispatch => {
+  dispatch(handlePending(SEND_REGISTRATION_DATA_PENDING));
   try {
-    const response = await axios.post(`${SERVER_URL}/register`, latestData);
+    const response = await axios.post(`${SERVER_URL}/${route}`, latestData);
     console.log(response);
-    dispatch(handleSuccess(SEND_DATA_SUCCESS));
+    dispatch(handleSuccess(SEND_REGISTRATION_DATA_SUCCESS));
     const { status } = response;
     return status;
   } catch (error) {
-    dispatch(handleError(SEND_DATA_ERROR));
+    dispatch(handleError(SEND_REGISTRATION_DATA_ERROR));
     throw error;
   }
 };
 
-export const checkEmailAndSendData = email => async dispatch => {
+export const checkEmailAndSendData = (email, route) => async dispatch => {
   dispatch(handlePending(CHECK_EXIST_EMAIL_AND_SEND_DATA_PENDING));
   try {
-    const response = await axios.post(
-      `${SERVER_URL}/checkExistEmailOfUserInDB`,
-      { email: email }
-    );
+    const response = await axios.post(`${SERVER_URL}/${route}`, {
+      email: email
+    });
     console.log(response);
     dispatch(handleSuccess(CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS));
     const { status } = response;

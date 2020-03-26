@@ -1,14 +1,17 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
-import { Button, ButtonGroup, Box } from "@material-ui/core";
+import { Button, ButtonGroup, Box, CircularProgress } from "@material-ui/core";
 import { FormControlText } from "../../GeneralComponents/FormFields";
 import { LoginPageSchema } from "../../../utils/yupFormikValidation";
 import { useStyles } from "../styles";
+import { useSelector } from "react-redux";
 
 const LoginFormik = ({ sendLoginData }) => {
   const { t } = useTranslation();
   const classes = useStyles();
+  const { LoginReducer } = useSelector(state => state);
+  const { isLoading } = LoginReducer;
 
   const handleSubmitting = fields => {
     sendLoginData(fields);
@@ -60,29 +63,35 @@ const LoginFormik = ({ sendLoginData }) => {
             />
           </div>
 
-          <ButtonGroup classes={{ root: classes.loginBtn }}>
-            <Box marginRight={2}>
-              {props => (
-                <Button
-                  {...props}
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleReset}
-                  disabled={!dirty}
-                >
-                  {t("Reset")}
-                </Button>
+          <div className={classes.loginBtn}>
+            <div className={classes.loginBtnItem}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleReset}
+                disabled={!dirty}
+              >
+                {t("Reset")}
+              </Button>
+            </div>
+            <div className={classes.wrapper}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                disabled={!isValid || !dirty || isLoading}
+              >
+                {t("Submit")}
+              </Button>
+
+              {isLoading && (
+                <CircularProgress
+                  size={24}
+                  className={classes.buttonProgress}
+                />
               )}
-            </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleSubmit}
-              disabled={!isValid || !dirty}
-            >
-              {t("Submit")}
-            </Button>
-          </ButtonGroup>
+            </div>
+          </div>
         </Form>
       )}
     </Formik>

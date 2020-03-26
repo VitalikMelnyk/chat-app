@@ -5,8 +5,10 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-// const { User } = require("../models/mongoDB/remoteMongoDB");
-const { User } = require("../models/mongoDB/localMongoDB");
+// Connect to Mongo Cluster
+const { User } = require("../models/mongoDB/remoteMongoDB");
+// Connect to local MongoDB
+// const { User } = require("../models/mongoDB/localMongoDB");
 const { redisClient } = require("../models/redis");
 const {
   port,
@@ -158,7 +160,6 @@ const verifySync = async (token, tokenSecret) => {
 };
 
 const isAuth = async (req, res, next) => {
-  
   const tokenFromBrowser = req.headers.authorization;
   if (!tokenFromBrowser) {
     res.status(401).send("Unauthorized: No token provided");

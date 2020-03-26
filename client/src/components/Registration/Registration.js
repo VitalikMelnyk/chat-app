@@ -14,11 +14,12 @@ import {
   handleActiveStepNext,
   handleActiveStepBack,
   handleActiveStepReset,
-  sendData,
+  sendRegisterData,
   checkEmailAndSendData
 } from "../../store/Registration/actions";
+import { CHECK_EXIST_EMAIL, REGISTER_ROUTE } from "../../shared/constants";
 
-const Registration = ({ sendData, checkEmailAndSendData }) => {
+const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [registrationInfo, setRegistrationInfo] = useState({});
@@ -50,12 +51,12 @@ const Registration = ({ sendData, checkEmailAndSendData }) => {
     setRegistrationInfo(latestData);
     const { email } = latestData;
     try {
-      const success = await checkEmailAndSendData(email);
+      const success = await checkEmailAndSendData(email, CHECK_EXIST_EMAIL);
       if (success === 200) {
         handleNextStep();
       }
     } catch (error) {
-      if (erorr.message === "Network Error") {
+      if (error.message === "Network Error") {
         setErrorMessage(error.message + ": You need to launch backend server");
         setOpenModalMessage(true);
       } else if (error.response.status === 400) {
@@ -65,10 +66,10 @@ const Registration = ({ sendData, checkEmailAndSendData }) => {
     }
   };
 
-  const sendRegisterData = async latestData => {
+  const sendRegistrationData = async latestData => {
     setRegistrationInfo(latestData);
     try {
-      const success = await sendData(latestData);
+      const success = await sendRegisterData(latestData, REGISTER_ROUTE);
       if (success === 200) {
         setRegistrationInfo({});
         setIsSuccessRegistrationMessage(true);
@@ -82,9 +83,9 @@ const Registration = ({ sendData, checkEmailAndSendData }) => {
     }
   };
   const handleSubmit = (newData, shouldSendData = false) => {
-    const latestData = { ...registrationInfo, ...newData };;
+    const latestData = { ...registrationInfo, ...newData };
     if (shouldSendData) {
-      sendRegisterData(latestData);
+      sendRegistrationData(latestData);
     } else {
       checkExistingEmailAndSendData(latestData);
     }
@@ -184,7 +185,7 @@ const Registration = ({ sendData, checkEmailAndSendData }) => {
   );
 };
 // How to used useDispatch hook in redux-thunk?
-const mapDispatch = { sendData, checkEmailAndSendData };
+const mapDispatch = { sendRegisterData, checkEmailAndSendData };
 
 // export default Registration;
 export default connect(null, mapDispatch)(Registration);

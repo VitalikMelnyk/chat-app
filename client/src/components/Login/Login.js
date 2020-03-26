@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
+import { useSelector, useDispatch, connect } from "react-redux";
 import Cookies from "js-cookie";
 import jwt_decode from "jwt-decode";
 import AOS from "aos";
@@ -11,11 +10,11 @@ import { useStyles } from "./styles";
 import LoginFormik from "./components/LoginFormik";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { ModalMessage } from "../GeneralComponents/ModalMessage";
-import { SERVER_URL } from "../../shared/constants";
-import { setCurrentUserInfo } from "../../store/Login/actions";
+import { setCurrentUserInfo, sendLoginData } from "../../store/Login/actions";
 import { setAuthToken } from "../../shared/functions";
+import { LOGIN_ROUTE } from "../../shared/constants";
 
-const LoginPage = () => {
+const LoginPage = ({ sendLoginData }) => {
   const history = useHistory();
   const classes = useStyles();
   const { t } = useTranslation();
@@ -26,54 +25,45 @@ const LoginPage = () => {
   const [openModalMessage, setOpenModalMessage] = useState(false);
 
   const { LoginReducer } = useSelector(state => state);
-  const { userInfo, isAuthenticated } = LoginReducer;
   const dispatch = useDispatch();
-  const sendLoginData = latestData => {
+  const sendAuthData = async latestData => {
     setLoginInfo(latestData);
     console.log(latestData);
-    if (latestData) {
-      axios
-        .post(`${SERVER_URL}/login`, latestData)
-        .then(res => {
-          console.log(res);
-          console.log(res.status);
-          setLoginInfo({});
-          setIsSuccessLoginMessage(true);
-          // SET COOKIES
-          const { accessToken, refreshToken, expireDate } = res.data;
-          if (res.status === 200) {
-            Cookies.set("AccessToken", accessToken, {
-              expires: new Date(expireDate * 1000)
-            });
-            Cookies.set("RefreshToken", refreshToken);
-            let token = Cookies.get("AccessToken");
-            setAuthToken(accessToken);
-            // Decode token to get user data
-            const decoded = jwt_decode(accessToken);
-            console.log(decoded);
-            dispatch(setCurrentUserInfo(decoded));
-
-            if (!token) {
-              console.log("Token is null");
-            } else {
-              history.push("dashboard");
-              console.log("success");
-            }
-          }
-
-        })
-        .catch(err => {
-          console.log(err.message);
-          if (err.message === "Network Error") {
-            setErrorMessage(
-              err.message + ": You need to launch backend server"
-            );
-            setOpenModalMessage(true);
-          } else if (err.response.status === 400) {
-            setErrorMessage(err.response.data.message);
-            setIsFailureLoginMessage(true);
-          }
+    try {
+      const success = await sendLoginData(latestData, LOGIN_ROUTE);
+      console.log(success);
+      if (success.status === 200) {
+        setLoginInfo({});
+        setIsSuccessLoginMessage(true);
+        // SET COOKIES
+        const { accessToken, refreshToken, expireDate } = success.data;
+        Cookies.set("AccessToken", accessToken, {
+          expires: new Date(expireDate * 1000)
         });
+        Cookies.set("RefreshToken", refreshToken);
+        let token = Cookies.get("AccessToken");
+        setAuthToken(accessToken);
+        // Decode token to get user data
+        const decoded = jwt_decode(accessToken);
+        console.log(decoded);
+        dispatch(setCurrentUserInfo(decoded));
+        if (!token) {
+          console.log("Token is null");
+        } else {
+          history.push("dashboard");
+          console.log("success");
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+      console.log(error);
+      if (error.message === "Network Error") {
+        setErrorMessage(error.message + ": You need to launch backend server");
+        setOpenModalMessage(true);
+      } else if (error.response.status === 400) {
+        setErrorMessage(error.response.data.message);
+        setIsFailureLoginMessage(true);
+      }
     }
   };
 
@@ -102,7 +92,7 @@ const LoginPage = () => {
             </Typography>
           </div>
           <div className={classes.signInMain}>
-            <LoginFormik sendLoginData={sendLoginData} />
+            <LoginFormik sendLoginData={sendAuthData} />
           </div>
         </Grid>
       </Grid>
@@ -134,5 +124,8 @@ const LoginPage = () => {
     </>
   );
 };
+// How to used useDispatch hook in redux-thunk?
+const mapDispatch = { sendLoginData };
 
-export default LoginPage;
+// export default Registration;
+export default connect(null, mapDispatch)(LoginPage);
