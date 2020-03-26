@@ -187,6 +187,7 @@ const isAuth = async (req, res, next) => {
     });
 
     if (tokenFromBrowser === tokenFromRedis.accessToken) {
+      req.user = user;
       next();
     } else {
       res.status(401).send("Tokens aren't match ");
@@ -200,6 +201,10 @@ app.get("/dashboard", isAuth, async (req, res) => {
   });
 
   return res.status(200).send(users);
+});
+
+app.get("/getCurrentUser", isAuth, async (req, res) => {
+  return res.status(200).send(req.user);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

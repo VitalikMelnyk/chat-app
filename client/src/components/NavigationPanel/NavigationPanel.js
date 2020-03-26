@@ -1,33 +1,51 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import Cookies from "js-cookie";
-import { AppBar, Toolbar, Typography, Button } from "@material-ui/core";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Menu,
+  MenuItem
+} from "@material-ui/core";
 import FormControlSwitch from "../GeneralComponents/SwitchThemeToggle";
 import { SelectLanguage } from "../GeneralComponents/SelectLanguage";
 import { setThemeType } from "../../store/Theme/actions";
 import { useStyles } from "./styles";
 import { setAuthToken } from "../../shared/functions";
-import { removeCurrentUserInfo } from "../../store/Login/actions";
+import { setIsAuthenticated } from "../../store/Login/actions";
+import ProfileDialog from "./components/ProfileDialog";
 
 const NavigationPanel = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const dispatch = useDispatch();
   const classes = useStyles();
   const { t } = useTranslation();
+  const [isProfileDialog, setIsProfileDialog] = useState(false);
   const { ThemeReducer, LoginReducer } = useSelector(state => state);
   const { themeType, checkedSwitch } = ThemeReducer;
-  const { isAuthenticated } = LoginReducer;
-  const dispatch = useDispatch();
+  const { isAuthenticated, currentUserInfo } = LoginReducer;
   const toggleTheme = () => {
     const newThemeType = themeType === "light" ? "dark" : "light";
     dispatch(setThemeType({ newThemeType, checkedSwitch }));
   };
-
+  const openProfileDialog = () => {
+    setIsProfileDialog(true);
+  };
+  const closeProfileDialog = () => {
+    setIsProfileDialog(false);
+  };
   const logoutUser = () => {
-    Cookies.remove("AccessToken");
-    Cookies.remove("RefreshToken");
     setAuthToken(false);
-    dispatch(removeCurrentUserInfo({}));
+    dispatch(setIsAuthenticated(false));
   };
 
   return (
@@ -64,15 +82,48 @@ const NavigationPanel = () => {
           )}
 
           {isAuthenticated ? (
-            <Button
-              color="secondary"
-              component={RouterLink}
-              to="/"
-              // activeClassName={classes.active}
-              onClick={logoutUser}
-            >
-              {t("Log Out")}
-            </Button>
+            <>
+              <Button
+                // activeClassName={classes.active}
+                color="secondary"
+                aria-controls="simple-menu"
+                aria-haspopup="true"
+                onClick={handleClick}
+              >
+                Open Account
+              </Button>
+              <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+              >
+                <MenuItem>
+                  <Button color="secondary" onClick={openProfileDialog}>
+                    Profile
+                  </Button>
+                  {isProfileDialog && (
+                    <ProfileDialog
+                      currentUserInfo={currentUserInfo}
+                      open={isProfileDialog}
+                      handleClose={closeProfileDialog}
+                    />
+                  )}
+                </MenuItem>
+                <MenuItem>
+                  <Button
+                    color="secondary"
+                    component={RouterLink}
+                    to="/"
+                    // activeClassName={classes.active}
+                    onClick={logoutUser}
+                  >
+                    {t("Log Out")}
+                  </Button>
+                </MenuItem>
+              </Menu>
+            </>
           ) : (
             <>
               <Button

@@ -1,11 +1,11 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
-import { Button, ButtonGroup, Box, CircularProgress } from "@material-ui/core";
+import { useSelector } from "react-redux";
+import { Button, CircularProgress } from "@material-ui/core";
 import { FormControlText } from "../../GeneralComponents/FormFields";
 import { LoginPageSchema } from "../../../utils/yupFormikValidation";
 import { useStyles } from "../styles";
-import { useSelector } from "react-redux";
 
 const LoginFormik = ({ sendLoginData }) => {
   const { t } = useTranslation();
