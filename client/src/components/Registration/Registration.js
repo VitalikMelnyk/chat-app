@@ -17,7 +17,6 @@ import {
   sendRegisterData,
   checkEmailAndSendData
 } from "../../store/Registration/actions";
-import { CHECK_EXIST_EMAIL, REGISTER_ROUTE } from "../../shared/constants";
 
 const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
   const classes = useStyles();
@@ -51,8 +50,8 @@ const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
     setRegistrationInfo(latestData);
     const { email } = latestData;
     try {
-      const success = await checkEmailAndSendData(email, CHECK_EXIST_EMAIL);
-      if (success === 200) {
+      const responseCheckEmail = await checkEmailAndSendData(email);
+      if (responseCheckEmail === 200) {
         handleNextStep();
       }
     } catch (error) {
@@ -69,8 +68,8 @@ const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
   const sendRegistrationData = async latestData => {
     setRegistrationInfo(latestData);
     try {
-      const success = await sendRegisterData(latestData, REGISTER_ROUTE);
-      if (success === 200) {
+      const responseRegistration = await sendRegisterData(latestData);
+      if (responseRegistration === 200) {
         setRegistrationInfo({});
         setIsSuccessRegistrationMessage(true);
         handleNextStep();

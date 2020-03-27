@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   ACTIVE_STEP_INCREMENT,
   ACTIVE_STEP_DECRAMENT,
@@ -10,13 +9,17 @@ import {
   CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS,
   CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR
 } from "../actionTypes";
-import { SERVER_URL } from "../../shared/constants";
+import {
+  requestRegistration,
+  requestCheckEmail,
 
-export const handleActiveStepNext = payload => ({
+} from "../../api/services/registration";
+
+export const handleActiveStepNext = () => ({
   type: ACTIVE_STEP_INCREMENT
 });
 
-export const handleActiveStepBack = payload => ({
+export const handleActiveStepBack = () => ({
   type: ACTIVE_STEP_DECRAMENT
 });
 
@@ -24,44 +27,51 @@ export const handleActiveStepReset = payload => ({
   type: ACTIVE_STEP_RESET,
   payload
 });
-export const handlePending = actionType => ({
-  type: actionType
+export const handleRegistrationPending = () => ({
+  type: SEND_REGISTRATION_DATA_PENDING
 });
 
-export const handleSuccess = actionType => ({
-  type: actionType
+export const handleRegistrationSuccess = () => ({
+  type: SEND_REGISTRATION_DATA_SUCCESS
 });
 
-export const handleError = actionType => ({
-  type: actionType
+export const handleRegistrationError = () => ({
+  type: SEND_REGISTRATION_DATA_ERROR
 });
 
-export const sendRegisterData = (latestData, route) => async dispatch => {
-  dispatch(handlePending(SEND_REGISTRATION_DATA_PENDING));
+export const checkEmaiilPending = () => ({
+  type: CHECK_EXIST_EMAIL_AND_SEND_DATA_PENDING
+});
+export const checkEmaiilSuccess = () => ({
+  type: CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS
+});
+
+export const checkEmaiilError = () => ({
+  type: CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR
+});
+
+export const checkEmailAndSendData = email => async dispatch => {
+  dispatch(checkEmaiilPending());
   try {
-    const response = await axios.post(`${SERVER_URL}/${route}`, latestData);
-    console.log(response);
-    dispatch(handleSuccess(SEND_REGISTRATION_DATA_SUCCESS));
+    const response = await requestCheckEmail({ email });
+    dispatch(checkEmaiilSuccess());
     const { status } = response;
     return status;
   } catch (error) {
-    dispatch(handleError(SEND_REGISTRATION_DATA_ERROR));
+    dispatch(checkEmaiilError());
     throw error;
   }
 };
 
-export const checkEmailAndSendData = (email, route) => async dispatch => {
-  dispatch(handlePending(CHECK_EXIST_EMAIL_AND_SEND_DATA_PENDING));
+export const sendRegisterData = latestData => async dispatch => {
+  dispatch(handleRegistrationPending());
   try {
-    const response = await axios.post(`${SERVER_URL}/${route}`, {
-      email: email
-    });
-    console.log(response);
-    dispatch(handleSuccess(CHECK_EXIST_EMAIL_AND_SEND_DATA_SUCCESS));
+    const response = await requestRegistration(latestData);
+    dispatch(handleRegistrationSuccess());
     const { status } = response;
     return status;
   } catch (error) {
-    dispatch(handleError(CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR));
+    dispatch(handleRegistrationError());
     throw error;
   }
 };

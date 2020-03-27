@@ -87,7 +87,7 @@ app.post("/register", validateRegistration(), async (req, res, next) => {
   }
 });
 
-app.post("/checkExistEmailOfUserInDB", async (req, res, next) => {
+app.post("/checkExistEmailOfUser", async (req, res, next) => {
   const { email } = req.body;
   try {
     let checkEmailFromDB = await User.findOne({ email });
