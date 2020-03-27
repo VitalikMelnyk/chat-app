@@ -1,4 +1,3 @@
-import axios from "axios";
 import {
   SET_IS_AUTHENTICATED,
   SEND_LOGIN_DATA_PENDING,
@@ -8,8 +7,9 @@ import {
   CURRENT_USER_INFO_ERROR,
   CURRENT_USER_INFO_SUCCESS
 } from "../actionTypes";
-import { SERVER_URL } from "../../shared/constants";
+
 import { login, logout } from "../../api/services/authentication";
+import { getCurrentUser } from "../../api/services/users";
 
 export const setCurrentUserPending = () => ({
   type: CURRENT_USER_INFO_PENDING
@@ -38,11 +38,10 @@ export const handleLoginError = () => ({
   type: SEND_LOGIN_DATA_ERROR
 });
 
-
-export const getCurrentUserInfo = route => async dispatch => {
+export const getCurrentUserInfo = () => async dispatch => {
   dispatch(setCurrentUserPending());
   try {
-    const response = await axios.get(`${SERVER_URL}/${route}`);
+    const response = await getCurrentUser();
     dispatch(setCurrentUserSuccess(response.data));
   } catch (error) {
     dispatch(setCurrentUserError());

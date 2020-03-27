@@ -2,20 +2,18 @@ import React, { useEffect } from "react";
 import { useSelector, connect } from "react-redux";
 import { Grid, Container, Typography, Box } from "@material-ui/core";
 import { useStyles } from "./styles";
-import { GET_USERS } from "../../shared/constants";
-import { getUsers } from "../../store/Dashboard/actions";
+import { getAllUsers } from "../../store/Dashboard/actions";
 
-const Dashboard = ({ getUsers }) => {
+const Dashboard = ({ getAllUsers }) => {
   const classes = useStyles();
   const { DashboardReducer } = useSelector(state => state);
   const { users } = DashboardReducer;
-
   useEffect(() => {
-    const getUsersOfApp = async () => {
-      await getUsers()
-    }
-    getUsersOfApp();
-  }, [getUsers]);
+    const getUsers = async () => {
+      await getAllUsers();
+    };
+    getUsers();
+  }, [getAllUsers]);
 
   return (
     <Box marginTop={10}>
@@ -45,6 +43,6 @@ const Dashboard = ({ getUsers }) => {
   );
 };
 // How to used useDispatch hook in redux-thunk?
-const mapDispatch = { getUsers };
+const mapDispatch = { getAllUsers };
 
 export default connect(null, mapDispatch)(Dashboard);

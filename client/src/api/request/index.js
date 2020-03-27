@@ -5,7 +5,7 @@ import { SERVER_URL } from "../../shared/constants";
 const getAuthHeader = () => {
   const { accessToken } = getAuthenticationCookies();
   if (accessToken) {
-    return `Bearer ${accessToken}`;
+    return `${accessToken}`;
   }
 };
 

@@ -34,7 +34,7 @@ const LoginPage = ({ doLogin, setIsAuthenticated, getCurrentUserInfo }) => {
         setIsAuthenticated(true);
         history.push("dashboard");
         // Get current user request
-        // await getCurrentUserInfo(GET_CURRENT_USER);
+        await getCurrentUserInfo();
       }
     } catch (error) {
       console.log(error);

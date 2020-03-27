@@ -195,7 +195,7 @@ const isAuth = async (req, res, next) => {
   }
 };
 
-app.get("/dashboard", isAuth, async (req, res) => {
+app.get("/users", isAuth, async (req, res) => {
   const users = await User.find({}, err => {
     if (err) return console.log(err);
   });
