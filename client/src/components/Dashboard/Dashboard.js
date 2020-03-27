@@ -1,32 +1,21 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import Cookies from "js-cookie";
+import React, { useEffect } from "react";
+import { useSelector, connect } from "react-redux";
 import { Grid, Container, Typography, Box } from "@material-ui/core";
 import { useStyles } from "./styles";
-import { SERVER_URL } from "../../shared/constants";
+import { GET_USERS } from "../../shared/constants";
+import { getUsers } from "../../store/Dashboard/actions";
 
-const Dashboard = () => {
+const Dashboard = ({ getUsers }) => {
   const classes = useStyles();
-  const [users, setUsers] = useState([]);
-  const getUsers = () => {
-    axios
-      .get(`${SERVER_URL}/dashboard`, {
-        headers: {
-          Authorization: `${Cookies.get("AccessToken")}`
-        }
-      })
-      .then(res => {
-        const users = res.data;
-        setUsers(users);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+  const { DashboardReducer } = useSelector(state => state);
+  const { users } = DashboardReducer;
 
   useEffect(() => {
-    getUsers();
-  }, []);
+    const getUsersOfApp = async () => {
+      await getUsers()
+    }
+    getUsersOfApp();
+  }, [getUsers]);
 
   return (
     <Box marginTop={10}>
@@ -55,5 +44,7 @@ const Dashboard = () => {
     </Box>
   );
 };
+// How to used useDispatch hook in redux-thunk?
+const mapDispatch = { getUsers };
 
-export default Dashboard;
+export default connect(null, mapDispatch)(Dashboard);

@@ -9,6 +9,7 @@ import {
   CURRENT_USER_INFO_SUCCESS
 } from "../actionTypes";
 import { SERVER_URL } from "../../shared/constants";
+import { login, logout } from "../../api/services/authentication";
 
 export const setCurrentUserPending = () => ({
   type: CURRENT_USER_INFO_PENDING
@@ -37,19 +38,6 @@ export const handleLoginError = () => ({
   type: SEND_LOGIN_DATA_ERROR
 });
 
-export const sendLoginData = (latestData, route) => async dispatch => {
-  dispatch(handleLoginPending());
-  try {
-    const response = await axios.post(`${SERVER_URL}/${route}`, latestData);
-    console.log(response);
-    dispatch(handleLoginSuccess());
-
-    return response;
-  } catch (error) {
-    dispatch(handleLoginError());
-    throw error;
-  }
-};
 
 export const getCurrentUserInfo = route => async dispatch => {
   dispatch(setCurrentUserPending());
@@ -61,3 +49,17 @@ export const getCurrentUserInfo = route => async dispatch => {
     throw error;
   }
 };
+
+export const doLogin = fields => async dispatch => {
+  dispatch(handleLoginPending());
+  try {
+    const response = await login(fields);
+    dispatch(handleLoginSuccess());
+    return response;
+  } catch (error) {
+    dispatch(handleLoginError());
+    throw error;
+  }
+};
+
+export const doLogout = () => dispatch => logout();

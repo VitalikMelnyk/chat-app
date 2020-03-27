@@ -9,19 +9,12 @@ import LoginFormik from "./components/LoginFormik";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { ModalMessage } from "../GeneralComponents/ModalMessage";
 import {
-  sendLoginData,
   setIsAuthenticated,
-  getCurrentUserInfo
+  getCurrentUserInfo,
+  doLogin
 } from "../../store/Login/actions";
-import { setAuthToken, setTokenToCookies } from "../../shared/functions";
-import { LOGIN_ROUTE, GET_CURRENT_USER } from "../../shared/constants";
 
-
-const LoginPage = ({
-  sendLoginData,
-  setIsAuthenticated,
-  getCurrentUserInfo
-}) => {
+const LoginPage = ({ doLogin, setIsAuthenticated, getCurrentUserInfo }) => {
   const history = useHistory();
   const classes = useStyles();
   const { t } = useTranslation();
@@ -31,25 +24,19 @@ const LoginPage = ({
   const [isFailureLoginMessage, setIsFailureLoginMessage] = useState(false);
   const [openModalMessage, setOpenModalMessage] = useState(false);
 
-  const sendAuthData = async latestData => {
-    setLoginInfo(latestData);
-    console.log(latestData);
+  const sendAuthData = async fields => {
+    setLoginInfo(fields);
     try {
-      const loginResponse = await sendLoginData(latestData, LOGIN_ROUTE);
-      console.log(loginResponse);
+      const loginResponse = await doLogin(fields);
       if (loginResponse.status === 200) {
-        const { accessToken } = loginResponse.data;
         setLoginInfo({});
         setIsSuccessLoginMessage(true);
-        setTokenToCookies(loginResponse.data);
-        setAuthToken(accessToken);
         setIsAuthenticated(true);
-        await getCurrentUserInfo(GET_CURRENT_USER);
-
         history.push("dashboard");
+        // Get current user request
+        // await getCurrentUserInfo(GET_CURRENT_USER);
       }
     } catch (error) {
-      console.log(error.message);
       console.log(error);
       if (error.message === "Network Error") {
         setErrorMessage(error.message + ": You need to launch backend server");
@@ -119,7 +106,11 @@ const LoginPage = ({
   );
 };
 // How to used useDispatch hook in redux-thunk?
-const mapDispatch = { sendLoginData, setIsAuthenticated, getCurrentUserInfo };
+const mapDispatch = {
+  setIsAuthenticated,
+  getCurrentUserInfo,
+  doLogin
+};
 
 // export default Registration;
 export default connect(null, mapDispatch)(LoginPage);

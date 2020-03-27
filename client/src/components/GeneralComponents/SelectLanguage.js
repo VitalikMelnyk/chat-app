@@ -11,7 +11,6 @@ export const SelectLanguage = ({ name }) => {
   const { t, i18n } = useTranslation();
   const { LocaleReducer } = useSelector(state => state);
   const { language } = LocaleReducer;
-  console.log(language);
   const dispatch = useDispatch();
 
   const handleChangeLanguage = name => event => {
