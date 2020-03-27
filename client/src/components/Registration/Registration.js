@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch, connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import AOS from "aos";
 import { Grid, Typography } from "@material-ui/core";
@@ -18,7 +18,7 @@ import {
   checkEmailAndSendData
 } from "../../store/Registration/actions";
 
-const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
+const Registration = () => {
   const classes = useStyles();
   const { t } = useTranslation();
   const [registrationInfo, setRegistrationInfo] = useState({});
@@ -50,7 +50,7 @@ const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
     setRegistrationInfo(latestData);
     const { email } = latestData;
     try {
-      const responseCheckEmail = await checkEmailAndSendData(email);
+      const responseCheckEmail = await dispatch(checkEmailAndSendData(email));
       if (responseCheckEmail === 200) {
         handleNextStep();
       }
@@ -68,7 +68,7 @@ const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
   const sendRegistrationData = async latestData => {
     setRegistrationInfo(latestData);
     try {
-      const responseRegistration = await sendRegisterData(latestData);
+      const responseRegistration = await dispatch(sendRegisterData(latestData));
       if (responseRegistration === 200) {
         setRegistrationInfo({});
         setIsSuccessRegistrationMessage(true);
@@ -183,8 +183,6 @@ const Registration = ({ sendRegisterData, checkEmailAndSendData }) => {
     </div>
   );
 };
-// How to used useDispatch hook in redux-thunk?
-const mapDispatch = { sendRegisterData, checkEmailAndSendData };
 
 // export default Registration;
-export default connect(null, mapDispatch)(Registration);
+export default Registration;

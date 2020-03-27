@@ -15,7 +15,7 @@ import FormControlSwitch from "../GeneralComponents/SwitchThemeToggle";
 import { SelectLanguage } from "../GeneralComponents/SelectLanguage";
 import { setThemeType } from "../../store/Theme/actions";
 import { useStyles } from "./styles";
-import { setIsAuthenticated } from "../../store/Login/actions";
+import { setIsAuthenticated, doLogout } from "../../store/Login/actions";
 import ProfileDialog from "./components/ProfileDialog";
 
 const NavigationPanel = () => {
@@ -40,10 +40,10 @@ const NavigationPanel = () => {
   };
   const logoutUser = () => {
     dispatch(setIsAuthenticated(false));
+    dispatch(doLogout());
   };
 
   const handleClick = event => {
-    console.log(4134314134, event.currentTarget);
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {

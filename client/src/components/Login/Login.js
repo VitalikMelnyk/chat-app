@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 import AOS from "aos";
 import { useTranslation } from "react-i18next";
 import { Grid, Typography } from "@material-ui/core";
@@ -14,9 +14,10 @@ import {
   doLogin
 } from "../../store/Login/actions";
 
-const LoginPage = ({ doLogin, setIsAuthenticated, getCurrentUserInfo }) => {
+const LoginPage = () => {
   const history = useHistory();
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { t } = useTranslation();
   const [loginInfo, setLoginInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
@@ -27,14 +28,14 @@ const LoginPage = ({ doLogin, setIsAuthenticated, getCurrentUserInfo }) => {
   const sendAuthData = async fields => {
     setLoginInfo(fields);
     try {
-      const loginResponse = await doLogin(fields);
+      const loginResponse = await dispatch(doLogin(fields));
       if (loginResponse.status === 200) {
         setLoginInfo({});
         setIsSuccessLoginMessage(true);
-        setIsAuthenticated(true);
+        dispatch(setIsAuthenticated(true));
         history.push("dashboard");
         // Get current user request
-        await getCurrentUserInfo();
+        await dispatch(getCurrentUserInfo());
       }
     } catch (error) {
       console.log(error);
@@ -105,12 +106,6 @@ const LoginPage = ({ doLogin, setIsAuthenticated, getCurrentUserInfo }) => {
     </>
   );
 };
-// How to used useDispatch hook in redux-thunk?
-const mapDispatch = {
-  setIsAuthenticated,
-  getCurrentUserInfo,
-  doLogin
-};
 
 // export default Registration;
-export default connect(null, mapDispatch)(LoginPage);
+export default LoginPage;
