@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 import {
   AppBar,
   Toolbar,
@@ -19,16 +20,11 @@ import { setIsAuthenticated } from "../../store/Login/actions";
 import ProfileDialog from "./components/ProfileDialog";
 
 const NavigationPanel = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const token = Cookies.get("AccessToken");
   const dispatch = useDispatch();
   const classes = useStyles();
   const { t } = useTranslation();
+  const [anchorEl, setAnchorEl] = useState(null);
   const [isProfileDialog, setIsProfileDialog] = useState(false);
   const { ThemeReducer, LoginReducer } = useSelector(state => state);
   const { themeType, checkedSwitch } = ThemeReducer;
@@ -46,6 +42,14 @@ const NavigationPanel = () => {
   const logoutUser = () => {
     setAuthToken(false);
     dispatch(setIsAuthenticated(false));
+  };
+
+  const handleClick = event => {
+    console.log(4134314134, event.currentTarget);
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -70,7 +74,7 @@ const NavigationPanel = () => {
           >
             {t("Home")}
           </Button>
-          {isAuthenticated && (
+          {isAuthenticated && token && (
             <Button
               color="secondary"
               component={RouterLink}
@@ -81,7 +85,7 @@ const NavigationPanel = () => {
             </Button>
           )}
 
-          {isAuthenticated ? (
+          {isAuthenticated && token ? (
             <>
               <Button
                 // activeClassName={classes.active}
@@ -96,6 +100,9 @@ const NavigationPanel = () => {
                 id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "center" }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
@@ -116,7 +123,6 @@ const NavigationPanel = () => {
                     color="secondary"
                     component={RouterLink}
                     to="/"
-                    // activeClassName={classes.active}
                     onClick={logoutUser}
                   >
                     {t("Log Out")}
