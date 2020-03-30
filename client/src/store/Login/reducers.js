@@ -2,10 +2,10 @@ import {
   SEND_LOGIN_DATA_PENDING,
   SEND_LOGIN_DATA_SUCCESS,
   SEND_LOGIN_DATA_ERROR,
-  SET_IS_AUTHENTICATED,
   CURRENT_USER_INFO_SUCCESS,
   CURRENT_USER_INFO_ERROR,
-  CURRENT_USER_INFO_PENDING
+  CURRENT_USER_INFO_PENDING,
+  LOGOUT_SUCCESS
 } from "../actionTypes";
 
 const initialState = {
@@ -16,8 +16,6 @@ const initialState = {
 
 const LoginReducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case SET_IS_AUTHENTICATED:
-      return { ...state, isAuthenticated: payload };
     case SEND_LOGIN_DATA_PENDING:
       return { ...state, isLoading: true };
     case SEND_LOGIN_DATA_SUCCESS:
@@ -30,6 +28,8 @@ const LoginReducer = (state = initialState, { type, payload }) => {
       return { ...state, currentUserInfo: payload };
     case CURRENT_USER_INFO_ERROR:
       return { ...state };
+    case LOGOUT_SUCCESS:
+      return { initialState };
     default:
       return state;
   }

@@ -1,11 +1,11 @@
 import {
-  SET_IS_AUTHENTICATED,
   SEND_LOGIN_DATA_PENDING,
   SEND_LOGIN_DATA_SUCCESS,
   SEND_LOGIN_DATA_ERROR,
   CURRENT_USER_INFO_PENDING,
   CURRENT_USER_INFO_ERROR,
-  CURRENT_USER_INFO_SUCCESS
+  CURRENT_USER_INFO_SUCCESS,
+  LOGOUT_SUCCESS
 } from "../actionTypes";
 
 import { login, logout } from "../../api/services/authentication";
@@ -23,11 +23,6 @@ export const setCurrentUserError = () => ({
   type: CURRENT_USER_INFO_ERROR
 });
 
-export const setIsAuthenticated = payload => ({
-  type: SET_IS_AUTHENTICATED,
-  payload
-});
-
 export const handleLoginPending = () => ({
   type: SEND_LOGIN_DATA_PENDING
 });
@@ -36,6 +31,10 @@ export const handleLoginSuccess = () => ({
 });
 export const handleLoginError = () => ({
   type: SEND_LOGIN_DATA_ERROR
+});
+
+export const logoutSuccess = () => ({
+  type: LOGOUT_SUCCESS
 });
 
 export const getCurrentUserInfo = () => async dispatch => {
@@ -61,4 +60,10 @@ export const doLogin = fields => async dispatch => {
   }
 };
 
-export const doLogout = () => dispatch => logout();
+export const doLogout = () => dispatch => {
+  // clear authenticated cookies
+  logout();
+
+  // logged out
+  dispatch(logoutSuccess());
+};

@@ -32,7 +32,6 @@ const LoginPage = () => {
       if (loginResponse.status === 200) {
         setLoginInfo({});
         setIsSuccessLoginMessage(true);
-        dispatch(setIsAuthenticated(true));
         history.push("dashboard");
         // Get current user request
         await dispatch(getCurrentUserInfo());
@@ -107,5 +106,5 @@ const LoginPage = () => {
   );
 };
 
-// export default Registration;
+
 export default LoginPage;
