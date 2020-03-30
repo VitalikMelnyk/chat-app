@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
@@ -20,9 +19,16 @@ const { ErrorHandler, handleError } = require("../helpers/error");
 const {
   validateRegistration
 } = require("../helpers/validator/validateRegistration");
-const { validationResult, check } = require("express-validator");
+const { validationResult } = require("express-validator");
 const app = express();
+const server = app.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+);
+// SOCKET CONFIG
+const io = require("socket.io")(server);
+
 app.use(cors());
+
 // support parsing of application/json type post data
 app.use(bodyParser.json());
 app.use(cookieParser());
@@ -207,4 +213,11 @@ app.get("/getCurrentUser", isAuth, async (req, res) => {
   return res.status(200).send(req.user);
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+io.on("connection", socket => {
+  const { id } = socket.client;
+  console.log(`User connected: ${id}`);
+  socket.on("chat message", msg => {
+    console.log(` ${msg}`);
+    
+  });
+});

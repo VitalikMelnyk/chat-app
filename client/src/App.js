@@ -16,6 +16,7 @@ import Registration from "./components/Registration";
 import { createTheme } from "./theme/config";
 import i18n from "./shared/i18n";
 import LoginPage from "./components/Login/Login";
+import Chat from "./components/Chat";
 
 const App = () => {
   const { ThemeReducer } = useSelector(state => state);
@@ -42,6 +43,7 @@ const App = () => {
                 <LoginPage />
               </Route>
               <PrivateRoute path="/dashboard" component={Dashboard} />
+              <PrivateRoute path="/chat" component={Chat} />
               <Redirect from="/" to="/home" />
             </Switch>
           </MuiThemeProvider>

@@ -81,6 +81,16 @@ const NavigationPanel = () => {
               {t("Dashboard")}
             </Button>
           )}
+          {isAuthenticated && token && (
+            <Button
+              color="secondary"
+              component={RouterLink}
+              to="/chat"
+              activeClassName={classes.active}
+            >
+              {t("Chat")}
+            </Button>
+          )}
 
           {isAuthenticated && token ? (
             <>

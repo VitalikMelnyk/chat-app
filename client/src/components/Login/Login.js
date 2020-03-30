@@ -8,11 +8,7 @@ import { useStyles } from "./styles";
 import LoginFormik from "./components/LoginFormik";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { ModalMessage } from "../GeneralComponents/ModalMessage";
-import {
-  setIsAuthenticated,
-  getCurrentUserInfo,
-  doLogin
-} from "../../store/Login/actions";
+import { getCurrentUserInfo, doLogin } from "../../store/Login/actions";
 
 const LoginPage = () => {
   const history = useHistory();
@@ -32,9 +28,9 @@ const LoginPage = () => {
       if (loginResponse.status === 200) {
         setLoginInfo({});
         setIsSuccessLoginMessage(true);
-        history.push("dashboard");
         // Get current user request
         await dispatch(getCurrentUserInfo());
+        history.push("dashboard");
       }
     } catch (error) {
       console.log(error);
@@ -105,6 +101,5 @@ const LoginPage = () => {
     </>
   );
 };
-
 
 export default LoginPage;
