@@ -44,3 +44,4 @@ export const deleteCurrentUser = ({ _id }) => async dispatch => {
     throw error;
   }
 };
+
