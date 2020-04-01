@@ -31,3 +31,6 @@ export const request = (path, { headers, isAuthenticated, ...other } = {}) => {
 export const get = (path, opts) => request(path, { method: "get", ...opts });
 
 export const post = (path, opts) => request(path, { method: "post", ...opts });
+
+export const deleteRequest = (path, opts) =>
+  request(path, { method: "delete", ...opts });

@@ -14,7 +14,8 @@ const {
   checkEmail,
   login,
   users,
-  getCurrentUser
+  getCurrentUser,
+  deleteUser
 } = require("../routes");
 app.use(cors());
 // support parsing of application/json type post data
@@ -28,6 +29,7 @@ app.use(checkEmail);
 app.use(login);
 app.use(users);
 app.use(getCurrentUser);
+app.use(deleteUser);
 
 io.on("connection", socket => {
   const { id } = socket.client;

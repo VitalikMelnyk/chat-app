@@ -29,7 +29,7 @@ const LoginReducer = (state = initialState, { type, payload }) => {
     case CURRENT_USER_INFO_ERROR:
       return { ...state };
     case LOGOUT_SUCCESS:
-      return { initialState };
+      return initialState;
     default:
       return state;
   }

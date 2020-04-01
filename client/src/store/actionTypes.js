@@ -33,3 +33,6 @@ export const CURRENT_USER_INFO_ERROR = "CURRENT_USER_INFO_ERROR";
 
 // logout
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
+
+// delete user
+export const DELETE_USER_SUCCESS = "DELETE_USER_SUCCESS";
