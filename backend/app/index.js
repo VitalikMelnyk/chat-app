@@ -34,7 +34,16 @@ app.use(deleteUser);
 io.on("connection", socket => {
   const { id } = socket.client;
   console.log(`User connected: ${id}`);
-  socket.on("chat message", msg => {
-    console.log(` ${msg}`);
-  });
+
+  try {
+    socket.on("send message", async ({ message, userName }) => {
+      console.log(`${userName}: ${message}`);
+
+      socket.emit("receive message", message);
+
+      socket.on("disconnect", () => {
+        io.emit("user disconnected");
+      });
+    });
+  } catch (error) {}
 });

@@ -28,13 +28,11 @@ const UsersTable = ({ users }) => {
         onRowDelete: oldData =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              {
-                console.log(oldData);
-                if (oldData._id === currentUserInfo._id) {
-                  alert("You can't delete admin");
-                } else {
-                  dispatch(deleteCurrentUser(oldData));
-                }
+              console.log(oldData);
+              if (oldData._id === currentUserInfo._id) {
+                alert("You can't delete admin");
+              } else {
+                dispatch(deleteCurrentUser(oldData));
               }
               resolve();
             }, 1000);

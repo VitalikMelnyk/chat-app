@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
 export const useStyles = makeStyles(theme => ({
   root: {
-    minHeight: "100vh",
+    minHeight: "90vh",
     background: theme.palette.background.default,
     fontWeight: "700",
     justifyContent: "center",
@@ -30,7 +30,7 @@ export const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
-    margin: "10px",
+    margin: "0 10px",
     padding: "30px 10px 30px",
     borderRadius: "20px",
     // minHeight: "450px",

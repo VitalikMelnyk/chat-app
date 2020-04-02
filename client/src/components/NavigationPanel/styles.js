@@ -10,9 +10,12 @@ export const useStyles = makeStyles(theme => ({
   appBar: {
     background: theme.palette.background.default,
     width: "100%",
-    position: "absolute",
+    position: "static",
+    display: "flex",
+    justifyContent: "center",
     top: 0,
-    left: 0
+    left: 0,
+    minHeight: "10vh"
   },
   active: {
     color: "red"
