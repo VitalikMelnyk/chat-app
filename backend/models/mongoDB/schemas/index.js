@@ -1,3 +1,4 @@
 const { userSchema } = require("./user");
 const { messageSchema } = require("./message");
-module.exports = { userSchema, messageSchema };
+const { roomSchema } = require("./room");
+module.exports = { userSchema, messageSchema, roomSchema };

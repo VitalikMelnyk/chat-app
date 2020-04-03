@@ -3,11 +3,11 @@ mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
-  userName: {
+  userId: {
     type: String,
     required: true
   },
-  message: {
+  messages: {
     type: String,
     required: true
   },

@@ -37,11 +37,11 @@ router.post("/login", async (req, res, next) => {
     }
     // Generate token to client
     if (userEmailFromDB && verifyPassword) {
-      const accessToken = await generateToken(userId, accessTokenSecret, "1h");
+      const accessToken = await generateToken(userId, accessTokenSecret, "1d");
       const refreshToken = await generateToken(
         userId,
         refreshTokenSecret,
-        "1d"
+        "7d"
       );
       const expireDate = await decodeTokenExpiresIn(accessToken);
       const options = { accessToken, refreshToken, expireDate };

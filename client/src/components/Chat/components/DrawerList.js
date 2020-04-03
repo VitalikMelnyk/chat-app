@@ -10,7 +10,6 @@ import {
   Box
 } from "@material-ui/core";
 import InboxIcon from "@material-ui/icons/Inbox";
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -19,7 +18,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const DrawerList = () => {
+const DrawerList = ({ joinedUsers }) => {
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = useState(1);
   const { DashboardReducer } = useSelector(state => state);
@@ -32,7 +31,7 @@ const DrawerList = () => {
   return (
     <div className={classes.root}>
       <List component="nav" aria-label="main mailbox folders">
-        {users.map((user, index) => (
+        {joinedUsers.map(({ user, message }, index) => (
           <Box key={index}>
             <ListItem
               button
@@ -42,7 +41,7 @@ const DrawerList = () => {
               <ListItemIcon>
                 <InboxIcon />
               </ListItemIcon>
-              <ListItemText primary={user.firstName} />
+              <ListItemText primary={user.firstName} secondary={message} />
             </ListItem>
             <Divider />
           </Box>

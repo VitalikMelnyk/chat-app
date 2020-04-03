@@ -3,50 +3,53 @@ mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  socketId: {
+    type: String
+  },
   firstName: {
     type: String,
-    required: true
+    // required: true
   },
   secondName: {
     type: String,
-    required: true
+    // required: true
   },
   gender: {
     type: String,
-    required: true
+    // required: true
   },
   email: {
     type: String,
-    required: true,
+    // required: true,
     unique: true
   },
   password: {
     type: String,
-    required: true
+    // required: true
   },
   birthdayDate: {
     type: String,
-    required: true
+    // required: true
   },
   city: {
     type: String,
-    required: true
+    // required: true
   },
   telephoneNumber: {
     type: String,
-    required: true
+    // required: true
   },
   country: {
     type: Object,
-    required: true
+    // required: true
   },
   address: {
     type: String,
-    required: true
+    // required: true
   },
   zipCode: {
     type: String,
-    required: true
+    // required: true
   }
 });
 

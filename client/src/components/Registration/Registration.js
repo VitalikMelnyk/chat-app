@@ -112,22 +112,24 @@ const Registration = () => {
             }}
           />
         );
+      // case 2:
+      //   return (
+      //     <ContactDetails
+      //       handleSubmitData={handleSubmit}
+      //       formTitle={t("Contact Details")}
+      //       handleBackStep={handleBackStep}
+      //       error={{
+      //         errorMessage,
+      //         setErrorMessage,
+      //         setOpenModalMessage,
+      //         openModalMessage,
+      //         handleCloseModalMessage
+      //       }}
+      //     />
+      //   );
+      // case 3:
+      //   return <Congratulation handleResetStep={handleResetStep} />;
       case 2:
-        return (
-          <ContactDetails
-            handleSubmitData={handleSubmit}
-            formTitle={t("Contact Details")}
-            handleBackStep={handleBackStep}
-            error={{
-              errorMessage,
-              setErrorMessage,
-              setOpenModalMessage,
-              openModalMessage,
-              handleCloseModalMessage
-            }}
-          />
-        );
-      case 3:
         return <Congratulation handleResetStep={handleResetStep} />;
       default:
         return "Unknown step";

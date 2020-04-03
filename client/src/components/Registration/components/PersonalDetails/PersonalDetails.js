@@ -19,7 +19,8 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
   const { isLoading } = RegistrationReducer;
 
   const handleSubmitting = fields => {
-    handleSubmitData(fields, false);
+    // handleSubmitData(fields, false);
+    handleSubmitData(fields, true);
   };
   return (
     <>

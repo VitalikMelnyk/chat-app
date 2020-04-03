@@ -2,15 +2,16 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import { Paper, Grid, Typography, Box, Divider } from "@material-ui/core";
-import socket from "../../utils/socket";
-// import DrawerList from "./components/DrawerList";
+import io from "socket.io-client";
+import { SERVER_URL } from "../../shared/constants";
+import DrawerList from "./components/DrawerList";
 import SendMessage from "./components/SendMessage";
 const useStyles = makeStyles(theme => ({
   chatContainer: {
     minHeight: "90vh"
   },
   chat: {
-    height: "70%",
+    height: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between"
@@ -20,33 +21,66 @@ const useStyles = makeStyles(theme => ({
 const Chat = () => {
   const classes = useStyles();
   const { LoginReducer } = useSelector(state => state);
+  const [socketIO, setSocketIO] = useState({});
   const { currentUserInfo } = LoginReducer;
-  const { firstName, secondName } = currentUserInfo;
+  const { firstName, secondName, _id } = currentUserInfo;
+  const [room, setRoom] = useState("chat");
   const [messages, setMessages] = useState([]);
+  const [joinedUsers, setJoinedUsers] = useState([]);
   const onMessageSubmit = message => {
-    socket.emit("send message", {
+    socketIO.emit("room", {
       message,
-      userName: `${firstName} ${secondName}`
+      userName: `${firstName} ${secondName}`,
+      id: _id,
+      room
     });
   };
+  const newUserJoined = (user, message) => {
+    console.log(user);
+    
+    setJoinedUsers(prevUsers => [...prevUsers, { user, message }]);
+  };
 
-  const newMessageArrive = newMessage => {
-    setMessages(prevMessages => [...prevMessages, newMessage]);
+  const newMessageArrive = ({ firstName, secondName }, newMessage) => {
+    const messageInfo = {
+      userName: `${firstName} ${secondName}`,
+      message: newMessage
+    };
+    setMessages(prevMessages => [...prevMessages, messageInfo]);
   };
 
   useEffect(() => {
-    socket.on("receive message", newMessage => {
-      console.log(newMessage);
-      newMessageArrive(newMessage);
+    const socket = io.connect(`${SERVER_URL}/`);
+    setSocketIO(socket);
+    socket.on("connect", () => {
+      socket.on("receive message", ({ user, message }) => {
+        console.log(message);
+        console.log(user);
+        newMessageArrive(user, message);
+        console.log(1314314134431, socket);
+      });
+      socket.on("user joined", ({ user, userJoined }) => {
+        console.log(user);
+        console.log(userJoined);
+        newUserJoined(user, userJoined);
+      });
     });
+
+    return () => {
+      // socket.emit("leave room", ({ user, userLeave }) => {
+      //   console.log(user);
+      //   console.log(userLeave);
+      //   newMessageArrive(user, userLeave);
+      // });
+    };
   }, []);
   console.log("Chat", messages);
-
+  console.log("Set", joinedUsers);
   return (
     <Grid container justify="space-around" className={classes.chatContainer}>
-      {/* <Grid item xs={2} className="">
-        <DrawerList />
-      </Grid> */}
+      <Grid item xs={2} className="">
+        <DrawerList joinedUsers={joinedUsers} />
+      </Grid>
       <Grid item xs={9} mb={2} className="">
         <Paper>
           <Grid item xs>
@@ -60,8 +94,13 @@ const Chat = () => {
         <Paper className={classes.chat}>
           <Grid item xs={12}>
             {messages.map((message, index) => (
-              <Box key={index}>
-                <Typography>{message}</Typography>
+              <Box key={index} m={2}>
+                <Typography variant="h6" color="textPrimary">
+                  {message.userName}
+                </Typography>
+                <Typography variant="subtitle1" color="textSecondary">
+                  {message.message}
+                </Typography>
               </Box>
             ))}
           </Grid>

@@ -9,6 +9,10 @@ const server = app.listen(port, () =>
 );
 // SOCKET CONFIG
 const io = require("socket.io")(server);
+// Connect to Mongo Cluster
+const { User } = require("../models/mongoDB/remoteMongoDB");
+// Connect to local MongoDB
+// const { User } = require("../models/mongoDB/localMongoDB");
 const {
   register,
   checkEmail,
@@ -32,18 +36,36 @@ app.use(getCurrentUser);
 app.use(deleteUser);
 
 io.on("connection", socket => {
-  const { id } = socket.client;
-  console.log(`User connected: ${id}`);
+  // require("../sockets/chat/joinedUser")(io, socket);
 
-  try {
-    socket.on("send message", async ({ message, userName }) => {
-      console.log(`${userName}: ${message}`);
+  console.log(`User connected`);
 
-      socket.emit("receive message", message);
 
-      socket.on("disconnect", () => {
-        io.emit("user disconnected");
-      });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+
+  socket.on("room", async ({ message, userName, id, room }) => {
+    socket.join(room);
+    await User.findByIdAndUpdate(
+      id,
+      {
+        $set: { socketId: socket.id }
+      },
+      { useFindAndModify: false }
+    );
+    const user = await User.findById(id);
+    const data = { user, message };
+    const userJoined = "is joined";
+    io.emit("user joined", { user, userJoined });
+    io.emit("receive message", data);
+
+    const userLeave = "is left";
+    socket.on("leave room", room => {
+      console.log(1112112,room);
+      // socket.leave(room);
+      // socket.to(room).emit("user left", { user, userLeave });
     });
-  } catch (error) {}
+  });
 });
