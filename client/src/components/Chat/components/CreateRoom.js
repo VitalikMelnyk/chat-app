@@ -4,25 +4,24 @@ import { Formik, Form } from "formik";
 import { Dialog, DialogTitle, DialogContent, Button } from "@material-ui/core";
 import { FormControlText } from "../../GeneralComponents/FormFields";
 import { makeStyles } from "@material-ui/core/styles";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   roomDialog: {
     textAlign: "center",
   },
   roomBtn: {
-    margin: "15px 0"
-  }
+    margin: "15px 0",
+  },
 }));
 
-const CreateRoom = ({ open, setOpen, handleClose, setRoom }) => {
+const CreateRoom = ({ open, setOpen, handleClose, sendRoomName }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-
-  console.log(open);
   return (
     <div>
       <div>
         <Dialog
           open={open}
+          onClose={handleClose}
           aria-labelledby="room-dialog"
           className={classes.roomDialog}
         >
@@ -30,11 +29,10 @@ const CreateRoom = ({ open, setOpen, handleClose, setRoom }) => {
           <DialogContent>
             <Formik
               initialValues={{
-                room: ""
+                room: "",
               }}
               onSubmit={({ room }, actions) => {
-                console.log(room);
-                setRoom(room);
+                sendRoomName(room);
                 setOpen(false);
               }}
             >
@@ -46,7 +44,7 @@ const CreateRoom = ({ open, setOpen, handleClose, setRoom }) => {
                 dirty,
                 values,
                 handleChange,
-                handleBlur
+                handleBlur,
               }) => (
                 <Form>
                   <FormControlText

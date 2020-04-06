@@ -19,7 +19,8 @@ const {
   login,
   users,
   getCurrentUser,
-  deleteUser
+  deleteUser,
+  rooms,
 } = require("../routes");
 app.use(cors());
 // support parsing of application/json type post data
@@ -34,46 +35,69 @@ app.use(login);
 app.use(users);
 app.use(getCurrentUser);
 app.use(deleteUser);
+app.use(rooms);
 
-io.on("connection", socket => {
+let clients = 0;
+io.on("connection", (socket) => {
   // require("../sockets/chat/joinedUser")(io, socket);
-
+  clients++;
   console.log(`User connected`);
+  io.emit("broadcast", { description: clients + " clients connected" });
 
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
-  });
-
-  socket.on("room", async ({ message, userName, id, room }) => {
-    socket.join(room);
-    const user = await User.findByIdAndUpdate(
-      id,
-      {
-        $set: { socketId: socket.id }
-      },
-      { useFindAndModify: false }
-    );
-
-    const roomInfo = {
-      name: room,
-      users: [user._id]
-    };
-
-    await Room.create(roomInfo, (err, result) => {
-      if (err) {
-        console.log(err);
+  socket.on("add room", async ({ id, roomName }) => {
+    console.log(roomName);
+    socket.join(roomName, async () => {
+      io.emit("broadcast", { description: clients + " clients joined" });
+      let rms = Object.keys(socket.rooms);
+      console.log(rms);
+      await User.findByIdAndUpdate(
+        id,
+        {
+          $set: { socketId: socket.id },
+        },
+        { useFindAndModify: false }
+      );
+      const rooms = await Room.find({}, (err) => {
+        if (err) return console.log(err);
+      });
+      const isRoomExisting = rooms.some((room) => room.name === roomName);
+      if (isRoomExisting) {
+        await Room.findOneAndUpdate(
+          { name: roomName },
+          {
+            $addToSet: {
+              users: id,
+            },
+          },
+          { new: true, useFindAndModify: false },
+          (err, res) => {
+            if (err) {
+              console.log(err);
+            }
+          }
+        );
+      } else {
+        const roomInfo = {
+          name: roomName,
+          users: [id],
+        };
+        await Room.create(roomInfo, (err, result) => {
+          if (err) {
+            console.log(err);
+          }
+        });
       }
     });
-    const data = { user, message };
-    const userJoined = "is joined";
-    io.emit("user joined", { user, userJoined });
-    io.emit("receive message", data);
+  });
 
-    const userLeave = "is left";
-    socket.on("leave room", room => {
-      console.log(1112112, room);
-      // socket.leave(room);
-      // socket.to(room).emit("user left", { user, userLeave });
-    });
+  socket.on("delete room", async ({ id }) => {
+  
+    io.emit("broadcast", { description: clients + " clients leave" });
+  });
+
+  socket.on("disconnect", () => {
+    clients--;
+    io.emit("broadcast", { description: clients + " clients connected" });
+    console.log("User disconnected");
   });
 });
