@@ -42,9 +42,6 @@ const Registration = () => {
   const handleBackStep = () => {
     dispatch(handleActiveStepBack());
   };
-  const handleResetStep = () => {
-    dispatch(handleActiveStepReset());
-  };
 
   const checkExistingEmailAndSendData = async latestData => {
     setRegistrationInfo(latestData);
@@ -128,9 +125,9 @@ const Registration = () => {
       //     />
       //   );
       // case 3:
-      //   return <Congratulation handleResetStep={handleResetStep} />;
+      //   return <Congratulation />;
       case 2:
-        return <Congratulation handleResetStep={handleResetStep} />;
+        return <Congratulation />;
       default:
         return "Unknown step";
     }

@@ -30,7 +30,7 @@ const LoginPage = () => {
         setIsSuccessLoginMessage(true);
         // Get current user request
         await dispatch(getCurrentUserInfo());
-        history.push("dashboard");
+        history.push("home");
       }
     } catch (error) {
       console.log(error);

@@ -18,9 +18,9 @@ export const FormControlText = ({
   return (
     <TextField
       inputProps={{ maxLength: maxLength }}
-      classes={{
-        root: classes.credentialFieldItem
-      }}
+      // classes={{
+      //   root: classes.credentialFieldItem
+      // }}
       fullWidth
       required
       color="secondary"

@@ -6,6 +6,7 @@ import io from "socket.io-client";
 import { SERVER_URL } from "../../shared/constants";
 import DrawerList from "./components/DrawerList";
 import SendMessage from "./components/SendMessage";
+import CreateRoom from "./components/CreateRoom";
 const useStyles = makeStyles(theme => ({
   chatContainer: {
     minHeight: "90vh"
@@ -21,12 +22,18 @@ const useStyles = makeStyles(theme => ({
 const Chat = () => {
   const classes = useStyles();
   const { LoginReducer } = useSelector(state => state);
-  const [socketIO, setSocketIO] = useState({});
   const { currentUserInfo } = LoginReducer;
+  const [socketIO, setSocketIO] = useState({});
   const { firstName, secondName, _id } = currentUserInfo;
-  const [room, setRoom] = useState("chat");
+  const [room, setRoom] = useState("");
+  const [openRoomDialog, setOpenRoomDialog] = useState(false);
   const [messages, setMessages] = useState([]);
   const [joinedUsers, setJoinedUsers] = useState([]);
+
+  useEffect(() => {
+    setOpenRoomDialog(true);
+  }, []);
+
   const onMessageSubmit = message => {
     socketIO.emit("room", {
       message,
@@ -37,7 +44,7 @@ const Chat = () => {
   };
   const newUserJoined = (user, message) => {
     console.log(user);
-    
+
     setJoinedUsers(prevUsers => [...prevUsers, { user, message }]);
   };
 
@@ -74,43 +81,52 @@ const Chat = () => {
       // });
     };
   }, []);
-  console.log("Chat", messages);
-  console.log("Set", joinedUsers);
+  console.log("Room: ", room);
+  console.log("Chat: ", messages);
+  console.log("Set: ", joinedUsers);
   return (
-    <Grid container justify="space-around" className={classes.chatContainer}>
-      <Grid item xs={2} className="">
-        <DrawerList joinedUsers={joinedUsers} />
-      </Grid>
-      <Grid item xs={9} mb={2} className="">
-        <Paper>
-          <Grid item xs>
-            <Box boxShadow={5} p={2} mb={2}>
-              <Typography variant="h5" component="h2">
-                {firstName} {secondName}
-              </Typography>
-            </Box>
-          </Grid>
-        </Paper>
-        <Paper className={classes.chat}>
-          <Grid item xs={12}>
-            {messages.map((message, index) => (
-              <Box key={index} m={2}>
-                <Typography variant="h6" color="textPrimary">
-                  {message.userName}
-                </Typography>
-                <Typography variant="subtitle1" color="textSecondary">
-                  {message.message}
+    <>
+      <Grid container justify="space-around" className={classes.chatContainer}>
+        <Grid item xs={2} className="">
+          <DrawerList joinedUsers={joinedUsers} />
+        </Grid>
+        <Grid item xs={9} mb={2} className="">
+          <Paper>
+            <Grid item xs>
+              <Box boxShadow={5} p={2} mb={2}>
+                <Typography variant="h5" component="h2">
+                  {firstName} {secondName}
                 </Typography>
               </Box>
-            ))}
-          </Grid>
-          <Divider />
-          <Grid item xs>
-            <SendMessage onMessageSubmit={onMessageSubmit} />
-          </Grid>
-        </Paper>
+            </Grid>
+          </Paper>
+          <Paper className={classes.chat}>
+            <Grid item xs={12}>
+              {messages.map((message, index) => (
+                <Box key={index} m={2}>
+                  <Typography variant="h6" color="textPrimary">
+                    {message.userName}
+                  </Typography>
+                  <Typography variant="subtitle1" color="textSecondary">
+                    {message.message}
+                  </Typography>
+                </Box>
+              ))}
+            </Grid>
+            <Divider />
+            <Grid item xs>
+              <SendMessage onMessageSubmit={onMessageSubmit} />
+            </Grid>
+          </Paper>
+        </Grid>
       </Grid>
-    </Grid>
+      <CreateRoom
+        open={openRoomDialog}
+        handleClose={() => setOpenRoomDialog(false)}
+        setOpen={setOpenRoomDialog}
+        setRoom={setRoom}
+      />
+    </>
   );
 };
 

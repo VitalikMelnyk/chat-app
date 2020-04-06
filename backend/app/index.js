@@ -10,7 +10,7 @@ const server = app.listen(port, () =>
 // SOCKET CONFIG
 const io = require("socket.io")(server);
 // Connect to Mongo Cluster
-const { User } = require("../models/mongoDB/remoteMongoDB");
+const { User, Room } = require("../models/mongoDB/remoteMongoDB");
 // Connect to local MongoDB
 // const { User } = require("../models/mongoDB/localMongoDB");
 const {
@@ -40,22 +40,30 @@ io.on("connection", socket => {
 
   console.log(`User connected`);
 
-
-
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
 
   socket.on("room", async ({ message, userName, id, room }) => {
     socket.join(room);
-    await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
       id,
       {
         $set: { socketId: socket.id }
       },
       { useFindAndModify: false }
     );
-    const user = await User.findById(id);
+
+    const roomInfo = {
+      name: room,
+      users: [user._id]
+    };
+
+    await Room.create(roomInfo, (err, result) => {
+      if (err) {
+        console.log(err);
+      }
+    });
     const data = { user, message };
     const userJoined = "is joined";
     io.emit("user joined", { user, userJoined });
@@ -63,7 +71,7 @@ io.on("connection", socket => {
 
     const userLeave = "is left";
     socket.on("leave room", room => {
-      console.log(1112112,room);
+      console.log(1112112, room);
       // socket.leave(room);
       // socket.to(room).emit("user left", { user, userLeave });
     });
