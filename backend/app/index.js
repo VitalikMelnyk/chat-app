@@ -44,56 +44,51 @@ io.on("connection", (socket) => {
   console.log(`User connected`);
   io.emit("broadcast", { description: clients + " clients connected" });
 
-  socket.on("add room", async ({ id, roomName }) => {
-    console.log(roomName);
-    socket.join(roomName, async () => {
-      io.emit("broadcast", { description: clients + " clients joined" });
-      let rms = Object.keys(socket.rooms);
-      console.log(rms);
-      await User.findByIdAndUpdate(
-        id,
-        {
-          $set: { socketId: socket.id },
-        },
-        { useFindAndModify: false }
-      );
-      const rooms = await Room.find({}, (err) => {
-        if (err) return console.log(err);
-      });
-      const isRoomExisting = rooms.some((room) => room.name === roomName);
-      if (isRoomExisting) {
-        await Room.findOneAndUpdate(
-          { name: roomName },
-          {
-            $addToSet: {
-              users: id,
-            },
-          },
-          { new: true, useFindAndModify: false },
-          (err, res) => {
-            if (err) {
-              console.log(err);
-            }
-          }
-        );
-      } else {
-        const roomInfo = {
-          name: roomName,
-          users: [id],
-        };
-        await Room.create(roomInfo, (err, result) => {
-          if (err) {
-            console.log(err);
-          }
-        });
-      }
-    });
-  });
-
-  socket.on("delete room", async ({ id }) => {
-  
-    io.emit("broadcast", { description: clients + " clients leave" });
-  });
+  // socket.on("add room", async ({ id, roomName }) => {
+  //   console.log(roomName);
+  //   socket.join(roomName, async () => {
+  //     io.emit("broadcast", { description: clients + " clients joined" });
+  //     let rms = Object.keys(socket.rooms);
+  //     console.log(rms);
+  //     await User.findByIdAndUpdate(
+  //       id,
+  //       {
+  //         $set: { socketId: socket.id },
+  //       },
+  //       { useFindAndModify: false }
+  //     );
+  //     const rooms = await Room.find({}, (err) => {
+  //       if (err) return console.log(err);
+  //     });
+  //     const isRoomExisting = rooms.some((room) => room.name === roomName);
+  //     if (isRoomExisting) {
+  //       await Room.findOneAndUpdate(
+  //         { name: roomName },
+  //         {
+  //           $addToSet: {
+  //             users: id,
+  //           },
+  //         },
+  //         { new: true, useFindAndModify: false },
+  //         (err, res) => {
+  //           if (err) {
+  //             console.log(err);
+  //           }
+  //         }
+  //       );
+  //     } else {
+  //       const roomInfo = {
+  //         name: roomName,
+  //         users: [id],
+  //       };
+  //       await Room.create(roomInfo, (err, result) => {
+  //         if (err) {
+  //           console.log(err);
+  //         }
+  //       });
+  //     }
+  //   });
+  // });
 
   socket.on("disconnect", () => {
     clients--;

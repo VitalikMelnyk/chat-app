@@ -7,7 +7,8 @@ import { SERVER_URL } from "../../shared/constants";
 import DrawerList from "./components/DrawerList";
 import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
-import { getAllRooms } from "../../store/Chat/actions";
+import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
+import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 const useStyles = makeStyles((theme) => ({
   chatContainer: {
     minHeight: "90vh",
@@ -26,13 +27,16 @@ const Chat = () => {
   const { LoginReducer, ChatReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
   const { rooms } = ChatReducer;
-  const dispatch = useDispatch();
   const { firstName, secondName, _id } = currentUserInfo;
+  const dispatch = useDispatch();
   // Local State
   const [socketIO, setSocketIO] = useState({});
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
-  const [messages, setMessages] = useState([]);
-  const [joinedUsers, setJoinedUsers] = useState([]);
+  const [isRoom, setRoom] = useState({
+    severity: null,
+    toggleOpen: false,
+    message: "",
+  });
 
   useEffect(() => {
     const getRooms = async () => {
@@ -41,17 +45,53 @@ const Chat = () => {
     getRooms();
   }, [getAllRooms]);
 
-  const sendRoomName = (room) => {
-    socketIO.emit("add room", {
-      id: _id,
-      roomName: room,
-    });
+  const addRoom = async (room) => {
+    try {
+      const responseAddRoomSuccess = await dispatch(createRoom(room));
+      const { status, data } = responseAddRoomSuccess;
+      if (status === 200) {
+        setRoom({
+          severity: "success",
+          toggleOpen: true,
+          message: data.message,
+        });
+      }
+    } catch (error) {
+      if (error.response.status === 400) {
+        setRoom({
+          severity: "error",
+          toggleOpen: true,
+          message: error.response.data.message,
+        });
+      }
+    }
   };
 
-  const exitRoom = () => {
-    socketIO.emit("delete room", {
-      id: _id,
-    });
+  const deleteRoom = async (roomId) => {
+    const confirmed = window.confirm("Do you want to delete?");
+    if (confirmed) {
+      try {
+        const responseRemoveRoomSuccess = await dispatch(removeRoom(roomId));
+        const { status, data } = responseRemoveRoomSuccess;
+        if (status === 200) {
+          setRoom({
+            severity: "success",
+            toggleOpen: true,
+            message: data.message,
+          });
+        }
+      } catch (error) {
+        if (error.response.status === 404) {
+          setRoom({
+            severity: "error",
+            toggleOpen: true,
+            message: error.response.data.message,
+          });
+        }
+      }
+    } else {
+      alert("Okey!");
+    }
   };
 
   const onMessageSubmit = (message) => {
@@ -77,7 +117,7 @@ const Chat = () => {
         <Grid item xs={3} className="">
           <DrawerList
             rooms={rooms}
-            exitRoom={exitRoom}
+            deleteRoom={deleteRoom}
             setOpen={setOpenRoomDialog}
           />
         </Grid>
@@ -115,11 +155,20 @@ const Chat = () => {
         </Grid> */}
       </Grid>
       <CreateRoom
-        sendRoomName={sendRoomName}
+        addRoom={addRoom}
         open={openRoomDialog}
         handleClose={() => setOpenRoomDialog(false)}
         setOpen={setOpenRoomDialog}
       />
+      {isRoom && (
+        <SnackBarMessage
+          duration={6000}
+          severity={isRoom.severity}
+          open={isRoom.toggleOpen}
+          handleClose={() => setRoom({ toggleOpen: false })}
+          text={isRoom.message}
+        />
+      )}
     </>
   );
 };

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateRoom = ({ open, setOpen, handleClose, sendRoomName }) => {
+const CreateRoom = ({ open, setOpen, handleClose, addRoom }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   return (
@@ -32,7 +32,7 @@ const CreateRoom = ({ open, setOpen, handleClose, sendRoomName }) => {
                 room: "",
               }}
               onSubmit={({ room }, actions) => {
-                sendRoomName(room);
+                addRoom(room);
                 setOpen(false);
               }}
             >
