@@ -39,23 +39,29 @@ router.post("/rooms", async (req, res) => {
   }
 });
 
+const getRemovedRoom = async (id) => {
+  return await new Promise((resolve, reject) => {
+    Room.findOneAndDelete(
+      { _id: id },
+      { useFindAndModify: false },
+      (err, room) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        } else {
+          resolve(room);
+        }
+      }
+    );
+  });
+};
+
 router.delete("/rooms/:id", async (req, res) => {
-  await Room.findByIdAndRemove(
-    { _id: req.params.id },
-    { useFindAndModify: false },
-    (err, room) => {
-      if (err) {
-        console.log(err);
-      }
-      if (!room) {
-        return res.status(404).json({ error: `Room not found` });
-      }
-      return res.status(200).json({
-        message: "You successfull deleted the room",
-        deletedRoom: room,
-      });
-    }
-  );
+  const deletedRoom = await getRemovedRoom(req.params.id);
+  return res.status(200).json({
+    message: "You successfully deleted the room",
+    deletedRoom: deletedRoom,
+  });
 });
 
 module.exports = router;

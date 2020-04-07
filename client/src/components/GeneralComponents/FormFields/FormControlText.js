@@ -3,6 +3,7 @@ import { TextField } from "@material-ui/core";
 import { useStyles } from "./styles";
 
 export const FormControlText = ({
+  autoFocus = false,
   maxLength = 50,
   id,
   name,
@@ -12,7 +13,7 @@ export const FormControlText = ({
   helperText,
   error,
   value,
-  onChange
+  onChange,
 }) => {
   const classes = useStyles();
   return (
@@ -21,6 +22,7 @@ export const FormControlText = ({
       // classes={{
       //   root: classes.credentialFieldItem
       // }}
+      autoFocus={autoFocus}
       fullWidth
       required
       color="secondary"

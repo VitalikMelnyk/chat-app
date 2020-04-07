@@ -40,9 +40,9 @@ app.use(rooms);
 let clients = 0;
 io.on("connection", (socket) => {
   // require("../sockets/chat/joinedUser")(io, socket);
-  clients++;
-  console.log(`User connected`);
-  io.emit("broadcast", { description: clients + " clients connected" });
+  // clients++;
+  // console.log(`User connected`);
+  // io.emit("broadcast", { description: clients + " clients connected" });
 
   // socket.on("add room", async ({ id, roomName }) => {
   //   console.log(roomName);
@@ -91,8 +91,8 @@ io.on("connection", (socket) => {
   // });
 
   socket.on("disconnect", () => {
-    clients--;
-    io.emit("broadcast", { description: clients + " clients connected" });
-    console.log("User disconnected");
+    // clients--;
+    // io.emit("broadcast", { description: clients + " clients connected" });
+    // console.log("User disconnected");
   });
 });

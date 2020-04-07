@@ -48,6 +48,7 @@ const CreateRoom = ({ open, setOpen, handleClose, addRoom }) => {
               }) => (
                 <Form>
                   <FormControlText
+                    autoFocus={true}
                     name="room"
                     id="room"
                     label="Name"

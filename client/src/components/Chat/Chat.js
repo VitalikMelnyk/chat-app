@@ -32,7 +32,14 @@ const Chat = () => {
   // Local State
   const [socketIO, setSocketIO] = useState({});
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
-  const [isRoom, setRoom] = useState({
+  const [isAddRoom, setIsAddRoom] = useState({
+    duration: null,
+    severity: null,
+    toggleOpen: false,
+    message: "",
+  });
+  const [isRemoveRoom, setIsRemoveRoom] = useState({
+    duration: null,
     severity: null,
     toggleOpen: false,
     message: "",
@@ -50,7 +57,8 @@ const Chat = () => {
       const responseAddRoomSuccess = await dispatch(createRoom(room));
       const { status, data } = responseAddRoomSuccess;
       if (status === 200) {
-        setRoom({
+        setIsAddRoom({
+          duration: 2000,
           severity: "success",
           toggleOpen: true,
           message: data.message,
@@ -58,7 +66,8 @@ const Chat = () => {
       }
     } catch (error) {
       if (error.response.status === 400) {
-        setRoom({
+        setIsAddRoom({
+          duration: 2000,
           severity: "error",
           toggleOpen: true,
           message: error.response.data.message,
@@ -74,20 +83,22 @@ const Chat = () => {
         const responseRemoveRoomSuccess = await dispatch(removeRoom(roomId));
         const { status, data } = responseRemoveRoomSuccess;
         if (status === 200) {
-          setRoom({
-            severity: "success",
+          setIsRemoveRoom({
+            duration: 3000,
+            severity: "info",
             toggleOpen: true,
             message: data.message,
           });
         }
       } catch (error) {
-        if (error.response.status === 404) {
-          setRoom({
-            severity: "error",
-            toggleOpen: true,
-            message: error.response.data.message,
-          });
-        }
+        console.log(error);
+        // if (error.response.status === 404) {
+        //   setRoom({
+        //     severity: "error",
+        //     toggleOpen: true,
+        //     message: error.response.data.message,
+        //   });
+        // }
       }
     } else {
       alert("Okey!");
@@ -160,13 +171,22 @@ const Chat = () => {
         handleClose={() => setOpenRoomDialog(false)}
         setOpen={setOpenRoomDialog}
       />
-      {isRoom && (
+      {/* {isAddRoom && (
         <SnackBarMessage
-          duration={6000}
-          severity={isRoom.severity}
-          open={isRoom.toggleOpen}
-          handleClose={() => setRoom({ toggleOpen: false })}
-          text={isRoom.message}
+          duration={2500}
+          severity={isAddRoom.severity}
+          open={isAddRoom.toggleOpen}
+          handleClose={() => setIsAddRoom({ toggleOpen: false })}
+          text={isAddRoom.message}
+        />
+      )} */}
+      {isRemoveRoom && (
+        <SnackBarMessage
+          duration={2500}
+          severity={isRemoveRoom.severity}
+          open={isRemoveRoom.toggleOpen}
+          handleClose={() => setIsRemoveRoom({ toggleOpen: false })}
+          text={isRemoveRoom.message}
         />
       )}
     </>
