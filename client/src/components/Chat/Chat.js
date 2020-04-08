@@ -7,7 +7,13 @@ import { SERVER_URL } from "../../shared/constants";
 import DrawerList from "./components/DrawerList";
 import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
-import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
+import {
+  getAllRooms,
+  createRoom,
+  removeRoom,
+  getCurrentRoom,
+  updateRoomMessage,
+} from "../../store/Chat/actions";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 const useStyles = makeStyles((theme) => ({
   chatContainer: {
@@ -26,8 +32,9 @@ const Chat = () => {
   // Redux
   const { LoginReducer, ChatReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
-  const { rooms } = ChatReducer;
-  const { firstName, secondName, _id } = currentUserInfo;
+  const { _id: userId } = currentUserInfo;
+  const { rooms, currentRoom } = ChatReducer;
+  const { name: roomName = "", messages = [] } = currentRoom;
   const dispatch = useDispatch();
   // Local State
   const [socketIO, setSocketIO] = useState({});
@@ -105,19 +112,25 @@ const Chat = () => {
     }
   };
 
+  const onJoinRoom = (room, user) => {
+    dispatch(getCurrentRoom(room._id));
+    socketIO.emit("join room", { room, user });
+  };
+
   const onMessageSubmit = (message) => {
-    socketIO.emit("send message", {
+    socketIO.emit("new message", {
       message,
-      userName: `${firstName} ${secondName}`,
-      id: _id,
+      userId,
+      roomId: currentRoom._id,
     });
   };
 
   useEffect(() => {
     const socket = io.connect(`${SERVER_URL}/`);
     setSocketIO(socket);
-    socket.on("broadcast", ({ description }) => {
-      alert(description);
+    socket.on("receive message", ({ lastMessage }) => {
+      console.log(lastMessage);
+      dispatch(updateRoomMessage(lastMessage));
     });
     return () => {};
   }, []);
@@ -130,6 +143,8 @@ const Chat = () => {
             rooms={rooms}
             deleteRoom={deleteRoom}
             setOpen={setOpenRoomDialog}
+            onJoinRoom={onJoinRoom}
+            currentUserInfo={currentUserInfo}
           />
         </Grid>
         <Grid item xs={6} mb={2} className="">
@@ -137,23 +152,28 @@ const Chat = () => {
             <Grid item xs>
               <Box boxShadow={5} p={2} mb={2}>
                 <Typography variant="h5" component="h2">
-                  {firstName} {secondName}
+                  {roomName}
                 </Typography>
               </Box>
             </Grid>
           </Paper>
           <Paper className={classes.chat}>
             <Grid item xs={12}>
-              {/* {messages.map((message, index) => (
-                <Box key={index} m={2}>
-                  <Typography variant="h6" color="textPrimary">
-                    {message.userName}
-                  </Typography>
-                  <Typography variant="subtitle1" color="textSecondary">
-                    {message.message}
-                  </Typography>
-                </Box>
-              ))} */}
+              {messages.map(
+                ({ message, date, user: { firstName, secondName } }, index) => (
+                  <Box key={index} m={2}>
+                    <Typography variant="h6" color="textPrimary">
+                      {firstName} {secondName}
+                    </Typography>
+                    <Typography variant="h6" color="textSecondary">
+                      {message}
+                    </Typography>
+                    <Typography variant="subtitle2" color="textSecondary">
+                      {date}
+                    </Typography>
+                  </Box>
+                )
+              )}
             </Grid>
             <Divider />
             <Grid item xs>
@@ -171,7 +191,7 @@ const Chat = () => {
         handleClose={() => setOpenRoomDialog(false)}
         setOpen={setOpenRoomDialog}
       />
-      {/* {isAddRoom && (
+      {isAddRoom && (
         <SnackBarMessage
           duration={2500}
           severity={isAddRoom.severity}
@@ -179,7 +199,7 @@ const Chat = () => {
           handleClose={() => setIsAddRoom({ toggleOpen: false })}
           text={isAddRoom.message}
         />
-      )} */}
+      )}
       {isRemoveRoom && (
         <SnackBarMessage
           duration={2500}

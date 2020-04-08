@@ -41,7 +41,15 @@ export const DELETE_USER_SUCCESS = "DELETE_USER_SUCCESS";
 export const GET_ROOMS_PENDING = "GET_ROOMS_PENDING";
 export const GET_ROOMS_SUCCESS = "GET_ROOMS_SUCCESS";
 export const GET_ROOMS_ERROR = "GET_ROOMS_ERROR";
+// Get room
+export const GET_ROOM_PENDING = "GET_ROOM_PENDING";
+export const GET_ROOM_SUCCESS = "GET_ROOM_SUCCESS";
+export const GET_ROOM_ERROR = "GET_ROOM_ERROR";
 // Add room
 export const ADD_ROOM_SUCCESS = "ADD_ROOM_SUCCESS";
+// Update room messages
+export const UPDATE_CURRENT_ROOM = "UPDATE_CURRENT_ROOM";
+export const UPDATE_ROOM_MESSAGES = "UPDATE_ROOM_MESSAGES";
+
 // Delete room
 export const DELETE_ROOM_SUCCESS = "DELETE_ROOM_SUCCESS";

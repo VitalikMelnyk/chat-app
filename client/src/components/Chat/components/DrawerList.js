@@ -27,12 +27,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DrawerList = ({ rooms = [], setOpen, deleteRoom }) => {
+const DrawerList = ({
+  rooms = [],
+  setOpen,
+  deleteRoom,
+  onJoinRoom,
+  currentUserInfo,
+}) => {
   const classes = useStyles();
-  const [selectedIndex, setSelectedIndex] = useState(1);
-  const handleListItemClick = (event, index) => {
-    console.log(index);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const handleListItemClick = (event, index, room) => {
     setSelectedIndex(index);
+    onJoinRoom(room, currentUserInfo);
   };
   return (
     <div className={classes.root}>
@@ -54,7 +60,7 @@ const DrawerList = ({ rooms = [], setOpen, deleteRoom }) => {
             <ListItem
               button
               selected={selectedIndex === index}
-              onClick={(event) => handleListItemClick(event, index)}
+              onClick={(event) => handleListItemClick(event, index, room)}
             >
               <ListItemIcon>
                 <FolderIcon />

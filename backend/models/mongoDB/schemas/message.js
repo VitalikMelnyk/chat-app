@@ -3,18 +3,14 @@ mongoose.set("useCreateIndex", true);
 const Schema = mongoose.Schema;
 
 const messageSchema = new Schema({
-  userId: {
+  user: { type: Schema.Types.ObjectId, ref: "user" },
+  message: {
     type: String,
-    required: true
-  },
-  messages: {
-    type: String,
-    required: true
   },
   date: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 module.exports = { messageSchema };

@@ -9,7 +9,7 @@ import rootReducer from "./store/reducers";
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["RegistrationReducer"]
+  blacklist: ["RegistrationReducer", "ChatReducer"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

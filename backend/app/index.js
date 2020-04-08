@@ -10,7 +10,7 @@ const server = app.listen(port, () =>
 // SOCKET CONFIG
 const io = require("socket.io")(server);
 // Connect to Mongo Cluster
-const { User, Room } = require("../models/mongoDB/remoteMongoDB");
+const { User, Room, Message } = require("../models/mongoDB/remoteMongoDB");
 // Connect to local MongoDB
 // const { User } = require("../models/mongoDB/localMongoDB");
 const {
@@ -39,56 +39,55 @@ app.use(rooms);
 
 let clients = 0;
 io.on("connection", (socket) => {
-  // require("../sockets/chat/joinedUser")(io, socket);
-  // clients++;
-  // console.log(`User connected`);
-  // io.emit("broadcast", { description: clients + " clients connected" });
+  socket.on("join room", async ({ room, user }) => {
+    const { _id: roomId, name: roomName } = room;
+    const { _id: userId } = user;
+    socket.join(roomName);
+    await Room.findOneAndUpdate(
+      { _id: roomId },
+      {
+        $addToSet: {
+          users: userId,
+        },
+      },
+      { new: true, useFindAndModify: false }
+    );
+    socket.on("new message", async ({ message, userId, roomId }) => {
+      console.log(message);
+      console.log(userId);
+      console.log(roomId);
+      try {
+        const createdMessage = await Message.create({
+          user: userId,
+          message: message,
+        });
 
-  // socket.on("add room", async ({ id, roomName }) => {
-  //   console.log(roomName);
-  //   socket.join(roomName, async () => {
-  //     io.emit("broadcast", { description: clients + " clients joined" });
-  //     let rms = Object.keys(socket.rooms);
-  //     console.log(rms);
-  //     await User.findByIdAndUpdate(
-  //       id,
-  //       {
-  //         $set: { socketId: socket.id },
-  //       },
-  //       { useFindAndModify: false }
-  //     );
-  //     const rooms = await Room.find({}, (err) => {
-  //       if (err) return console.log(err);
-  //     });
-  //     const isRoomExisting = rooms.some((room) => room.name === roomName);
-  //     if (isRoomExisting) {
-  //       await Room.findOneAndUpdate(
-  //         { name: roomName },
-  //         {
-  //           $addToSet: {
-  //             users: id,
-  //           },
-  //         },
-  //         { new: true, useFindAndModify: false },
-  //         (err, res) => {
-  //           if (err) {
-  //             console.log(err);
-  //           }
-  //         }
-  //       );
-  //     } else {
-  //       const roomInfo = {
-  //         name: roomName,
-  //         users: [id],
-  //       };
-  //       await Room.create(roomInfo, (err, result) => {
-  //         if (err) {
-  //           console.log(err);
-  //         }
-  //       });
-  //     }
-  //   });
-  // });
+        await Room.findOneAndUpdate(
+          { _id: roomId },
+          {
+            $addToSet: {
+              messages: createdMessage._id,
+            },
+          },
+          { new: true, useFindAndModify: false }
+        );
+
+        const lastMessage = await Message.findOne({
+          user: userId,
+        })
+          .sort({ date: -1 })
+          .populate({ path: "user", select: "firstName secondName" });
+
+        io.in(roomName).emit("receive message", { lastMessage });
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    socket.to(roomName).emit("user joined", {
+      description: " a new user has joined the room",
+    });
+  });
 
   socket.on("disconnect", () => {
     // clients--;

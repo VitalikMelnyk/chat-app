@@ -13,6 +13,18 @@ router.get("/rooms", async (req, res) => {
 
   return res.status(200).send(rooms);
 });
+
+router.get("/rooms/:id", async (req, res) => {
+  const room = await Room.findOne({ _id: req.params.id }).populate({
+    path: "messages",
+    populate: {
+      path: "user",
+      select: "firstName secondName",
+    },
+  });
+  return res.status(200).send(room);
+});
+
 router.post("/rooms", async (req, res) => {
   const { roomName } = req.body;
   const rooms = await Room.find({ name: roomName }, (err) => {
