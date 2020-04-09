@@ -1,15 +1,16 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
-import { Button } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
+import SendIcon from "@material-ui/icons/Send";
 import { FormControlText } from "../../GeneralComponents/FormFields";
 import { makeStyles } from "@material-ui/core/styles";
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
     alignItems: "flex-end",
-    margin: "20px 0"
-  }
+    margin: "20px 0",
+  },
 }));
 
 const SendMessage = ({ onMessageSubmit }) => {
@@ -18,7 +19,7 @@ const SendMessage = ({ onMessageSubmit }) => {
   return (
     <Formik
       initialValues={{
-        message: ""
+        message: "",
       }}
       onSubmit={({ message }, actions) => {
         onMessageSubmit(message);
@@ -33,7 +34,7 @@ const SendMessage = ({ onMessageSubmit }) => {
         dirty,
         values,
         handleChange,
-        handleBlur
+        handleBlur,
       }) => (
         <Form className={classes.form}>
           <FormControlText
@@ -48,15 +49,13 @@ const SendMessage = ({ onMessageSubmit }) => {
             helperText={touched.message ? errors.message : ""}
             error={touched.message && Boolean(errors.message)}
           />
-
-          <Button
-            variant="contained"
-            color="primary"
+          <IconButton
+            color="secondary"
             onClick={handleSubmit}
             disabled={!isValid || !dirty}
           >
-            {t("Submit")}
-          </Button>
+            <SendIcon />
+          </IconButton>
         </Form>
       )}
     </Formik>

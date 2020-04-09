@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { makeStyles } from "@material-ui/core/styles";
-import { Paper, Grid, Typography, Box, Divider } from "@material-ui/core";
 import io from "socket.io-client";
-import { SERVER_URL } from "../../shared/constants";
-import DrawerList from "./components/DrawerList";
+import { Paper, Grid, Typography, Box, Container } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import ChatIcon from "@material-ui/icons/Chat";
+import RoomList from "./components/RoomList";
 import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
+import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
+import { SERVER_URL } from "../../shared/constants";
 import {
   getAllRooms,
   createRoom,
@@ -14,17 +16,55 @@ import {
   getCurrentRoom,
   updateRoomMessage,
 } from "../../store/Chat/actions";
-import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 const useStyles = makeStyles((theme) => ({
   chatContainer: {
     minHeight: "90vh",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  chatInner: {
+    minHeight: "inherit",
   },
   chat: {
+    minHeight: "80vh",
+  },
+  drawerList: {},
+  messagesEmpty: {
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    justifyContent: "center",
+    alignItems: "center",
   },
+  messagesEmptyIcon: {
+    margin: "0 auto",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "200px",
+    height: "200px",
+    borderRadius: "50%",
+    background: theme.palette.success.main,
+  },
+  messagesEmptyText: {
+    textAlign: "center",
+    fontSize: "20px",
+    margin: "10px 0",
+  },
+  messages: {
+    height: "100%",
+  },
+  messagesTitle: {
+    padding: "15px 10px",
+    background: theme.palette.primary.main,
+  },
+  messagesInner: {
+    flexGrow: 1,
+    maxHeight: "60vh",
+    overflow: "auto",
+  },
+  messagesBtn: { padding: "0px 10px" },
 }));
 
 const Chat = () => {
@@ -34,7 +74,7 @@ const Chat = () => {
   const { currentUserInfo } = LoginReducer;
   const { _id: userId } = currentUserInfo;
   const { rooms, currentRoom } = ChatReducer;
-  const { name: roomName = "", messages = [] } = currentRoom;
+  const { name: roomName = "Chat Name", messages = [] } = currentRoom;
   const dispatch = useDispatch();
   // Local State
   const [socketIO, setSocketIO] = useState({});
@@ -51,7 +91,8 @@ const Chat = () => {
     toggleOpen: false,
     message: "",
   });
-
+  const [toggleDrawer, setToggleDrawer] = useState(true);
+  const [selectedRoomIndex, setSelectedRoomIndex] = useState(null);
   useEffect(() => {
     const getRooms = async () => {
       dispatch(getAllRooms());
@@ -138,54 +179,85 @@ const Chat = () => {
 
   return (
     <>
-      <Grid container justify="space-around" className={classes.chatContainer}>
-        <Grid item xs={3} className="">
-          <DrawerList
-            rooms={rooms}
-            deleteRoom={deleteRoom}
-            setOpen={setOpenRoomDialog}
-            onJoinRoom={onJoinRoom}
-            currentUserInfo={currentUserInfo}
-          />
-        </Grid>
-        <Grid item xs={6} mb={2} className="">
-          <Paper>
-            <Grid item xs>
-              <Box boxShadow={5} p={2} mb={2}>
-                <Typography variant="h5" component="h2">
-                  {roomName}
-                </Typography>
-              </Box>
+      <Container maxWidth="xl" className={classes.chatContainer}>
+        <Paper className={classes.chat} elevation={7}>
+          <Grid container className={classes.chatInner}>
+            <Grid item xs={3} className={classes.drawerList}>
+              <RoomList
+                selectedRoomIndex={selectedRoomIndex}
+                setSelectedRoomIndex={setSelectedRoomIndex}
+                toggleDrawer={toggleDrawer}
+                rooms={rooms}
+                deleteRoom={deleteRoom}
+                setOpen={setOpenRoomDialog}
+                onJoinRoom={onJoinRoom}
+                currentUserInfo={currentUserInfo}
+              />
             </Grid>
-          </Paper>
-          <Paper className={classes.chat}>
-            <Grid item xs={12}>
-              {messages.map(
-                ({ message, date, user: { firstName, secondName } }, index) => (
-                  <Box key={index} m={2}>
-                    <Typography variant="h6" color="textPrimary">
-                      {firstName} {secondName}
+            <Grid item xs={9}>
+              {selectedRoomIndex === null ? (
+                <Box className={classes.messagesEmpty}>
+                  <Box className={classes.messagesEmptyIcon}>
+                    <ChatIcon style={{ fontSize: "100px" }} color="primary" />
+                  </Box>
+                  <Box className={classes.messagesEmptyText}>
+                    <Typography variant="h5" component="h2">
+                      Chat App
                     </Typography>
-                    <Typography variant="h6" color="textSecondary">
-                      {message}
-                    </Typography>
-                    <Typography variant="subtitle2" color="textSecondary">
-                      {date}
+                    <Typography variant="h6">
+                      Select a contact to start a conversation!
                     </Typography>
                   </Box>
-                )
+                </Box>
+              ) : (
+                <Grid
+                  container
+                  direction="column"
+                  justify="space-between"
+                  className={classes.messages}
+                >
+                  <Grid item className={classes.messagesTitle}>
+                    <Box>
+                      <Typography boxShadow={5} variant="h5" component="h2">
+                        {roomName}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item className={classes.messagesInner}>
+                    {messages.map(
+                      (
+                        { message, date, user: { firstName, secondName } },
+                        index
+                      ) => (
+                        <Box key={index} m={2}>
+                          <Typography variant="h6" color="textPrimary">
+                            {firstName} {secondName}
+                          </Typography>
+                          <Typography variant="h6" color="textSecondary">
+                            {message}
+                          </Typography>
+                          <Typography variant="subtitle2" color="textSecondary">
+                            {date}
+                          </Typography>
+                        </Box>
+                      )
+                    )}
+                  </Grid>
+                  <Grid item className={classes.messagesBtn}>
+                    <SendMessage onMessageSubmit={onMessageSubmit} />
+                  </Grid>
+                </Grid>
               )}
+              {/* <Button
+                color="primary"
+                onClick={() => setToggleDrawer(!toggleDrawer)}
+              >
+                ToggleOpen
+              </Button> */}
             </Grid>
-            <Divider />
-            <Grid item xs>
-              <SendMessage onMessageSubmit={onMessageSubmit} />
-            </Grid>
-          </Paper>
-        </Grid>
-        {/* <Grid item xs={3} className="">
-          <DrawerList joinedUsers={joinedUsers} />
-        </Grid> */}
-      </Grid>
+          </Grid>
+        </Paper>
+      </Container>
       <CreateRoom
         addRoom={addRoom}
         open={openRoomDialog}
