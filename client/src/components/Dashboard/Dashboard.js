@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector, connect } from "react-redux";
-import { Grid, Container, Typography, Box } from "@material-ui/core";
-import { useStyles } from "./styles";
+import { Container, Box } from "@material-ui/core";
 import { getAllUsers } from "../../store/Dashboard/actions";
 import UsersTable from "./components/UsersTable";
 
 const Dashboard = ({ getAllUsers }) => {
-  const classes = useStyles();
-  const { DashboardReducer } = useSelector(state => state);
+  const { DashboardReducer } = useSelector((state) => state);
   const { users } = DashboardReducer;
   useEffect(() => {
     const getUsers = async () => {

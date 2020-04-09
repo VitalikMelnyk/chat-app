@@ -37,7 +37,6 @@ app.use(getCurrentUser);
 app.use(deleteUser);
 app.use(rooms);
 
-let clients = 0;
 io.on("connection", (socket) => {
   socket.on("join room", async ({ room, user }) => {
     const { _id: roomId, name: roomName } = room;
@@ -52,46 +51,37 @@ io.on("connection", (socket) => {
       },
       { new: true, useFindAndModify: false }
     );
-    socket.on("new message", async ({ message, userId, roomId }) => {
-      console.log(message);
-      console.log(userId);
-      console.log(roomId);
-      try {
-        const createdMessage = await Message.create({
-          user: userId,
-          message: message,
-        });
+  });
 
-        await Room.findOneAndUpdate(
-          { _id: roomId },
-          {
-            $addToSet: {
-              messages: createdMessage._id,
-            },
+  socket.on("new message", async ({ message, userId, roomId, roomName }) => {
+    try {
+      const createdMessage = await Message.create({
+        user: userId,
+        message: message,
+      });
+      await Room.findOneAndUpdate(
+        { _id: roomId },
+        {
+          $addToSet: {
+            messages: createdMessage._id,
           },
-          { new: true, useFindAndModify: false }
-        );
+        },
+        { new: true, useFindAndModify: false }
+      );
 
-        const lastMessage = await Message.findOne({
-          user: userId,
-        })
-          .sort({ date: -1 })
-          .populate({ path: "user", select: "firstName secondName" });
+      const lastMessage = await Message.findOne({
+        user: userId,
+      })
+        .sort({ date: -1 })
+        .populate({ path: "user", select: "firstName secondName" });
 
-        io.in(roomName).emit("receive message", { lastMessage });
-      } catch (error) {
-        console.log(error);
-      }
-    });
-
-    socket.to(roomName).emit("user joined", {
-      description: " a new user has joined the room",
-    });
+      io.in(roomName).emit("receive message", { lastMessage });
+    } catch (error) {
+      console.log(error);
+    }
   });
 
   socket.on("disconnect", () => {
-    // clients--;
-    // io.emit("broadcast", { description: clients + " clients connected" });
-    // console.log("User disconnected");
+ 
   });
 });

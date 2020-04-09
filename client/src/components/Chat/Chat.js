@@ -57,7 +57,7 @@ const Chat = () => {
       dispatch(getAllRooms());
     };
     getRooms();
-  }, [getAllRooms]);
+  }, [dispatch]);
 
   const addRoom = async (room) => {
     try {
@@ -122,6 +122,7 @@ const Chat = () => {
       message,
       userId,
       roomId: currentRoom._id,
+      roomName: currentRoom.name,
     });
   };
 
@@ -133,7 +134,7 @@ const Chat = () => {
       dispatch(updateRoomMessage(lastMessage));
     });
     return () => {};
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

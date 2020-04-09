@@ -1,6 +1,5 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
-import { useStyles } from "./styles";
 
 export const FormControlText = ({
   autoFocus = false,
@@ -15,13 +14,9 @@ export const FormControlText = ({
   value,
   onChange,
 }) => {
-  const classes = useStyles();
   return (
     <TextField
       inputProps={{ maxLength: maxLength }}
-      // classes={{
-      //   root: classes.credentialFieldItem
-      // }}
       autoFocus={autoFocus}
       fullWidth
       required
