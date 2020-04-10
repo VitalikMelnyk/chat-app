@@ -81,7 +81,13 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("disconnect", () => {
- 
+  socket.on("typing", ({ firstName, secondName, roomName }) => {
+    console.log(`${firstName} ${secondName}`);
+    console.log(roomName);
+    socket
+      .to(roomName)
+      .emit("typing", { userName: `${firstName} ${secondName}` });
   });
+
+  socket.on("disconnect", () => {});
 });

@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import io from "socket.io-client";
-import { Paper, Grid, Typography, Box, Container } from "@material-ui/core";
+import {
+  Paper,
+  Grid,
+  Typography,
+  Box,
+  Container,
+  Avatar,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import ChatIcon from "@material-ui/icons/Chat";
 import RoomList from "./components/RoomList";
@@ -9,6 +16,7 @@ import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { SERVER_URL } from "../../shared/constants";
+import chatBackground from "../../assets/img/darkgreenBack.jpg";
 import {
   getAllRooms,
   createRoom,
@@ -16,6 +24,7 @@ import {
   getCurrentRoom,
   updateRoomMessage,
 } from "../../store/Chat/actions";
+import { getFirstLetters, getDateOfMessage } from "../../shared/functions";
 const useStyles = makeStyles((theme) => ({
   chatContainer: {
     minHeight: "90vh",
@@ -54,6 +63,8 @@ const useStyles = makeStyles((theme) => ({
   },
   messages: {
     height: "100%",
+    background: `url(${chatBackground}) center no-repeat`,
+    backgroundSize: "cover",
   },
   messagesTitle: {
     padding: "15px 10px",
@@ -64,7 +75,35 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: "60vh",
     overflow: "auto",
   },
-  messagesBtn: { padding: "0px 10px" },
+  messagesBtn: {
+    padding: "0px 10px",
+  },
+  leftMessages: {
+    textAlign: "left",
+    display: "flex",
+  },
+  rightMessages: {
+    textAlign: "right",
+    display: "flex",
+    flexDirection: "row-reverse",
+  },
+  messagesInnerItem: {
+    flexGrow: 1,
+  },
+  messagesInnerItemMsg: {
+    width: "fit-content",
+    maxWidth: "100%",
+    borderRadius: "20px",
+    padding: "5px 15px",
+    background: theme.palette.background.default,
+    wordBreak: "break-all",
+  },
+  messagesInnerItemMsgLeft: {
+    marginRight: "auto",
+  },
+  messagesInnerItemMsgRight: {
+    marginLeft: "auto",
+  },
 }));
 
 const Chat = () => {
@@ -72,7 +111,7 @@ const Chat = () => {
   // Redux
   const { LoginReducer, ChatReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
-  const { _id: userId } = currentUserInfo;
+  const { firstName, secondName, _id: userId } = currentUserInfo;
   const { rooms, currentRoom } = ChatReducer;
   const { name: roomName = "Chat Name", messages = [] } = currentRoom;
   const dispatch = useDispatch();
@@ -93,6 +132,7 @@ const Chat = () => {
   });
   const [toggleDrawer, setToggleDrawer] = useState(true);
   const [selectedRoomIndex, setSelectedRoomIndex] = useState(null);
+  const [typingUserName, setTypingUserName] = useState("");
   useEffect(() => {
     const getRooms = async () => {
       dispatch(getAllRooms());
@@ -167,12 +207,23 @@ const Chat = () => {
     });
   };
 
+  const userTyping = () => {
+    socketIO.emit("typing", {
+      firstName,
+      secondName,
+      roomName: currentRoom.name,
+    });
+  };
   useEffect(() => {
     const socket = io.connect(`${SERVER_URL}/`);
     setSocketIO(socket);
     socket.on("receive message", ({ lastMessage }) => {
       console.log(lastMessage);
       dispatch(updateRoomMessage(lastMessage));
+    });
+    socket.on("typing", ({ userName }) => {
+      console.log("qqqqqqqqqqqqqqqqqqqqqqqqq", userName);
+      setTypingUserName(userName);
     });
     return () => {};
   }, [dispatch]);
@@ -218,7 +269,7 @@ const Chat = () => {
                 >
                   <Grid item className={classes.messagesTitle}>
                     <Box>
-                      <Typography boxShadow={5} variant="h5" component="h2">
+                      <Typography variant="h5" component="h2">
                         {roomName}
                       </Typography>
                     </Box>
@@ -226,25 +277,59 @@ const Chat = () => {
                   <Grid item className={classes.messagesInner}>
                     {messages.map(
                       (
-                        { message, date, user: { firstName, secondName } },
+                        { message, date, user: { firstName, secondName, _id } },
                         index
                       ) => (
-                        <Box key={index} m={2}>
-                          <Typography variant="h6" color="textPrimary">
-                            {firstName} {secondName}
-                          </Typography>
-                          <Typography variant="h6" color="textSecondary">
-                            {message}
-                          </Typography>
-                          <Typography variant="subtitle2" color="textSecondary">
-                            {date}
-                          </Typography>
+                        <Box key={index}>
+                          <Box
+                            m={2}
+                            className={
+                              userId === _id
+                                ? classes.leftMessages
+                                : classes.rightMessages
+                            }
+                          >
+                            <Box marginX={1.5}>
+                              <Avatar>
+                                {getFirstLetters(firstName, secondName)}
+                              </Avatar>
+                            </Box>
+                            <Box className={classes.messagesInnerItem}>
+                              <Typography
+                                variant="subtitle2"
+                                color="textPrimary"
+                              >
+                                {firstName} {secondName}
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                color="textSecondary"
+                                className={`${classes.messagesInnerItemMsg} ${
+                                  userId === _id
+                                    ? classes.messagesInnerItemMsgLeft
+                                    : classes.messagesInnerItemMsgRight
+                                }`}
+                              >
+                                {message}
+                              </Typography>
+                              <Typography
+                                variant="subtitle2"
+                                color="textSecondary"
+                              >
+                                {getDateOfMessage(date)}
+                              </Typography>
+                            </Box>
+                          </Box>
                         </Box>
                       )
                     )}
                   </Grid>
                   <Grid item className={classes.messagesBtn}>
-                    <SendMessage onMessageSubmit={onMessageSubmit} />
+                    <SendMessage
+                      userTyping={userTyping}
+                      onMessageSubmit={onMessageSubmit}
+                    />
+                    {typingUserName && `${typingUserName} is typing...`}
                   </Grid>
                 </Grid>
               )}

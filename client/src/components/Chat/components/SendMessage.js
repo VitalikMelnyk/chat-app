@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SendMessage = ({ onMessageSubmit }) => {
+const SendMessage = ({ onMessageSubmit, userTyping }) => {
   const { t } = useTranslation();
   const classes = useStyles();
   return (
@@ -45,7 +45,12 @@ const SendMessage = ({ onMessageSubmit }) => {
             required={false}
             value={values.message}
             onBlur={handleBlur}
-            onChange={handleChange}
+            onChange={(event) => {
+              handleChange(event);
+              let someValue = event.currentTarget.value;
+              console.log("W", someValue);
+              userTyping();
+            }}
             helperText={touched.message ? errors.message : ""}
             error={touched.message && Boolean(errors.message)}
           />

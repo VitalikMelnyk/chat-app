@@ -3,7 +3,7 @@ import { TextField } from "@material-ui/core";
 
 export const FormControlText = ({
   autoFocus = false,
-  maxLength = 50,
+  maxLength = 150,
   id,
   name,
   label,
