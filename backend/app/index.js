@@ -41,6 +41,10 @@ io.on("connection", (socket) => {
   socket.on("join room", async ({ room, user }) => {
     const { _id: roomId, name: roomName } = room;
     const { _id: userId } = user;
+    if (socket.room) {
+      socket.leave(socket.room);
+    }
+    socket.room = roomName;
     socket.join(roomName);
     await Room.findOneAndUpdate(
       { _id: roomId },
