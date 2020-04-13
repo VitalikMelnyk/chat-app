@@ -45,10 +45,8 @@ const SendMessage = ({ onMessageSubmit, userTyping }) => {
             required={false}
             value={values.message}
             onBlur={handleBlur}
-            onChange={(event) => {
-              handleChange(event);
-              let someValue = event.currentTarget.value;
-              console.log("W", someValue);
+            onChange={handleChange}
+            onKeyUp={() => {
               userTyping();
             }}
             helperText={touched.message ? errors.message : ""}

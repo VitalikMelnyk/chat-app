@@ -81,12 +81,16 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("typing", ({ firstName, secondName, roomName }) => {
+  socket.on("typing", ({ firstName, secondName, roomName, isTyping }) => {
     console.log(`${firstName} ${secondName}`);
     console.log(roomName);
-    socket
-      .to(roomName)
-      .emit("typing", { userName: `${firstName} ${secondName}` });
+    if (isTyping) {
+      socket
+        .to(roomName)
+        .emit("user typing", { userName: `${firstName} ${secondName}` });
+    } else {
+      socket.to(roomName).emit("user typing", { userName: "" });
+    }
   });
 
   socket.on("disconnect", () => {});

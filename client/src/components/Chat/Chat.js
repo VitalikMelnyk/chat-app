@@ -207,12 +207,23 @@ const Chat = () => {
     });
   };
 
+  let timeout;
   const userTyping = () => {
     socketIO.emit("typing", {
       firstName,
       secondName,
       roomName: currentRoom.name,
+      isTyping: true,
     });
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      socketIO.emit("typing", {
+        firstName,
+        secondName,
+        roomName: currentRoom.name,
+        isTyping: false,
+      });
+    }, 3000);
   };
   useEffect(() => {
     const socket = io.connect(`${SERVER_URL}/`);
@@ -221,7 +232,7 @@ const Chat = () => {
       console.log(lastMessage);
       dispatch(updateRoomMessage(lastMessage));
     });
-    socket.on("typing", ({ userName }) => {
+    socket.on("user typing", ({ userName }) => {
       console.log("qqqqqqqqqqqqqqqqqqqqqqqqq", userName);
       setTypingUserName(userName);
     });

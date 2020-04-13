@@ -13,6 +13,7 @@ export const FormControlText = ({
   error,
   value,
   onChange,
+  onKeyUp = () => {},
 }) => {
   return (
     <TextField
@@ -31,6 +32,7 @@ export const FormControlText = ({
       onBlur={onBlur}
       helperText={helperText}
       error={error}
+      onKeyUp={onKeyUp}
     />
   );
 };
