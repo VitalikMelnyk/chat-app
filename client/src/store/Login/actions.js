@@ -5,39 +5,39 @@ import {
   CURRENT_USER_INFO_PENDING,
   CURRENT_USER_INFO_ERROR,
   CURRENT_USER_INFO_SUCCESS,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
 } from "../actionTypes";
 
 import { login, logout } from "../../api/services/authentication";
 import { getCurrentUser } from "../../api/services/users";
 
 export const setCurrentUserPending = () => ({
-  type: CURRENT_USER_INFO_PENDING
+  type: CURRENT_USER_INFO_PENDING,
 });
 
-export const setCurrentUserSuccess = payload => ({
+export const setCurrentUserSuccess = (payload) => ({
   type: CURRENT_USER_INFO_SUCCESS,
-  payload
+  payload,
 });
 export const setCurrentUserError = () => ({
-  type: CURRENT_USER_INFO_ERROR
+  type: CURRENT_USER_INFO_ERROR,
 });
 
 export const handleLoginPending = () => ({
-  type: SEND_LOGIN_DATA_PENDING
+  type: SEND_LOGIN_DATA_PENDING,
 });
 export const handleLoginSuccess = () => ({
-  type: SEND_LOGIN_DATA_SUCCESS
+  type: SEND_LOGIN_DATA_SUCCESS,
 });
 export const handleLoginError = () => ({
-  type: SEND_LOGIN_DATA_ERROR
+  type: SEND_LOGIN_DATA_ERROR,
 });
 
 export const logoutSuccess = () => ({
-  type: LOGOUT_SUCCESS
+  type: LOGOUT_SUCCESS,
 });
 
-export const getCurrentUserInfo = () => async dispatch => {
+export const getCurrentUserInfo = () => async (dispatch) => {
   dispatch(setCurrentUserPending());
   try {
     const response = await getCurrentUser();
@@ -48,7 +48,7 @@ export const getCurrentUserInfo = () => async dispatch => {
   }
 };
 
-export const doLogin = fields => async dispatch => {
+export const doLogin = (fields) => async (dispatch) => {
   dispatch(handleLoginPending());
   try {
     const response = await login(fields);
@@ -60,7 +60,7 @@ export const doLogin = fields => async dispatch => {
   }
 };
 
-export const doLogout = () => dispatch => {
+export const doLogout = () => (dispatch) => {
   // clear authenticated cookies
   logout();
 

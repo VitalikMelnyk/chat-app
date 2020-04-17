@@ -5,13 +5,13 @@ import {
   CURRENT_USER_INFO_SUCCESS,
   CURRENT_USER_INFO_ERROR,
   CURRENT_USER_INFO_PENDING,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
 } from "../actionTypes";
 
 const initialState = {
   isAuthenticated: false,
   currentUserInfo: {},
-  isLoading: false
+  isLoading: false,
 };
 
 const LoginReducer = (state = initialState, { type, payload }) => {

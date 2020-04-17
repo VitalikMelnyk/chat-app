@@ -5,11 +5,7 @@ import {
   DELETE_ROOM_SUCCESS,
   ADD_ROOM_SUCCESS,
 } from "../actionTypes";
-import {
-  getRooms,
-  addRoom,
-  deleteRoom,
-} from "../../api/services/chat";
+import { getRooms, addRoom, deleteRoom } from "../../api/services/chat";
 // GET ROOMS
 export const getRoomsPending = () => ({
   type: GET_ROOMS_PENDING,
@@ -60,4 +56,3 @@ export const removeRoom = (id) => async (dispatch) => {
     throw error;
   }
 };
-

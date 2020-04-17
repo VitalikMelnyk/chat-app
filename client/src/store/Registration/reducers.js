@@ -7,12 +7,12 @@ import {
   CHECK_EXIST_EMAIL_AND_SEND_DATA_ERROR,
   SEND_REGISTRATION_DATA_PENDING,
   SEND_REGISTRATION_DATA_SUCCESS,
-  SEND_REGISTRATION_DATA_ERROR
+  SEND_REGISTRATION_DATA_ERROR,
 } from "../actionTypes";
 
 const initialState = {
   activeStep: 0,
-  isLoading: false
+  isLoading: false,
 };
 
 const RegistrationReducer = (state = initialState, { type, payload }) => {
@@ -20,7 +20,7 @@ const RegistrationReducer = (state = initialState, { type, payload }) => {
     case ACTIVE_STEP_INCREMENT:
       return {
         ...state,
-        activeStep: state.activeStep + 1
+        activeStep: state.activeStep + 1,
       };
     case ACTIVE_STEP_DECRAMENT:
       return { ...state, activeStep: state.activeStep - 1 };

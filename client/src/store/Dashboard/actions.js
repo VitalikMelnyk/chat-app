@@ -1,30 +1,30 @@
 import {
   SET_USERS_PENDING,
   SET_USERS_SUCCESS,
-  SET_USERS_ERROR
+  SET_USERS_ERROR,
 } from "./reducers";
-import { getUsers, deleteUser } from "../../api/services/dashboard";
+import { getUsers, deleteUser } from "../../api/services/users";
 import { DELETE_USER_SUCCESS } from "../actionTypes";
 
 export const setUsersPending = () => ({
-  type: SET_USERS_PENDING
+  type: SET_USERS_PENDING,
 });
 
-export const setUsersSuccess = payload => ({
+export const setUsersSuccess = (payload) => ({
   type: SET_USERS_SUCCESS,
-  payload
+  payload,
 });
 
 export const setUsersError = () => ({
-  type: SET_USERS_ERROR
+  type: SET_USERS_ERROR,
 });
 
-export const deleteUserSuccess = id => ({
+export const deleteUserSuccess = (id) => ({
   type: DELETE_USER_SUCCESS,
-  payload: { id }
+  payload: { id },
 });
 
-export const getAllUsers = () => async dispatch => {
+export const getAllUsers = () => async (dispatch) => {
   dispatch(setUsersPending());
   try {
     const response = await getUsers();
@@ -36,7 +36,7 @@ export const getAllUsers = () => async dispatch => {
   }
 };
 
-export const deleteCurrentUser = ({ _id }) => async dispatch => {
+export const deleteCurrentUser = ({ _id }) => async (dispatch) => {
   try {
     await deleteUser(_id);
     dispatch(deleteUserSuccess(_id));

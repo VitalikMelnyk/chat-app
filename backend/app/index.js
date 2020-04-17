@@ -13,15 +13,7 @@ const io = require("socket.io")(server);
 const { User, Room, Message } = require("../models/mongoDB/remoteMongoDB");
 // Connect to local MongoDB
 // const { User } = require("../models/mongoDB/localMongoDB");
-const {
-  register,
-  checkEmail,
-  login,
-  users,
-  getCurrentUser,
-  deleteUser,
-  rooms,
-} = require("../routes");
+const { register, checkEmail, login, users, rooms } = require("../routes");
 app.use(cors());
 // support parsing of application/json type post data
 app.use(bodyParser.json());
@@ -33,8 +25,6 @@ app.use(register);
 app.use(checkEmail);
 app.use(login);
 app.use(users);
-app.use(getCurrentUser);
-app.use(deleteUser);
 app.use(rooms);
 
 io.on("connection", (socket) => {

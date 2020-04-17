@@ -3,112 +3,15 @@ import { useSelector, useDispatch } from "react-redux";
 import io from "socket.io-client";
 import { getMessages } from "../../api/services/messages";
 import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
-import {
-  Paper,
-  Grid,
-  Typography,
-  Box,
-  Container,
-  Avatar,
-  CircularProgress,
-  makeStyles,
-} from "@material-ui/core";
-import InfiniteScroll from "react-infinite-scroller";
+import { Paper, Grid, Typography, Box, Container } from "@material-ui/core";
 import ChatIcon from "@material-ui/icons/Chat";
+import InfiniteScrollComponent from "./components/InfiniteScrollComponent";
 import RoomList from "./components/RoomList";
 import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
-import { getFirstLetters, getDateOfMessage } from "../../shared/functions";
-import chatBackground from "../../assets/img/darkgreenBack.jpg";
 import { SERVER_URL } from "../../shared/constants";
-const useStyles = makeStyles((theme) => ({
-  chatContainer: {
-    minHeight: "90vh",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  chatInner: {
-    minHeight: "inherit",
-  },
-  chat: {
-    minHeight: "80vh",
-  },
-  drawerList: {},
-  messagesEmpty: {
-    height: "100%",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  messagesEmptyIcon: {
-    margin: "0 auto",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "200px",
-    height: "200px",
-    borderRadius: "50%",
-    background: theme.palette.success.main,
-  },
-  messagesEmptyText: {
-    textAlign: "center",
-    fontSize: "20px",
-    margin: "10px 0",
-  },
-  messages: {
-    height: "100%",
-    background: `url(${chatBackground}) center no-repeat`,
-    backgroundSize: "cover",
-  },
-  messagesTitle: {
-    padding: "15px 10px",
-    background: theme.palette.primary.main,
-  },
-  messagesInner: {
-    flexGrow: 1,
-    maxHeight: "60vh",
-    overflow: "auto",
-  },
-  messagesBtn: {
-    padding: "0px 10px",
-  },
-  leftMessages: {
-    textAlign: "left",
-    display: "flex",
-  },
-  rightMessages: {
-    textAlign: "right",
-    display: "flex",
-    flexDirection: "row-reverse",
-  },
-  messagesInnerItem: {
-    flexGrow: 1,
-  },
-  messagesInnerItemMsg: {
-    width: "fit-content",
-    maxWidth: "100%",
-    borderRadius: "20px",
-    padding: "5px 15px",
-    background: theme.palette.background.default,
-    wordBreak: "break-all",
-  },
-  messagesInnerItemMsgLeft: {
-    marginRight: "auto",
-  },
-  messagesInnerItemMsgRight: {
-    marginLeft: "auto",
-  },
-  InfiniteScroll: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  loader: {
-    alignSelf: "center",
-  },
-}));
+import { useStyles } from "./styles";
 
 const Chat = () => {
   const classes = useStyles();
@@ -120,7 +23,6 @@ const Chat = () => {
   const dispatch = useDispatch();
   // Local State
   const [socketIO, setSocketIO] = useState({});
-  const [openRoomDialog, setOpenRoomDialog] = useState(false);
   const [isAddRoom, setIsAddRoom] = useState({
     duration: null,
     severity: null,
@@ -133,14 +35,16 @@ const Chat = () => {
     toggleOpen: false,
     message: "",
   });
-  const [toggleDrawer] = useState(true);
-  const [selectedRoomIndex, setSelectedRoomIndex] = useState(null);
   const [currentRoom, setCurrentRoom] = useState({});
   const { name: roomName = "Name" } = currentRoom;
   const [messages, setMessages] = useState([]);
+  const [selectedRoomIndex, setSelectedRoomIndex] = useState(null);
   const [typingUserName, setTypingUserName] = useState("");
   const [limitPagination] = useState(10);
   const [countMessages, setCountMessages] = useState(0);
+  // Boolean
+  const [openRoomDialog, setOpenRoomDialog] = useState(false);
+  const [toggleDrawer] = useState(true);
   const [hasMoreItems, setHasMoreItems] = useState(true);
 
   // Functions
@@ -322,76 +226,12 @@ const Chat = () => {
                     </Box>
                   </Grid>
                   <Grid item className={classes.messagesInner}>
-                    <InfiniteScroll
-                      pageStart={0}
-                      isReverse={true}
-                      loadMore={getMoreMessages}
-                      hasMore={hasMoreItems}
-                      className={classes.InfiniteScroll}
-                      loader={
-                        <CircularProgress
-                          className={classes.loader}
-                          color="secondary"
-                        />
-                      }
-                      useWindow={false}
-                    >
-                      {messages &&
-                        messages.map(
-                          (
-                            {
-                              message,
-                              date,
-                              user: { firstName, secondName, _id },
-                            },
-                            index
-                          ) => (
-                            <Box key={index}>
-                              <Box
-                                m={2}
-                                className={
-                                  userId === _id
-                                    ? classes.leftMessages
-                                    : classes.rightMessages
-                                }
-                              >
-                                <Box marginX={1.5}>
-                                  <Avatar>
-                                    {getFirstLetters(firstName, secondName)}
-                                  </Avatar>
-                                </Box>
-                                <Box className={classes.messagesInnerItem}>
-                                  <Typography
-                                    variant="subtitle2"
-                                    color="textPrimary"
-                                  >
-                                    {firstName} {secondName}
-                                  </Typography>
-                                  <Typography
-                                    variant="h6"
-                                    color="textSecondary"
-                                    className={`${
-                                      classes.messagesInnerItemMsg
-                                    } ${
-                                      userId === _id
-                                        ? classes.messagesInnerItemMsgLeft
-                                        : classes.messagesInnerItemMsgRight
-                                    }`}
-                                  >
-                                    {message}
-                                  </Typography>
-                                  <Typography
-                                    variant="subtitle2"
-                                    color="textSecondary"
-                                  >
-                                    {getDateOfMessage(date)}
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            </Box>
-                          )
-                        )}
-                    </InfiniteScroll>
+                    <InfiniteScrollComponent
+                      messages={messages}
+                      getMoreMessages={getMoreMessages}
+                      hasMoreItems={hasMoreItems}
+                      userId={userId}
+                    />
                   </Grid>
                   <Grid item className={classes.messagesBtn}>
                     <SendMessage
