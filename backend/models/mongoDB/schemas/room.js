@@ -7,7 +7,7 @@ const roomSchema = new Schema({
     type: String,
   },
   users: [{ type: Schema.Types.ObjectId, ref: "user" }],
-  messages: [{ type: Schema.Types.ObjectId, ref: "message" }],
+  // messages: [{ type: Schema.Types.ObjectId, ref: "message" }],
 });
 
 module.exports = { roomSchema };

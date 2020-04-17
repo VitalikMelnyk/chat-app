@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // Connect to Mongo Cluster
-const { Room } = require("../models/mongoDB/remoteMongoDB");
+const { Room, Message } = require("../models/mongoDB/remoteMongoDB");
 // Connect to local MongoDB
 // const { Room } = require("../models/mongoDB/localMongoDB");
 const { handleError, ErrorHandler } = require("../helpers");
@@ -15,14 +15,33 @@ router.get("/rooms", async (req, res) => {
 });
 
 router.get("/rooms/:id", async (req, res) => {
-  const room = await Room.findOne({ _id: req.params.id }).populate({
-    path: "messages",
-    populate: {
-      path: "user",
-      select: "firstName secondName",
-    },
-  });
+  const room = await Room.findOne({ _id: req.params.id });
   return res.status(200).send(room);
+});
+// id of room
+// query for get messages for needed room
+router.get("/messages/:roomId", async (req, res) => {
+  const { limit, offset } = req.query;
+  const offsetValue = parseInt(offset) || 0;
+  const limitValue = parseInt(limit) || 10;
+  const skip = offsetValue * limitValue;
+  const count = await Message.find({})
+    .where("room")
+    .equals(req.params.roomId)
+    .countDocuments();
+  const messages = await Message.find()
+    .where("room")
+    .equals(req.params.roomId)
+    .sort({ date: -1 })
+    .skip(skip)
+    .limit(limitValue)
+    .populate({ path: "user", select: "firstName secondName" });
+  console.log(messages);
+  const messagesInfo = {
+    count,
+    messages,
+  };
+  return res.status(200).send(messagesInfo);
 });
 
 router.post("/rooms", async (req, res) => {

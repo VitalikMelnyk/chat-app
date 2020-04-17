@@ -42,11 +42,11 @@ const RoomList = ({
   currentUserInfo,
   toggleDrawer,
   selectedRoomIndex,
-  setSelectedRoomIndex,
+  setSelectedRoom,
 }) => {
   const classes = useStyles();
   const onRoomListItemClick = (event, index, room) => {
-    setSelectedRoomIndex(index);
+    setSelectedRoom(index, room);
     onJoinRoom(room, currentUserInfo);
   };
   return (

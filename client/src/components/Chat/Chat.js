@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import io from "socket.io-client";
+import { getMessages } from "../../api/services/messages";
+import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
 import {
   Paper,
   Grid,
@@ -8,23 +10,18 @@ import {
   Box,
   Container,
   Avatar,
+  CircularProgress,
+  makeStyles,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import InfiniteScroll from "react-infinite-scroller";
 import ChatIcon from "@material-ui/icons/Chat";
 import RoomList from "./components/RoomList";
 import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
-import { SERVER_URL } from "../../shared/constants";
-import chatBackground from "../../assets/img/darkgreenBack.jpg";
-import {
-  getAllRooms,
-  createRoom,
-  removeRoom,
-  getCurrentRoom,
-  updateRoomMessage,
-} from "../../store/Chat/actions";
 import { getFirstLetters, getDateOfMessage } from "../../shared/functions";
+import chatBackground from "../../assets/img/darkgreenBack.jpg";
+import { SERVER_URL } from "../../shared/constants";
 const useStyles = makeStyles((theme) => ({
   chatContainer: {
     minHeight: "90vh",
@@ -104,6 +101,13 @@ const useStyles = makeStyles((theme) => ({
   messagesInnerItemMsgRight: {
     marginLeft: "auto",
   },
+  InfiniteScroll: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  loader: {
+    alignSelf: "center",
+  },
 }));
 
 const Chat = () => {
@@ -112,8 +116,7 @@ const Chat = () => {
   const { LoginReducer, ChatReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
   const { firstName, secondName, _id: userId } = currentUserInfo;
-  const { rooms, currentRoom } = ChatReducer;
-  const { name: roomName = "Chat Name", messages = [] } = currentRoom;
+  const { rooms } = ChatReducer;
   const dispatch = useDispatch();
   // Local State
   const [socketIO, setSocketIO] = useState({});
@@ -130,15 +133,42 @@ const Chat = () => {
     toggleOpen: false,
     message: "",
   });
-  const [toggleDrawer, setToggleDrawer] = useState(true);
+  const [toggleDrawer] = useState(true);
   const [selectedRoomIndex, setSelectedRoomIndex] = useState(null);
+  const [currentRoom, setCurrentRoom] = useState({});
+  const { name: roomName = "Name" } = currentRoom;
+  const [messages, setMessages] = useState([]);
   const [typingUserName, setTypingUserName] = useState("");
-  useEffect(() => {
-    const getRooms = async () => {
-      dispatch(getAllRooms());
-    };
-    getRooms();
-  }, [dispatch]);
+  const [limitPagination] = useState(10);
+  const [countMessages, setCountMessages] = useState(0);
+  const [hasMoreItems, setHasMoreItems] = useState(true);
+
+  // Functions
+
+  const setSelectedRoom = async (index, room) => {
+    setSelectedRoomIndex(index);
+    setCurrentRoom(room);
+  };
+
+  const getMoreMessages = async (page) => {
+    const pages = Math.floor(countMessages / limitPagination);
+    if (page - 1 > pages) {
+      setHasMoreItems(false);
+    } else {
+      const responseMoreMesssages = await getMessages(
+        currentRoom._id,
+        limitPagination,
+        page - 1
+      );
+      // It's necessary to reverse array from backend
+      // in order to set messages from end to start
+      setMessages([
+        ...responseMoreMesssages.data.messages.reverse(),
+        ...messages,
+      ]);
+      setCountMessages(responseMoreMesssages.data.count);
+    }
+  };
 
   const addRoom = async (room) => {
     try {
@@ -194,7 +224,6 @@ const Chat = () => {
   };
 
   const onJoinRoom = (room, user) => {
-    dispatch(getCurrentRoom(room._id));
     socketIO.emit("join room", { room, user });
   };
 
@@ -225,19 +254,26 @@ const Chat = () => {
       });
     }, 3000);
   };
+  // Effect
+
+  useEffect(() => {
+    const getRooms = async () => {
+      dispatch(getAllRooms());
+    };
+    getRooms();
+  }, [dispatch]);
+
   useEffect(() => {
     const socket = io.connect(`${SERVER_URL}/`);
     setSocketIO(socket);
     socket.on("receive message", ({ lastMessage }) => {
-      console.log(lastMessage);
-      dispatch(updateRoomMessage(lastMessage));
+      setMessages((prevMessages) => [...prevMessages, lastMessage]);
     });
     socket.on("user typing", ({ userName }) => {
-      console.log("qqqqqqqqqqqqqqqqqqqqqqqqq", userName);
       setTypingUserName(userName);
     });
     return () => {};
-  }, [dispatch]);
+  }, []);
 
   return (
     <>
@@ -247,7 +283,7 @@ const Chat = () => {
             <Grid item xs={3} className={classes.drawerList}>
               <RoomList
                 selectedRoomIndex={selectedRoomIndex}
-                setSelectedRoomIndex={setSelectedRoomIndex}
+                setSelectedRoom={setSelectedRoom}
                 toggleDrawer={toggleDrawer}
                 rooms={rooms}
                 deleteRoom={deleteRoom}
@@ -286,54 +322,76 @@ const Chat = () => {
                     </Box>
                   </Grid>
                   <Grid item className={classes.messagesInner}>
-                    {messages.map(
-                      (
-                        { message, date, user: { firstName, secondName, _id } },
-                        index
-                      ) => (
-                        <Box key={index}>
-                          <Box
-                            m={2}
-                            className={
-                              userId === _id
-                                ? classes.leftMessages
-                                : classes.rightMessages
-                            }
-                          >
-                            <Box marginX={1.5}>
-                              <Avatar>
-                                {getFirstLetters(firstName, secondName)}
-                              </Avatar>
-                            </Box>
-                            <Box className={classes.messagesInnerItem}>
-                              <Typography
-                                variant="subtitle2"
-                                color="textPrimary"
-                              >
-                                {firstName} {secondName}
-                              </Typography>
-                              <Typography
-                                variant="h6"
-                                color="textSecondary"
-                                className={`${classes.messagesInnerItemMsg} ${
+                    <InfiniteScroll
+                      pageStart={0}
+                      isReverse={true}
+                      loadMore={getMoreMessages}
+                      hasMore={hasMoreItems}
+                      className={classes.InfiniteScroll}
+                      loader={
+                        <CircularProgress
+                          className={classes.loader}
+                          color="secondary"
+                        />
+                      }
+                      useWindow={false}
+                    >
+                      {messages &&
+                        messages.map(
+                          (
+                            {
+                              message,
+                              date,
+                              user: { firstName, secondName, _id },
+                            },
+                            index
+                          ) => (
+                            <Box key={index}>
+                              <Box
+                                m={2}
+                                className={
                                   userId === _id
-                                    ? classes.messagesInnerItemMsgLeft
-                                    : classes.messagesInnerItemMsgRight
-                                }`}
+                                    ? classes.leftMessages
+                                    : classes.rightMessages
+                                }
                               >
-                                {message}
-                              </Typography>
-                              <Typography
-                                variant="subtitle2"
-                                color="textSecondary"
-                              >
-                                {getDateOfMessage(date)}
-                              </Typography>
+                                <Box marginX={1.5}>
+                                  <Avatar>
+                                    {getFirstLetters(firstName, secondName)}
+                                  </Avatar>
+                                </Box>
+                                <Box className={classes.messagesInnerItem}>
+                                  <Typography
+                                    variant="subtitle2"
+                                    color="textPrimary"
+                                  >
+                                    {firstName} {secondName}
+                                  </Typography>
+                                  <Typography
+                                    variant="h6"
+                                    color="textSecondary"
+                                    className={`${
+                                      classes.messagesInnerItemMsg
+                                    } ${
+                                      userId === _id
+                                        ? classes.messagesInnerItemMsgLeft
+                                        : classes.messagesInnerItemMsgRight
+                                    }`}
+                                  >
+                                    {message}
+                                  </Typography>
+                                  <Typography
+                                    variant="subtitle2"
+                                    color="textSecondary"
+                                  >
+                                    {getDateOfMessage(date)}
+                                  </Typography>
+                                </Box>
+                              </Box>
                             </Box>
-                          </Box>
-                        </Box>
-                      )
-                    )}
+                          )
+                        )}
+                    </InfiniteScroll>
                   </Grid>
                   <Grid item className={classes.messagesBtn}>
                     <SendMessage

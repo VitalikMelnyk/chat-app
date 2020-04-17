@@ -2,18 +2,13 @@ import {
   GET_ROOMS_PENDING,
   GET_ROOMS_SUCCESS,
   GET_ROOMS_ERROR,
-  GET_ROOM_PENDING,
-  GET_ROOM_SUCCESS,
-  GET_ROOM_ERROR,
   DELETE_ROOM_SUCCESS,
   ADD_ROOM_SUCCESS,
-  UPDATE_ROOM_MESSAGES,
 } from "../actionTypes";
 import {
   getRooms,
   addRoom,
   deleteRoom,
-  getRoom,
 } from "../../api/services/chat";
 // GET ROOMS
 export const getRoomsPending = () => ({
@@ -34,29 +29,6 @@ export const getAllRooms = () => async (dispatch) => {
     dispatch(getRoomsSuccess(response.data));
   } catch (error) {
     dispatch(getRoomsError());
-    throw error;
-  }
-};
-
-// GET ROOM
-export const getRoomPending = () => ({
-  type: GET_ROOM_PENDING,
-});
-export const getRoomSuccess = (payload) => ({
-  type: GET_ROOM_SUCCESS,
-  payload,
-});
-export const getRoomError = () => ({
-  type: GET_ROOM_ERROR,
-});
-export const getCurrentRoom = (roomId) => async (dispatch) => {
-  dispatch(getRoomPending());
-  try {
-    const response = await getRoom(roomId);
-    console.log(response);
-    dispatch(getRoomSuccess(response.data));
-  } catch (error) {
-    dispatch(getRoomError());
     throw error;
   }
 };
@@ -89,8 +61,3 @@ export const removeRoom = (id) => async (dispatch) => {
   }
 };
 
-// Update current room
-export const updateRoomMessage = (payload) => ({
-  type: UPDATE_ROOM_MESSAGES,
-  payload,
-});

@@ -61,23 +61,14 @@ io.on("connection", (socket) => {
     try {
       const createdMessage = await Message.create({
         user: userId,
+        room: roomId,
         message: message,
       });
-      await Room.findOneAndUpdate(
-        { _id: roomId },
-        {
-          $addToSet: {
-            messages: createdMessage._id,
-          },
-        },
-        { new: true, useFindAndModify: false }
-      );
 
       const lastMessage = await Message.findOne({
-        user: userId,
-      })
-        .sort({ date: -1 })
-        .populate({ path: "user", select: "firstName secondName" });
+        _id: createdMessage._id,
+      }).populate({ path: "user", select: "firstName secondName" });
+      console.log(lastMessage);
 
       io.in(roomName).emit("receive message", { lastMessage });
     } catch (error) {
@@ -86,8 +77,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("typing", ({ firstName, secondName, roomName, isTyping }) => {
-    console.log(`${firstName} ${secondName}`);
-    console.log(roomName);
     if (isTyping) {
       socket
         .to(roomName)
