@@ -1,4 +1,5 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   List,
@@ -44,6 +45,7 @@ const RoomList = ({
   selectedRoomIndex,
   setSelectedRoom,
 }) => {
+  const { t } = useTranslation();
   const classes = useStyles();
   const onRoomListItemClick = (event, index, room) => {
     setSelectedRoom(index, room);
@@ -56,7 +58,7 @@ const RoomList = ({
       open={toggleDrawer}
     >
       <Box className={classes.addRoom}>
-        <Typography variant="h5">List of Rooms</Typography>
+        <Typography variant="h5">{t("List of Rooms")}</Typography>
         <Fab
           size="small"
           color="primary"

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import MaterialTable from "material-table";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteCurrentUser } from "../../../store/Dashboard/actions";
@@ -11,21 +12,21 @@ const UsersTable = ({ users }) => {
       { title: "Gender", field: "gender" },
       { title: "Email", field: "email" },
       { title: "City", field: "city" },
-      { title: "Address", field: "address" }
-    ]
+      { title: "Address", field: "address" },
+    ],
   });
-
-  const { LoginReducer } = useSelector(state => state);
+  const { t } = useTranslation();
+  const { LoginReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
   const dispatch = useDispatch();
 
   return (
     <MaterialTable
-      title="List of Users"
+      title={t("List of Users")}
       columns={state.columns}
       data={users}
       editable={{
-        onRowDelete: oldData =>
+        onRowDelete: (oldData) =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
               console.log(oldData);
@@ -36,11 +37,11 @@ const UsersTable = ({ users }) => {
               }
               resolve();
             }, 1000);
-          })
+          }),
       }}
       options={{
         selection: true,
-        actionsColumnIndex: -1
+        actionsColumnIndex: -1,
       }}
     />
   );

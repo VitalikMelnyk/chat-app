@@ -9,11 +9,11 @@ import { useTranslation } from "react-i18next";
 export const SelectLanguage = ({ name }) => {
   const classes = useStyles();
   const { t, i18n } = useTranslation();
-  const { LocaleReducer } = useSelector(state => state);
+  const { LocaleReducer } = useSelector((state) => state);
   const { language } = LocaleReducer;
   const dispatch = useDispatch();
 
-  const handleChangeLanguage = name => event => {
+  const handleChangeLanguage = (name) => (event) => {
     const value = event.target.value;
     const payload = { value, name };
     dispatch(setLanguageApp(payload));
@@ -28,9 +28,9 @@ export const SelectLanguage = ({ name }) => {
         onChange={handleChangeLanguage(name)}
       >
         <MenuItem value="" disabled>
-          <em>Select language</em>
+          <em>{t("Select language")}</em>
         </MenuItem>
-        {languageOptions.map(language => (
+        {languageOptions.map((language) => (
           <MenuItem color="hint" value={language.value} key={language.value}>
             {t(language.label)}
           </MenuItem>

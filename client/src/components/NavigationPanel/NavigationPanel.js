@@ -9,7 +9,7 @@ import {
   Typography,
   Button,
   Menu,
-  MenuItem
+  MenuItem,
 } from "@material-ui/core";
 import FormControlSwitch from "../GeneralComponents/SwitchThemeToggle";
 import { SelectLanguage } from "../GeneralComponents/SelectLanguage";
@@ -25,7 +25,7 @@ const NavigationPanel = () => {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isProfileDialog, setIsProfileDialog] = useState(false);
-  const { ThemeReducer, LoginReducer } = useSelector(state => state);
+  const { ThemeReducer, LoginReducer } = useSelector((state) => state);
   const { themeType, checkedSwitch } = ThemeReducer;
   const { isAuthenticated, currentUserInfo } = LoginReducer;
   const toggleTheme = () => {
@@ -42,7 +42,7 @@ const NavigationPanel = () => {
     dispatch(doLogout());
   };
 
-  const handleClick = event => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -101,7 +101,7 @@ const NavigationPanel = () => {
                 aria-haspopup="true"
                 onClick={handleClick}
               >
-                Open Account
+                {t("Open Account")}
               </Button>
               <Menu
                 id="simple-menu"
@@ -115,7 +115,7 @@ const NavigationPanel = () => {
               >
                 <MenuItem>
                   <Button color="secondary" onClick={openProfileDialog}>
-                    Profile
+                    {t("Profile")}
                   </Button>
                   {isProfileDialog && (
                     <ProfileDialog

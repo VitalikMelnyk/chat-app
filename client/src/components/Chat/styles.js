@@ -50,6 +50,12 @@ export const useStyles = makeStyles((theme) => ({
     maxHeight: "60vh",
     overflow: "auto",
   },
+  messagesBoxEmpty: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+  },
   messagesBtn: {
     padding: "0px 10px",
   },

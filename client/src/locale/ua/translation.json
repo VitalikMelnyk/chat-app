@@ -35,5 +35,19 @@
   "Password must be 8 or more characters": "Пароль повинен бути не менше 8 символів",
   "Must be a number": "Повинно бути числом",
   "Invalid zip code": "Недійсний ЗІП код",
-  "Invalid Date Format": "Недійсний формат дати"
+  "Invalid Date Format": "Недійсний формат дати",
+  "Dashboard": "Панель юзерів",
+  "Open Account": "Відкрити аккаунт",
+  "Chat": "Чат",
+  "Profile": "Профіль",
+  "Log Out": "Вийти",
+  "Select language": "Вибрати мову",
+  "List of Users": "Список юзерів",
+  "List of Rooms": "Список кімнат",
+  "Select a contact to start a conversation": "Вибрати кімнату для початку спілкування",
+  "You successfully deleted the room": "Ви успішно видалили кімнату",
+  "You successfull added the room": "Ви успішно дадали кімнату",
+  "Enter the room name": "Введіть назву кімнату",
+  "There aren't any messages": "Немає жодних повідомлень",
+  "is typing": "набирає повідомлення"
 }

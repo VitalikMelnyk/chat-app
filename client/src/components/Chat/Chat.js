@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import io from "socket.io-client";
 import { getMessages } from "../../api/services/messages";
 import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
@@ -15,6 +16,7 @@ import { useStyles } from "./styles";
 
 const Chat = () => {
   const classes = useStyles();
+  const { t } = useTranslation();
   // Redux
   const { LoginReducer, ChatReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
@@ -40,29 +42,66 @@ const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [selectedRoomIndex, setSelectedRoomIndex] = useState(null);
   const [typingUserName, setTypingUserName] = useState("");
+  //------------------ For Pagination
   const [limitPagination] = useState(10);
   const [countMessages, setCountMessages] = useState(0);
-  // Boolean
+  const [pageStart] = useState(0);
+  const scrollToBottom = useRef(null);
+  const [initialLoad] = useState(false);
+  const [hasMoreItems, setHasMoreItems] = useState(true);
+  // ----------------
+
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
   const [toggleDrawer] = useState(true);
-  const [hasMoreItems, setHasMoreItems] = useState(true);
-
   // Functions
 
+  // When you click on room automatically scroll to bottom of room
+  const scrollToBottomFunction = () => {
+    console.log("scrollToBottom :", scrollToBottom);
+    scrollToBottom.current.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   const setSelectedRoom = async (index, room) => {
-    setSelectedRoomIndex(index);
-    setCurrentRoom(room);
+    const page = 0;
+    if (index === selectedRoomIndex || room._id === currentRoom._id) {
+      setTimeout(() => {
+        scrollToBottomFunction();
+      }, 1000);
+    } else {
+      setSelectedRoomIndex(index);
+      setCurrentRoom(room);
+      const responseMesssages = await getMessages(
+        room._id,
+        limitPagination,
+        page
+      );
+      console.log("Response: ", responseMesssages);
+      // It's necessary to reverse array from backend
+      // in order to set messages from end to start
+      setMessages([...responseMesssages.data.messages.reverse()]);
+      setCountMessages(responseMesssages.data.count);
+      setHasMoreItems(responseMesssages.data.count > limitPagination);
+
+      // Use setTimeout for scrollToBottom
+      setTimeout(() => {
+        scrollToBottomFunction();
+      }, 1500);
+    }
   };
 
   const getMoreMessages = async (page) => {
     const pages = Math.floor(countMessages / limitPagination);
-    if (page - 1 > pages) {
+    // console.log("Page", page);
+    // console.log("Pages", pages);
+    if (page > pages) {
       setHasMoreItems(false);
     } else {
       const responseMoreMesssages = await getMessages(
         currentRoom._id,
         limitPagination,
-        page - 1
+        page
       );
       // It's necessary to reverse array from backend
       // in order to set messages from end to start
@@ -71,6 +110,9 @@ const Chat = () => {
         ...messages,
       ]);
       setCountMessages(responseMoreMesssages.data.count);
+      setHasMoreItems(
+        responseMoreMesssages.data.count > pages * limitPagination
+      );
     }
   };
 
@@ -172,6 +214,7 @@ const Chat = () => {
     setSocketIO(socket);
     socket.on("receive message", ({ lastMessage }) => {
       setMessages((prevMessages) => [...prevMessages, lastMessage]);
+      scrollToBottomFunction();
     });
     socket.on("user typing", ({ userName }) => {
       setTypingUserName(userName);
@@ -207,7 +250,7 @@ const Chat = () => {
                       Chat App
                     </Typography>
                     <Typography variant="h6">
-                      Select a contact to start a conversation!
+                      {t("Select a contact to start a conversation")}!
                     </Typography>
                   </Box>
                 </Box>
@@ -225,20 +268,39 @@ const Chat = () => {
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid item className={classes.messagesInner}>
-                    <InfiniteScrollComponent
-                      messages={messages}
-                      getMoreMessages={getMoreMessages}
-                      hasMoreItems={hasMoreItems}
-                      userId={userId}
-                    />
-                  </Grid>
+                  {messages.length ? (
+                    <Grid item className={classes.messagesInner}>
+                      <InfiniteScrollComponent
+                        pageStart={pageStart}
+                        initialLoad={initialLoad}
+                        currentRoomId={currentRoom._id}
+                        messages={messages}
+                        getMoreMessages={getMoreMessages}
+                        hasMoreItems={hasMoreItems}
+                        userId={userId}
+                      />
+                      {/* Dumpy Box for scrollToBottomRef */}
+                      <Box ref={scrollToBottom}></Box>
+                    </Grid>
+                  ) : (
+                    <Grid item className={classes.messagesBoxEmpty}>
+                      <Box>
+                        <ChatIcon
+                          style={{ fontSize: "100px" }}
+                          color="secondary"
+                        />
+                        <Typography variant="h5" component="h2">
+                          {t("There aren't any messages")}!
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  )}
                   <Grid item className={classes.messagesBtn}>
                     <SendMessage
                       userTyping={userTyping}
                       onMessageSubmit={onMessageSubmit}
                     />
-                    {typingUserName && `${typingUserName} is typing...`}
+                    {typingUserName && `${typingUserName} ${t("is typing")}...`}
                   </Grid>
                 </Grid>
               )}
@@ -264,7 +326,7 @@ const Chat = () => {
           severity={isAddRoom.severity}
           open={isAddRoom.toggleOpen}
           handleClose={() => setIsAddRoom({ toggleOpen: false })}
-          text={isAddRoom.message}
+          text={t(isAddRoom.message)}
         />
       )}
       {isRemoveRoom && (
@@ -273,7 +335,7 @@ const Chat = () => {
           severity={isRemoveRoom.severity}
           open={isRemoveRoom.toggleOpen}
           handleClose={() => setIsRemoveRoom({ toggleOpen: false })}
-          text={isRemoveRoom.message}
+          text={t(isRemoveRoom.message)}
         />
       )}
     </>
