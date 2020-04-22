@@ -1,11 +1,11 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import MaterialTable from "material-table";
-import { useSelector, useDispatch } from "react-redux";
 import { deleteCurrentUser } from "../../../store/Dashboard/actions";
 
 const UsersTable = ({ users }) => {
-  const [state, setState] = useState({
+  const [state] = useState({
     columns: [
       { title: "First Name", field: "firstName" },
       { title: "Second Name", field: "secondName" },

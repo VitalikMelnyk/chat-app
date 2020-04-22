@@ -2,18 +2,19 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
 import { useSelector } from "react-redux";
-import { Button, CircularProgress } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { FormControlText } from "../../GeneralComponents/FormFields";
 import { LoginPageSchema } from "../../../utils/yupFormikValidation";
 import { useStyles } from "../styles";
+import Spinner from "../../GeneralComponents/Spinner";
 
 const LoginFormik = ({ sendLoginData }) => {
   const { t } = useTranslation();
   const classes = useStyles();
-  const { LoginReducer } = useSelector(state => state);
+  const { LoginReducer } = useSelector((state) => state);
   const { isLoading } = LoginReducer;
 
-  const handleSubmitting = fields => {
+  const handleSubmitting = (fields) => {
     sendLoginData(fields);
     console.log(fields);
   };
@@ -21,7 +22,7 @@ const LoginFormik = ({ sendLoginData }) => {
     <Formik
       initialValues={{
         email: "",
-        password: ""
+        password: "",
       }}
       validationSchema={LoginPageSchema}
       onSubmit={handleSubmitting}
@@ -35,14 +36,14 @@ const LoginFormik = ({ sendLoginData }) => {
         dirty,
         values,
         handleChange,
-        handleBlur
+        handleBlur,
       }) => (
         <Form className={classes.LoginForm}>
           <div className={classes.credentialFields}>
             <FormControlText
               name="email"
               id="email"
-              label="Email"
+              label={t("Email")}
               type="text"
               value={values.email}
               onBlur={handleBlur}
@@ -53,7 +54,7 @@ const LoginFormik = ({ sendLoginData }) => {
             <FormControlText
               name="password"
               id="password"
-              label="Password"
+              label={t("Password")}
               type="password"
               value={values.password}
               onBlur={handleBlur}
@@ -85,10 +86,7 @@ const LoginFormik = ({ sendLoginData }) => {
               </Button>
 
               {isLoading && (
-                <CircularProgress
-                  size={24}
-                  className={classes.buttonProgress}
-                />
+                <Spinner size={24} className={classes.buttonProgress} />
               )}
             </div>
           </div>

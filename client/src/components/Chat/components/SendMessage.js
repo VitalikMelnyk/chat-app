@@ -1,10 +1,10 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
-import { IconButton } from "@material-ui/core";
+import { IconButton, makeStyles } from "@material-ui/core";
 import SendIcon from "@material-ui/icons/Send";
 import { FormControlText } from "../../GeneralComponents/FormFields";
-import { makeStyles } from "@material-ui/core/styles";
+
 const useStyles = makeStyles((theme) => ({
   form: {
     display: "flex",
@@ -40,7 +40,7 @@ const SendMessage = ({ onMessageSubmit, userTyping }) => {
           <FormControlText
             name="message"
             id="messsage"
-            label="Enter the message"
+            label={t("Enter the message")}
             type="text"
             required={false}
             value={values.message}

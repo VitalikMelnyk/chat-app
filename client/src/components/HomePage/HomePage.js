@@ -6,7 +6,7 @@ import {
   Typography,
   CardActions,
   Button,
-  CardMedia
+  CardMedia,
 } from "@material-ui/core";
 import AOS from "aos";
 import { useStyles } from "./styles";

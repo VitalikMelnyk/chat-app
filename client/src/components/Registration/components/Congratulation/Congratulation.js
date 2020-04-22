@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router-dom";
 import { Typography } from "@material-ui/core";
 import { useStyles } from "./styles";
-import { useTranslation } from "react-i18next";
 
 const Congratulation = () => {
   const classes = useStyles();

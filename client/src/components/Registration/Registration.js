@@ -3,20 +3,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import AOS from "aos";
 import { Grid, Typography } from "@material-ui/core";
-import { useStyles } from "./styles";
+import {
+  handleActiveStepNext,
+  handleActiveStepBack,
+  sendRegisterData,
+  checkEmailAndSendData,
+} from "../../store/Registration/actions";
 import StepperComponent from "./components/Stepper";
 import PersonalDetails from "./components/PersonalDetails";
 import ContactDetails from "./components/ContactDetails";
 import Introduction from "./components/Introduction";
 import Congratulation from "./components/Congratulation";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
-import {
-  handleActiveStepNext,
-  handleActiveStepBack,
-  handleActiveStepReset,
-  sendRegisterData,
-  checkEmailAndSendData
-} from "../../store/Registration/actions";
+import { useStyles } from "./styles";
 
 const Registration = () => {
   const classes = useStyles();
@@ -27,10 +26,10 @@ const Registration = () => {
   const [isExistEmailMessage, setIsExistEmailMessage] = useState(false);
   const [
     isSuccessRegistrationMessage,
-    setIsSuccessRegistrationMessage
+    setIsSuccessRegistrationMessage,
   ] = useState(false);
   // REDUX
-  const { RegistrationReducer } = useSelector(state => state);
+  const { RegistrationReducer } = useSelector((state) => state);
   const { activeStep } = RegistrationReducer;
   const dispatch = useDispatch();
   // FUNCTIONs
@@ -43,7 +42,7 @@ const Registration = () => {
     dispatch(handleActiveStepBack());
   };
 
-  const checkExistingEmailAndSendData = async latestData => {
+  const checkExistingEmailAndSendData = async (latestData) => {
     setRegistrationInfo(latestData);
     const { email } = latestData;
     try {
@@ -62,7 +61,7 @@ const Registration = () => {
     }
   };
 
-  const sendRegistrationData = async latestData => {
+  const sendRegistrationData = async (latestData) => {
     setRegistrationInfo(latestData);
     try {
       const responseRegistration = await dispatch(sendRegisterData(latestData));
@@ -105,28 +104,26 @@ const Registration = () => {
               setErrorMessage,
               setOpenModalMessage,
               openModalMessage,
-              handleCloseModalMessage
+              handleCloseModalMessage,
             }}
           />
         );
-      // case 2:
-      //   return (
-      //     <ContactDetails
-      //       handleSubmitData={handleSubmit}
-      //       formTitle={t("Contact Details")}
-      //       handleBackStep={handleBackStep}
-      //       error={{
-      //         errorMessage,
-      //         setErrorMessage,
-      //         setOpenModalMessage,
-      //         openModalMessage,
-      //         handleCloseModalMessage
-      //       }}
-      //     />
-      //   );
-      // case 3:
-      //   return <Congratulation />;
       case 2:
+        return (
+          <ContactDetails
+            handleSubmitData={handleSubmit}
+            formTitle={t("Contact Details")}
+            handleBackStep={handleBackStep}
+            error={{
+              errorMessage,
+              setErrorMessage,
+              setOpenModalMessage,
+              openModalMessage,
+              handleCloseModalMessage,
+            }}
+          />
+        );
+      case 3:
         return <Congratulation />;
       default:
         return "Unknown step";
@@ -167,7 +164,7 @@ const Registration = () => {
           severity="success"
           open={isSuccessRegistrationMessage}
           handleClose={() => setIsSuccessRegistrationMessage(false)}
-          text="You are registered!"
+          text={t("You are registered")}
         />
       )}
       {isExistEmailMessage && (
@@ -183,5 +180,4 @@ const Registration = () => {
   );
 };
 
-// export default Registration;
 export default Registration;

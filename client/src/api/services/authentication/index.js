@@ -2,12 +2,12 @@ import { post } from "../../request";
 import {
   getAuthenticationCookies,
   setAuthenticationCookies,
-  clearAuthenticationCookies
+  clearAuthenticationCookies,
 } from "../../cookies";
 
-const requestLogin = credentials => post("/login", { data: credentials });
+const requestLogin = (credentials) => post("/login", { data: credentials });
 
-export const login = async fields => {
+export const login = async (fields) => {
   let authData = getAuthenticationCookies();
   if (
     fields.email ||
@@ -20,7 +20,7 @@ export const login = async fields => {
     setAuthenticationCookies({
       accessToken,
       refreshToken,
-      expires: expireDate ? new Date(expireDate * 1000) : undefined
+      expires: expireDate ? new Date(expireDate * 1000) : undefined,
     });
   }
   return authData;

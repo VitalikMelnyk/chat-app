@@ -1,23 +1,23 @@
 import React from "react";
 import clsx from "clsx";
-import { Settings, GroupAdd, AccountBox } from "@material-ui/icons";
-import DoneAllIcon from "@material-ui/icons/DoneAll";
+import { Settings, GroupAdd, AccountBox, DoneAll } from "@material-ui/icons";
 import { useColorlibStepIconStyles } from "./styles";
-export const ColorlibStepIcon = props => {
+
+export const ColorlibStepIcon = (props) => {
   const classes = useColorlibStepIconStyles();
   const { active, completed } = props;
   const icons = {
     1: <GroupAdd />,
     2: <Settings />,
     3: <AccountBox />,
-    4: <DoneAllIcon />
+    4: <DoneAll />,
   };
 
   return (
     <div
       className={clsx(classes.root, {
         [classes.active]: active,
-        [classes.completed]: completed
+        [classes.completed]: completed,
       })}
     >
       {icons[String(props.icon)]}

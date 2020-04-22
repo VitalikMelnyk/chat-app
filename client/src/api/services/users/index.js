@@ -5,5 +5,5 @@ export const getUsers = () => get("/users", { isAuthenticated: true });
 export const getCurrentUser = () =>
   get("/getCurrentUser", { isAuthenticated: true });
 
-export const deleteUser = id =>
+export const deleteUser = (id) =>
   deleteRequest(`/users/${id}`, { isAuthenticated: true });

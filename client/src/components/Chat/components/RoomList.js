@@ -10,11 +10,12 @@ import {
   Box,
   Typography,
   Drawer,
+  Fab,
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
-import Fab from "@material-ui/core/Fab";
 import AddIcon from "@material-ui/icons/Add";
 import FolderIcon from "@material-ui/icons/Folder";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",

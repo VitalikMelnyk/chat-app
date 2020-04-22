@@ -1,9 +1,15 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Formik, Form } from "formik";
-import { Dialog, DialogTitle, DialogContent, Button } from "@material-ui/core";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  makeStyles,
+} from "@material-ui/core";
 import { FormControlText } from "../../GeneralComponents/FormFields";
-import { makeStyles } from "@material-ui/core/styles";
+
 const useStyles = makeStyles((theme) => ({
   roomDialog: {
     textAlign: "center",
@@ -25,7 +31,7 @@ const CreateRoom = ({ open, setOpen, handleClose, addRoom }) => {
           aria-labelledby="room-dialog"
           className={classes.roomDialog}
         >
-          <DialogTitle id="room-dialog">Enter the room name!</DialogTitle>
+          <DialogTitle id="room-dialog">{t("Enter the room name")}</DialogTitle>
           <DialogContent>
             <Formik
               initialValues={{
@@ -51,7 +57,7 @@ const CreateRoom = ({ open, setOpen, handleClose, addRoom }) => {
                     autoFocus={true}
                     name="room"
                     id="room"
-                    label="Name"
+                    label={t("Room Name")}
                     type="text"
                     required={false}
                     value={values.room}

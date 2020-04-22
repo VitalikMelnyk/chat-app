@@ -5,7 +5,7 @@ const FormControlSwitch = ({
   checkedSwitch,
   toggleTheme,
   label,
-  className
+  className,
 }) => {
   return (
     <FormControlLabel

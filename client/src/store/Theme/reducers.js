@@ -2,7 +2,7 @@ import { SET_THEME_TYPE } from "../actionTypes";
 
 const initialState = {
   checkedSwitch: false,
-  themeType: "dark"
+  themeType: "dark",
 };
 
 const ThemeReducer = (state = initialState, { type, payload }) => {
@@ -11,7 +11,7 @@ const ThemeReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         themeType: payload.newThemeType,
-        checkedSwitch: !payload.checkedSwitch
+        checkedSwitch: !payload.checkedSwitch,
       };
 
     default:

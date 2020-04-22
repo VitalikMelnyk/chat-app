@@ -6,6 +6,7 @@ import {
   CssBaseline,
 } from "@material-ui/core";
 import { createTheme } from "../../theme/config";
+
 const ThemeProvider = ({ children }) => {
   const { ThemeReducer } = useSelector((state) => state);
   const { themeType } = ThemeReducer;

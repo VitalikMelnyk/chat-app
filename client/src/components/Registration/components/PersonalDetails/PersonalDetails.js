@@ -7,7 +7,7 @@ import { Button, CircularProgress } from "@material-ui/core";
 import { ModalMessage } from "../../../GeneralComponents/ModalMessage";
 import {
   FormControlSelect,
-  FormControlText
+  FormControlText,
 } from "../../../GeneralComponents/FormFields";
 import { FormTitle } from "../../../GeneralComponents/FormTitle";
 import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
@@ -15,12 +15,12 @@ import { PersonalDetailsSchema } from "../../../../utils/yupFormikValidation";
 const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { RegistrationReducer } = useSelector(state => state);
+  const { RegistrationReducer } = useSelector((state) => state);
   const { isLoading } = RegistrationReducer;
 
-  const handleSubmitting = fields => {
-    // handleSubmitData(fields, false);
-    handleSubmitData(fields, true);
+  const handleSubmitting = (fields) => {
+    handleSubmitData(fields, false);
+    // handleSubmitData(fields, true);
   };
   return (
     <>
@@ -32,7 +32,7 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
           gender: "",
           email: "",
           password: "",
-          confirmPassword: ""
+          confirmPassword: "",
         }}
         validationSchema={PersonalDetailsSchema}
         onSubmit={handleSubmitting}
@@ -46,14 +46,14 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
           dirty,
           values,
           handleChange,
-          handleBlur
+          handleBlur,
         }) => (
           <Form className={classes.DetailsForm}>
             <div className={classes.credentialFields}>
               <FormControlText
                 name="firstName"
                 id="firstName"
-                label="First Name"
+                label={t("First Name")}
                 type="text"
                 value={values.firstName}
                 onBlur={handleBlur}
@@ -64,7 +64,7 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
               <FormControlText
                 name="secondName"
                 id="secondName"
-                label="Second Name"
+                label={t("Second Name")}
                 type="text"
                 value={values.secondName}
                 onBlur={handleBlur}
@@ -85,7 +85,7 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
               <FormControlText
                 name="email"
                 id="email"
-                label="Email"
+                label={t("Email")}
                 type="text"
                 value={values.email}
                 onBlur={handleBlur}
@@ -98,7 +98,7 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
               <FormControlText
                 name="password"
                 id="password"
-                label="Password"
+                label={t("Password")}
                 type="password"
                 value={values.password}
                 onBlur={handleBlur}
@@ -109,7 +109,7 @@ const PersonalDetails = ({ formTitle, handleSubmitData, error }) => {
               <FormControlText
                 name="confirmPassword"
                 id="confirmPassword"
-                label="Confirm Password"
+                label={t("Confirm Password")}
                 type="password"
                 value={values.confirmPassword}
                 onBlur={handleBlur}

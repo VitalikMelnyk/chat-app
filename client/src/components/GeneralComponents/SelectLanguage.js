@@ -1,10 +1,10 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
 import { FormControl, MenuItem, Select } from "@material-ui/core";
+import { setLanguageApp } from "../../store/Locale/actions";
 import { languageOptions } from "../../shared/functions";
 import { useStyles } from "./styles";
-import { useSelector, useDispatch } from "react-redux";
-import { setLanguageApp } from "../../store/Locale/actions";
-import { useTranslation } from "react-i18next";
 
 export const SelectLanguage = ({ name }) => {
   const classes = useStyles();

@@ -6,7 +6,7 @@ import { useStyles } from "../../styles";
 import { Button, CircularProgress } from "@material-ui/core";
 import {
   FormControlDate,
-  FormControlText
+  FormControlText,
 } from "../../../GeneralComponents/FormFields";
 import { FormTitle } from "../../../GeneralComponents/FormTitle";
 import { SelectAutocompleteCountry } from "./components/SelectAutocompleteCountry";
@@ -17,13 +17,13 @@ const ContactDetails = ({
   formTitle,
   handleSubmitData,
   handleBackStep,
-  error
+  error,
 }) => {
   const classes = useStyles();
   const { t } = useTranslation();
-  const { RegistrationReducer } = useSelector(state => state);
+  const { RegistrationReducer } = useSelector((state) => state);
   const { isLoading } = RegistrationReducer;
-  const handleSubmitting = fields => {
+  const handleSubmitting = (fields) => {
     handleSubmitData(fields, true);
   };
   return (
@@ -36,11 +36,11 @@ const ContactDetails = ({
           country: {
             code: "",
             label: "",
-            phone: ""
+            phone: "",
           },
           city: "",
           address: "",
-          zipCode: ""
+          zipCode: "",
         }}
         validationSchema={ContactDetailsSchema}
         onSubmit={handleSubmitting}
@@ -55,7 +55,7 @@ const ContactDetails = ({
           values,
           handleChange,
           handleBlur,
-          setFieldValue
+          setFieldValue,
         }) => {
           return (
             <Form className={classes.DetailsForm}>
@@ -63,7 +63,7 @@ const ContactDetails = ({
                 <FormControlText
                   name="city"
                   id="city"
-                  label="City"
+                  label={t("City")}
                   type="text"
                   value={values.city}
                   onBlur={handleBlur}
@@ -75,7 +75,7 @@ const ContactDetails = ({
                 <FormControlText
                   name="telephoneNumber"
                   id="telephoneNumber"
-                  label="Telephone Number"
+                  label={t("Telephone Number")}
                   type="text"
                   value={values.telephoneNumber}
                   onBlur={handleBlur}
@@ -92,7 +92,7 @@ const ContactDetails = ({
                 <SelectAutocompleteCountry
                   name="country"
                   id="country"
-                  label="Chooose a country"
+                  label={t("Choose a country")}
                   setFieldValue={setFieldValue}
                   value={values.country}
                   onBlur={handleBlur}
@@ -116,7 +116,7 @@ const ContactDetails = ({
                 <FormControlText
                   name="address"
                   id="address"
-                  label="Address"
+                  label={t("Address")}
                   type="text"
                   value={values.address}
                   onBlur={handleBlur}
@@ -128,7 +128,7 @@ const ContactDetails = ({
                   maxLength={5}
                   name="zipCode"
                   id="zipCode"
-                  label="Zip Code"
+                  label={t("Zip Code")}
                   type="text"
                   value={values.zipCode}
                   onBlur={handleBlur}

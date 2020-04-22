@@ -22,9 +22,9 @@ export const request = (path, { headers, isAuthenticated, ...other } = {}) => {
     headers: {
       "content-type": "application/json",
       authorization: isAuthenticated ? getAuthHeader() : undefined,
-      ...headers
+      ...headers,
     },
-    ...other
+    ...other,
   });
 };
 

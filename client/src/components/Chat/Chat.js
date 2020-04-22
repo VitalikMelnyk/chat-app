@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import io from "socket.io-client";
-import { getMessages } from "../../api/services/messages";
-import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
 import { Paper, Grid, Typography, Box, Container } from "@material-ui/core";
 import ChatIcon from "@material-ui/icons/Chat";
+import { getMessages } from "../../api/services/messages";
+import { getAllRooms, createRoom, removeRoom } from "../../store/Chat/actions";
 import InfiniteScrollComponent from "./components/InfiniteScrollComponent";
 import RoomList from "./components/RoomList";
 import SendMessage from "./components/SendMessage";
 import CreateRoom from "./components/CreateRoom";
+import Spinner from "../GeneralComponents/Spinner";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { SERVER_URL } from "../../shared/constants";
 import { useStyles } from "./styles";
@@ -50,44 +51,50 @@ const Chat = () => {
   const [initialLoad] = useState(false);
   const [hasMoreItems, setHasMoreItems] = useState(true);
   // ----------------
-
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
   const [toggleDrawer] = useState(true);
+  const [spinner, setSpinner] = useState(false);
   // Functions
 
   // When you click on room automatically scroll to bottom of room
-  const scrollToBottomFunction = () => {
-    console.log("scrollToBottom :", scrollToBottom);
-    scrollToBottom.current.scrollIntoView({
-      behavior: "smooth",
-    });
+  const scrollToBottomFunction = (isSmoothly) => {
+    // console.log("scrollToBottom :", scrollToBottom);
+    if (isSmoothly) {
+      scrollToBottom.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    } else {
+      scrollToBottom.current.scrollIntoView(false);
+    }
   };
 
   const setSelectedRoom = async (index, room) => {
     const page = 0;
     if (index === selectedRoomIndex || room._id === currentRoom._id) {
       setTimeout(() => {
-        scrollToBottomFunction();
-      }, 1000);
+        scrollToBottomFunction(true);
+      }, 500);
     } else {
+      setSpinner(true);
       setSelectedRoomIndex(index);
       setCurrentRoom(room);
-      const responseMesssages = await getMessages(
-        room._id,
-        limitPagination,
-        page
-      );
-      console.log("Response: ", responseMesssages);
-      // It's necessary to reverse array from backend
-      // in order to set messages from end to start
-      setMessages([...responseMesssages.data.messages.reverse()]);
-      setCountMessages(responseMesssages.data.count);
-      setHasMoreItems(responseMesssages.data.count > limitPagination);
-
-      // Use setTimeout for scrollToBottom
-      setTimeout(() => {
-        scrollToBottomFunction();
-      }, 1500);
+      try {
+        const responseMesssages = await getMessages(
+          room._id,
+          limitPagination,
+          page
+        );
+        // console.log("Response: ", responseMesssages);
+        // It's necessary to reverse array from backend
+        // in order to set messages from end to start
+        setMessages([...responseMesssages.data.messages.reverse()]);
+        setCountMessages(responseMesssages.data.count);
+        setHasMoreItems(responseMesssages.data.count > limitPagination);
+        setSpinner(false);
+        scrollToBottomFunction(false);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
@@ -103,6 +110,7 @@ const Chat = () => {
         limitPagination,
         page
       );
+      // console.log("responseMoreMesssages :", responseMoreMesssages);
       // It's necessary to reverse array from backend
       // in order to set messages from end to start
       setMessages([
@@ -214,7 +222,7 @@ const Chat = () => {
     setSocketIO(socket);
     socket.on("receive message", ({ lastMessage }) => {
       setMessages((prevMessages) => [...prevMessages, lastMessage]);
-      scrollToBottomFunction();
+      scrollToBottomFunction(true);
     });
     socket.on("user typing", ({ userName }) => {
       setTypingUserName(userName);
@@ -269,19 +277,27 @@ const Chat = () => {
                     </Box>
                   </Grid>
                   {messages.length ? (
-                    <Grid item className={classes.messagesInner}>
-                      <InfiniteScrollComponent
-                        pageStart={pageStart}
-                        initialLoad={initialLoad}
-                        currentRoomId={currentRoom._id}
-                        messages={messages}
-                        getMoreMessages={getMoreMessages}
-                        hasMoreItems={hasMoreItems}
-                        userId={userId}
+                    spinner ? (
+                      <Spinner
+                        color="secondary"
+                        key={1}
+                        className={classes.loader}
                       />
-                      {/* Dumpy Box for scrollToBottomRef */}
-                      <Box ref={scrollToBottom}></Box>
-                    </Grid>
+                    ) : (
+                      <Grid item className={classes.messagesInner}>
+                        <InfiniteScrollComponent
+                          pageStart={pageStart}
+                          initialLoad={initialLoad}
+                          currentRoomId={currentRoom._id}
+                          messages={messages}
+                          getMoreMessages={getMoreMessages}
+                          hasMoreItems={hasMoreItems}
+                          userId={userId}
+                        />
+                        {/* Dumpy Box for scrollToBottomRef */}
+                        <Box ref={scrollToBottom}></Box>
+                      </Grid>
+                    )
                   ) : (
                     <Grid item className={classes.messagesBoxEmpty}>
                       <Box>

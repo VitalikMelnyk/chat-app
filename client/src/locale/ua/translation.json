@@ -14,6 +14,7 @@
   "Date of birth": "Дата Народження",
   "Email": "Емейл",
   "Password": "Пароль",
+  "Confirm Password": "Підтвердити пароль",
   "Select your gender": "Виберіть вашу стать",
   "Male": "Чоловіча",
   "Female": "Жіноча",
@@ -21,6 +22,7 @@
   "Contact Details": "Контактні дані",
   "City": "Місто",
   "Telephone Number": "Номер телефону",
+  "Telephone": "Телефон",
   "Choose a country": "Виберіть країну",
   "Address": "Адрес",
   "Zip Code": "ЗІП код",
@@ -49,5 +51,11 @@
   "You successfull added the room": "Ви успішно дадали кімнату",
   "Enter the room name": "Введіть назву кімнату",
   "There aren't any messages": "Немає жодних повідомлень",
-  "is typing": "набирає повідомлення"
+  "is typing": "набирає повідомлення",
+  "Room Name": "Назва кімнати",
+  "Enter the message": "Введіть повідомлення",
+  "Close": "Закрити",
+  "Error Message": "Помилка",
+  "You are successful log in system": "Ви успішно ввійшли в систему",
+  "You are registered": "Ви успішно зареєструвалися"
 }
