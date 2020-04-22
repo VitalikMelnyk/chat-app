@@ -6,7 +6,7 @@ const REFRESH_TOKEN_NAME = "RefreshToken";
 export const setAuthenticationCookies = ({
   accessToken,
   refreshToken,
-  expires
+  expires,
 }) => {
   Cookies.set(ACCESS_TOKEN_NAME, accessToken, { expires });
   Cookies.set(REFRESH_TOKEN_NAME, refreshToken);
@@ -14,7 +14,7 @@ export const setAuthenticationCookies = ({
 
 export const getAuthenticationCookies = () => ({
   accessToken: Cookies.get(ACCESS_TOKEN_NAME),
-  refreshToken: Cookies.get(REFRESH_TOKEN_NAME)
+  refreshToken: Cookies.get(REFRESH_TOKEN_NAME),
 });
 
 export const clearAuthenticationCookies = () => {
@@ -25,5 +25,5 @@ export const clearAuthenticationCookies = () => {
 export default {
   setAuthenticationCookies,
   getAuthenticationCookies,
-  clearAuthenticationCookies
+  clearAuthenticationCookies,
 };

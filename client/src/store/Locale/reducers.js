@@ -1,7 +1,7 @@
 import { SET_LANGUAGE_APP } from "../actionTypes";
 
 const initialState = {
-  language: "en"
+  language: "en",
 };
 
 const LocaleReducer = (state = initialState, { type, payload }) => {

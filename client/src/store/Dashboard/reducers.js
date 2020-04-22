@@ -6,7 +6,7 @@ export const SET_USERS_ERROR = "SET_USERS_ERROR";
 
 const initialState = {
   users: [],
-  isLoading: false
+  isLoading: false,
 };
 
 const DashboardReducer = (state = initialState, { type, payload }) => {
@@ -21,7 +21,7 @@ const DashboardReducer = (state = initialState, { type, payload }) => {
     case DELETE_USER_SUCCESS:
       return {
         ...state,
-        users: state.users.filter(({ _id }) => _id !== payload.id)
+        users: state.users.filter(({ _id }) => _id !== payload.id),
       };
     default:
       return state;

@@ -3,17 +3,17 @@ import {
   lime,
   blueGrey,
   lightGreen,
-  deepPurple
+  deepPurple,
 } from "@material-ui/core/colors";
 
 const customStyles = {
   background: {
     default: "#383a4f",
-    signupForm: "#3C3F58"
-  }
+    signupForm: "#3C3F58",
+  },
 };
 
-export const createTheme = themeType => {
+export const createTheme = (themeType) => {
   const theme = {
     palette: {
       type: themeType,
@@ -27,12 +27,12 @@ export const createTheme = themeType => {
         signupForm:
           themeType === "light"
             ? blueGrey[400]
-            : customStyles.background.signupForm
-      }
+            : customStyles.background.signupForm,
+      },
     },
     typography: {
-      fontFamily: 'Open Sans" sans-serif'
-    }
+      fontFamily: 'Open Sans" sans-serif',
+    },
   };
 
   return theme;

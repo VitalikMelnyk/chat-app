@@ -1,11 +1,11 @@
 import { makeStyles } from "@material-ui/core/styles";
-export const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles((theme) => ({
   root: {
-    minHeight: "100vh",
+    minHeight: "90vh",
     background: theme.palette.background.default,
     fontWeight: "700",
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   signUpContainer: {},
   signUpHeader: {
@@ -14,39 +14,39 @@ export const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   signUpMain: {
     background: theme.palette.background.signupForm,
     borderRadius: "30px",
-    boxShadow: "0px 8px 20px 0px rgba(0, 0, 0, 0.15)"
+    boxShadow: "0px 8px 20px 0px rgba(0, 0, 0, 0.15)",
   },
   signUpTitle: {
     fontSize: "35px",
-    fontWeight: "900"
+    fontWeight: "900",
   },
   signUpSubtitle: {},
   signUpFormBox: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
-    margin: "10px",
+    margin: "0 10px",
     padding: "30px 10px 30px",
     borderRadius: "20px",
     // minHeight: "450px",
     "& .MuiButtonGroup-root": {
-      justifyContent: "space-between"
-    }
+      justifyContent: "space-between",
+    },
   },
   DetailsForm: {
-    padding: "20px 0"
+    padding: "20px 0",
   },
   credentialFields: {
     display: "flex",
     justifyContent: "space-around",
     "& .MuiFormControl-root": {
-      margin: "10px"
-    }
+      margin: "10px",
+    },
   },
   formFields: {
     display: "flex",
@@ -54,44 +54,44 @@ export const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     "& .MuiFormControl-root": {
-      margin: "10px 5px 20px"
+      margin: "10px 5px 20px",
     },
     "& .MuiFormGroup-root": {
       flexDirection: "row",
-      justifyContent: "center"
+      justifyContent: "center",
     },
     "& .MuiFormLabel-root": {
       textAlign: "center",
-      fontWeight: "700"
-    }
+      fontWeight: "700",
+    },
   },
 
   switchThemeToggle: {
     "& .MuiTypography-root.MuiFormControlLabel-label": {
-      color: theme.palette.text.primary
-    }
+      color: theme.palette.text.primary,
+    },
   },
   selectLanguage: {
     "& .MuiTypography-root.MuiFormControlLabel-label": {
-      color: theme.palette.text.primary
-    }
+      color: theme.palette.text.primary,
+    },
   },
   btn: {
     "& .MuiButton-root": {
-      marginRight: "15px"
-    }
+      marginRight: "15px",
+    },
   },
   personalDetailsBtn: {
-    display: "flex"
+    display: "flex",
   },
   contactBtn: {
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   },
   contactBtnItem: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   buttonProgress: {
     color: theme.palette.primary.main,
@@ -99,10 +99,10 @@ export const useStyles = makeStyles(theme => ({
     top: "50%",
     left: "50%",
     marginTop: -12,
-    marginLeft: -12
+    marginLeft: -12,
   },
   wrapper: {
     margin: theme.spacing(1),
-    position: "relative"
-  }
+    position: "relative",
+  },
 }));

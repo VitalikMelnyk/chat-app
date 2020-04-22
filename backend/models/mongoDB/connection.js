@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 const {
   LOCAL_CONNECTION_URL,
-  REMOTE_CONNECTION_URL
+  REMOTE_CONNECTION_URL,
 } = require("../../helpers/constants");
 
 const localMongoDBConnection = mongoose.createConnection(
-  LOCAL_CONNECTION_URL,
+  process.env.MONGODB_URI || LOCAL_CONNECTION_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 3000
+    serverSelectionTimeoutMS: 3000,
   },
-  err => {
+  (err) => {
     if (err) {
       console.log(
         "Unable to connect to the database. Please make sure that you have mongo db installed. Also, please make sure that you changed MY_HOST  constant inside constants.js file if it necessary. Error:",
@@ -23,13 +23,13 @@ const localMongoDBConnection = mongoose.createConnection(
   }
 );
 const remoteMongoDBConnection = mongoose.createConnection(
-  REMOTE_CONNECTION_URL,
+  process.env.MONGODB_URI || REMOTE_CONNECTION_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    serverSelectionTimeoutMS: 3000
+    serverSelectionTimeoutMS: 3000,
   },
-  err => {
+  (err) => {
     if (err) {
       console.log("Error occurred while connecting to MongoDB Atlas...", err);
     } else {

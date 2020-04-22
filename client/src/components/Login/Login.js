@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import AOS from "aos";
 import { useTranslation } from "react-i18next";
+import AOS from "aos";
 import { Grid, Typography } from "@material-ui/core";
-import { useStyles } from "./styles";
+import { getCurrentUserInfo, doLogin } from "../../store/Login/actions";
 import LoginFormik from "./components/LoginFormik";
 import { SnackBarMessage } from "../GeneralComponents/SnackBarMessage";
 import { ModalMessage } from "../GeneralComponents/ModalMessage";
-import { getCurrentUserInfo, doLogin } from "../../store/Login/actions";
+import { useStyles } from "./styles";
 
 const LoginPage = () => {
   const history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
   const { t } = useTranslation();
-  const [loginInfo, setLoginInfo] = useState({});
+
+  const [, setLoginInfo] = useState({});
   const [errorMessage, setErrorMessage] = useState("");
   const [isSuccessLoginMessage, setIsSuccessLoginMessage] = useState(false);
   const [isFailureLoginMessage, setIsFailureLoginMessage] = useState(false);
   const [openModalMessage, setOpenModalMessage] = useState(false);
 
-  const sendAuthData = async fields => {
+  const sendAuthData = async (fields) => {
     setLoginInfo(fields);
     try {
       const loginResponse = await dispatch(doLogin(fields));
@@ -30,7 +31,7 @@ const LoginPage = () => {
         setIsSuccessLoginMessage(true);
         // Get current user request
         await dispatch(getCurrentUserInfo());
-        history.push("dashboard");
+        history.push("home");
       }
     } catch (error) {
       console.log(error);
@@ -86,7 +87,7 @@ const LoginPage = () => {
           severity="success"
           open={isSuccessLoginMessage}
           handleClose={() => setIsSuccessLoginMessage(false)}
-          text="You are successful log in system!"
+          text={t("You are successful log in system")}
         />
       )}
       {isFailureLoginMessage && (

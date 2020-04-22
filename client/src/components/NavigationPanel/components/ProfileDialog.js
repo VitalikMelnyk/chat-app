@@ -1,14 +1,17 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Typography
+  Typography,
+  Divider,
 } from "@material-ui/core";
 
 const ProfileDialog = ({ open, handleClose, currentUserInfo }) => {
+  const { t } = useTranslation();
   const {
     firstName,
     secondName,
@@ -16,7 +19,7 @@ const ProfileDialog = ({ open, handleClose, currentUserInfo }) => {
     email,
     telephoneNumber,
     city,
-    address
+    address,
   } = currentUserInfo;
   return (
     <Dialog
@@ -28,16 +31,27 @@ const ProfileDialog = ({ open, handleClose, currentUserInfo }) => {
       <DialogTitle id="profile-dialog-title">
         {firstName} {secondName}
       </DialogTitle>
+      <Divider />
       <DialogContent id="profile-dialog-description">
-        <Typography>Email: {email}</Typography>
-        <Typography>Telephone: {telephoneNumber}</Typography>
-        <Typography>Gender: {gender}</Typography>
-        <Typography>City: {city}</Typography>
-        <Typography>Address: {address}</Typography>
+        <Typography>
+          {t("Email")}: {email}
+        </Typography>
+        <Typography>
+          {t("Telephone")}: {telephoneNumber}
+        </Typography>
+        <Typography>
+          {t("Gender")}: {gender}
+        </Typography>
+        <Typography>
+          {t("City")}: {city}
+        </Typography>
+        <Typography>
+          {t("Address")}: {address}
+        </Typography>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} color="secondary" autoFocus>
-          Close
+          {t("Close")}
         </Button>
       </DialogActions>
     </Dialog>

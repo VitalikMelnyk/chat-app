@@ -1,9 +1,9 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
-import { useStyles } from "./styles";
 
 export const FormControlText = ({
-  maxLength = 50,
+  autoFocus = false,
+  maxLength = 150,
   id,
   name,
   label,
@@ -12,15 +12,13 @@ export const FormControlText = ({
   helperText,
   error,
   value,
-  onChange
+  onChange,
+  onKeyUp = () => {},
 }) => {
-  const classes = useStyles();
   return (
     <TextField
       inputProps={{ maxLength: maxLength }}
-      classes={{
-        root: classes.credentialFieldItem
-      }}
+      autoFocus={autoFocus}
       fullWidth
       required
       color="secondary"
@@ -34,6 +32,7 @@ export const FormControlText = ({
       onBlur={onBlur}
       helperText={helperText}
       error={error}
+      onKeyUp={onKeyUp}
     />
   );
 };

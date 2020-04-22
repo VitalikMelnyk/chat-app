@@ -11,7 +11,7 @@ export const SelectAutocompleteCountry = ({
   onBlur,
   helperText,
   error,
-  setFieldValue
+  setFieldValue,
 }) => {
   return (
     <Autocomplete
@@ -29,13 +29,13 @@ export const SelectAutocompleteCountry = ({
       onChange={(e, value) => {
         setFieldValue("country", value);
       }}
-      getOptionLabel={option => option.label}
-      renderOption={option => (
+      getOptionLabel={(option) => option.label}
+      renderOption={(option) => (
         <>
           {option.label} ({option.code})
         </>
       )}
-      renderInput={params => (
+      renderInput={(params) => (
         <TextField
           color="secondary"
           id={id}
@@ -46,7 +46,7 @@ export const SelectAutocompleteCountry = ({
           label={label}
           variant="standard"
           inputProps={{
-            ...params.inputProps
+            ...params.inputProps,
           }}
         />
       )}

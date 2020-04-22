@@ -67,6 +67,8 @@
     "react-dev-utils": "^10.2.0",
     "react-dom": "^16.13.0",
     "react-i18next": "^11.3.3",
+    "react-infinite-scroll-component": "^5.0.4",
+    "react-infinite-scroller": "^1.2.4",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",

@@ -1,48 +1,47 @@
 import React, { useState } from "react";
-import MaterialTable from "material-table";
 import { useSelector, useDispatch } from "react-redux";
+import { useTranslation } from "react-i18next";
+import MaterialTable from "material-table";
 import { deleteCurrentUser } from "../../../store/Dashboard/actions";
 
 const UsersTable = ({ users }) => {
-  const [state, setState] = useState({
+  const [state] = useState({
     columns: [
       { title: "First Name", field: "firstName" },
       { title: "Second Name", field: "secondName" },
       { title: "Gender", field: "gender" },
       { title: "Email", field: "email" },
       { title: "City", field: "city" },
-      { title: "Address", field: "address" }
-    ]
+      { title: "Address", field: "address" },
+    ],
   });
-
-  const { LoginReducer } = useSelector(state => state);
+  const { t } = useTranslation();
+  const { LoginReducer } = useSelector((state) => state);
   const { currentUserInfo } = LoginReducer;
   const dispatch = useDispatch();
 
   return (
     <MaterialTable
-      title="List of Users"
+      title={t("List of Users")}
       columns={state.columns}
       data={users}
       editable={{
-        onRowDelete: oldData =>
+        onRowDelete: (oldData) =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              {
-                console.log(oldData);
-                if (oldData._id === currentUserInfo._id) {
-                  alert("You can't delete admin");
-                } else {
-                  dispatch(deleteCurrentUser(oldData));
-                }
+              console.log(oldData);
+              if (oldData._id === currentUserInfo._id) {
+                alert("You can't delete admin");
+              } else {
+                dispatch(deleteCurrentUser(oldData));
               }
               resolve();
             }, 1000);
-          })
+          }),
       }}
       options={{
         selection: true,
-        actionsColumnIndex: -1
+        actionsColumnIndex: -1,
       }}
     />
   );

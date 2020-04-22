@@ -5,7 +5,7 @@ const { User } = require("../models/mongoDB/remoteMongoDB");
 const {
   verifyToken,
   accessTokenSecret,
-  getTokenFromRedis
+  getTokenFromRedis,
 } = require("../helpers");
 
 const isAuth = async (req, res, next) => {

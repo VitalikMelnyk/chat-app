@@ -37,38 +37,38 @@ const validateRegistration = () => {
       }
       return true;
     }),
-    check("city")
-      .not()
-      .isEmpty()
-      .withMessage("City is required!"),
-    check("telephoneNumber")
-      .not()
-      .isEmpty()
-      .withMessage("Telephone Number is required!")
-      .matches(phoneRegExp)
-      .withMessage("Telephone Number is not valid!"),
-    check("birthdayDate")
-      .not()
-      .isEmpty()
-      .withMessage("BirthDay Date is required!")
-      .matches(birthdayDateRegExp)
-      .withMessage("BirthDay Date is invalid!"),
-    check("country")
-      .not()
-      .isEmpty()
-      .withMessage("Country is required!"),
-    check("address")
-      .not()
-      .isEmpty()
-      .withMessage("Address is required!"),
-    check("zipCode")
-      .not()
-      .isEmpty()
-      .withMessage("Zip Code is required!")
-      .matches(zipCodeRegExp)
-      .withMessage("Must be only digits!")
-      .isLength({ min: 5, max: 5 })
-      .withMessage("Must be exactly 5 digits!")
+    // check("city")
+    //   .not()
+    //   .isEmpty()
+    //   .withMessage("City is required!"),
+    // check("telephoneNumber")
+    //   .not()
+    //   .isEmpty()
+    //   .withMessage("Telephone Number is required!")
+    //   .matches(phoneRegExp)
+    //   .withMessage("Telephone Number is not valid!"),
+    // check("birthdayDate")
+    //   .not()
+    //   .isEmpty()
+    //   .withMessage("BirthDay Date is required!")
+    //   .matches(birthdayDateRegExp)
+    //   .withMessage("BirthDay Date is invalid!"),
+    // check("country")
+    //   .not()
+    //   .isEmpty()
+    //   .withMessage("Country is required!"),
+    // check("address")
+    //   .not()
+    //   .isEmpty()
+    //   .withMessage("Address is required!"),
+    // check("zipCode")
+    //   .not()
+    //   .isEmpty()
+    //   .withMessage("Zip Code is required!")
+    //   .matches(zipCodeRegExp)
+    //   .withMessage("Must be only digits!")
+    //   .isLength({ min: 5, max: 5 })
+    //   .withMessage("Must be exactly 5 digits!")
   ];
 };
 

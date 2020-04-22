@@ -12,7 +12,7 @@ const {
   generateToken,
   decodeTokenExpiresIn,
   accessTokenSecret,
-  refreshTokenSecret
+  refreshTokenSecret,
 } = require("../helpers");
 
 router.post("/login", async (req, res, next) => {
@@ -26,7 +26,7 @@ router.post("/login", async (req, res, next) => {
     const {
       email: userEmailFromDB,
       password: userPasswordFromDB,
-      id: userId
+      id: userId,
     } = getUserFromDB;
     const verifyPassword = await isVerifyPassword(
       passwordFromClient,
@@ -37,14 +37,15 @@ router.post("/login", async (req, res, next) => {
     }
     // Generate token to client
     if (userEmailFromDB && verifyPassword) {
-      const accessToken = await generateToken(userId, accessTokenSecret, "1h");
+      const accessToken = await generateToken(userId, accessTokenSecret, "1d");
       const refreshToken = await generateToken(
         userId,
         refreshTokenSecret,
-        "1d"
+        "7d"
       );
       const expireDate = await decodeTokenExpiresIn(accessToken);
       const options = { accessToken, refreshToken, expireDate };
+      console.log("userId :", userId);
       redisClient.set(userId, JSON.stringify(options));
       return res.send(options);
     }

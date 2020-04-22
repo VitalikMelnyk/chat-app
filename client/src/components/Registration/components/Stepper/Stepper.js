@@ -16,7 +16,7 @@ const StepperComponent = ({ activeStep }) => {
       activeStep={activeStep}
       connector={<ColorlibConnector />}
     >
-      {steps.map(label => (
+      {steps.map((label) => (
         <Step key={label}>
           <StepLabel StepIconComponent={ColorlibStepIcon}>{t(label)}</StepLabel>
         </Step>

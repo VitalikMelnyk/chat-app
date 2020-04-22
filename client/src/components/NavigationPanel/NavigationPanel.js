@@ -9,14 +9,14 @@ import {
   Typography,
   Button,
   Menu,
-  MenuItem
+  MenuItem,
 } from "@material-ui/core";
+import { setThemeType } from "../../store/Theme/actions";
+import { doLogout } from "../../store/Login/actions";
 import FormControlSwitch from "../GeneralComponents/SwitchThemeToggle";
 import { SelectLanguage } from "../GeneralComponents/SelectLanguage";
-import { setThemeType } from "../../store/Theme/actions";
-import { useStyles } from "./styles";
-import { doLogout } from "../../store/Login/actions";
 import ProfileDialog from "./components/ProfileDialog";
+import { useStyles } from "./styles";
 
 const NavigationPanel = () => {
   const token = Cookies.get("AccessToken");
@@ -25,7 +25,7 @@ const NavigationPanel = () => {
   const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState(null);
   const [isProfileDialog, setIsProfileDialog] = useState(false);
-  const { ThemeReducer, LoginReducer } = useSelector(state => state);
+  const { ThemeReducer, LoginReducer } = useSelector((state) => state);
   const { themeType, checkedSwitch } = ThemeReducer;
   const { isAuthenticated, currentUserInfo } = LoginReducer;
   const toggleTheme = () => {
@@ -42,10 +42,10 @@ const NavigationPanel = () => {
     dispatch(doLogout());
   };
 
-  const handleClick = event => {
+  const handleOpenMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleCloseMenu = () => {
     setAnchorEl(null);
   };
 
@@ -99,9 +99,9 @@ const NavigationPanel = () => {
                 color="secondary"
                 aria-controls="simple-menu"
                 aria-haspopup="true"
-                onClick={handleClick}
+                onClick={handleOpenMenu}
               >
-                Open Account
+                {t("Open Account")}
               </Button>
               <Menu
                 id="simple-menu"
@@ -111,11 +111,11 @@ const NavigationPanel = () => {
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 transformOrigin={{ vertical: "top", horizontal: "center" }}
                 open={Boolean(anchorEl)}
-                onClose={handleClose}
+                onClose={handleCloseMenu}
               >
                 <MenuItem>
                   <Button color="secondary" onClick={openProfileDialog}>
-                    Profile
+                    {t("Profile")}
                   </Button>
                   {isProfileDialog && (
                     <ProfileDialog

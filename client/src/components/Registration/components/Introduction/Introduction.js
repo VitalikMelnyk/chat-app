@@ -1,7 +1,8 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Button, ButtonGroup } from "@material-ui/core";
 import { useStyles } from "./styles";
-import { useTranslation } from "react-i18next";
+
 const Introduction = ({ handleNextStep }) => {
   const classes = useStyles();
   const { t } = useTranslation();
