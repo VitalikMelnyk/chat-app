@@ -3,7 +3,7 @@ const {
   generateToken,
   decodeTokenExpiresIn,
   verifyToken,
-  getTokenFromRedis
+  getTokenFromRedis,
 } = require("./tokens");
 const {
   LOCAL_CONNECTION_URL,
@@ -11,7 +11,7 @@ const {
   accessTokenSecret,
   refreshTokenSecret,
   port,
-  saltRounds
+  saltRounds,
 } = require("./constants");
 const { ErrorHandler, handleError } = require("./error");
 const { validateRegistration } = require("./validator/validateRegistration");
@@ -31,5 +31,5 @@ module.exports = {
   saltRounds,
   ErrorHandler,
   handleError,
-  validateRegistration
+  validateRegistration,
 };

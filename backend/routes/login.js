@@ -12,7 +12,7 @@ const {
   generateToken,
   decodeTokenExpiresIn,
   accessTokenSecret,
-  refreshTokenSecret
+  refreshTokenSecret,
 } = require("../helpers");
 
 router.post("/login", async (req, res, next) => {
@@ -26,7 +26,7 @@ router.post("/login", async (req, res, next) => {
     const {
       email: userEmailFromDB,
       password: userPasswordFromDB,
-      id: userId
+      id: userId,
     } = getUserFromDB;
     const verifyPassword = await isVerifyPassword(
       passwordFromClient,

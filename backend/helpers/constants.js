@@ -25,5 +25,5 @@ module.exports = {
   port,
   accessTokenSecret,
   refreshTokenSecret,
-  refreshTokens
+  refreshTokens,
 };

@@ -6,7 +6,7 @@ const { User } = require("../models/mongoDB/remoteMongoDB");
 // const { User } = require("../models/mongoDB/localMongoDB");
 const { validationResult } = require("express-validator");
 const {
-  validateRegistration
+  validateRegistration,
 } = require("../helpers/validator/validateRegistration");
 const { getHashedPassword, saltRounds } = require("../helpers");
 
@@ -22,7 +22,7 @@ router.post("/register", validateRegistration(), async (req, res, next) => {
     birthdayDate,
     country,
     address,
-    zipCode
+    zipCode,
   } = req.body;
   try {
     const validateErrors = validationResult(req);
@@ -44,7 +44,7 @@ router.post("/register", validateRegistration(), async (req, res, next) => {
       birthdayDate,
       address,
       country,
-      zipCode
+      zipCode,
     };
     await User.create(userInfo, (err, result) => {
       if (err) {
