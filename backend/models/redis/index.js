@@ -1,9 +1,9 @@
 const redis = require("redis");
 const REMOTE_REDIS_ENDPOINT =
-  "redis-17371.c99.us-east-1-4.ec2.cloud.redislabs.com";
+  "redis-12204.c89.us-east-1-3.ec2.cloud.redislabs.com";
 
-const REMOTE_REDIS_PORT = 17371;
-const REMOTE_REDIS_AUTH = "MfM8d4Q61rAbcgWXjzPWJGzTFeys7XBw";
+const REMOTE_REDIS_PORT = 12204;
+const REMOTE_REDIS_AUTH = "8qmM0vDZM46eOiWqgqOc9Hee78R82Tf4";
 // const redisClient = redis.createClient({ host: "127.0.0.1", port: 6379 });
 const redisClient = redis.createClient({
   host: REMOTE_REDIS_ENDPOINT,
