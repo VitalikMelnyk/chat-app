@@ -7,7 +7,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "node --inspect server.js",
     "start": "node server.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "server": "nodemon server.js",
+    "client": "nom start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
   "author": "",
   "license": "ISC",
