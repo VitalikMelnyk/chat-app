@@ -5,11 +5,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { port } = require("../helpers/constants");
 const app = express();
-const server = app.listen(port, () =>
-  console.log(`Example app listening on port ${port}!`)
-);
-// SOCKET CONFIG
-const io = require("socket.io")(server);
+
 // Connect to Mongo Cluster
 const { User, Room, Message } = require("../models/mongoDB/remoteMongoDB");
 // Connect to local MongoDB
@@ -31,10 +27,16 @@ app.use(rooms);
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("/client/build"));
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "build", "index.html" ));
+    res.sendFile(path.join(__dirname, "client", "build", "index.html"));
   });
 }
 
+const server = app.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+);
+
+// SOCKET CONFIG
+const io = require("socket.io")(server);
 io.on("connection", (socket) => {
   socket.on("join room", async ({ room, user }) => {
     const { _id: roomId, name: roomName } = room;
