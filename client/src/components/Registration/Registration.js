@@ -6,6 +6,7 @@ import { Grid, Typography } from "@material-ui/core";
 import {
   handleActiveStepNext,
   handleActiveStepBack,
+  handleActiveStepReset,
   sendRegisterData,
   checkEmailAndSendData,
 } from "../../store/Registration/actions";
@@ -40,6 +41,10 @@ const Registration = () => {
   };
   const handleBackStep = () => {
     dispatch(handleActiveStepBack());
+  };
+
+  const handleResetStep = () => {
+    dispatch(handleActiveStepReset());
   };
 
   const checkExistingEmailAndSendData = async (latestData) => {
@@ -124,7 +129,7 @@ const Registration = () => {
           />
         );
       case 3:
-        return <Congratulation />;
+        return <Congratulation handleResetStep={handleResetStep} />;
       default:
         return "Unknown step";
     }

@@ -5,7 +5,7 @@ const {
 } = require("../../helpers/constants");
 
 const localMongoDBConnection = mongoose.createConnection(
-  LOCAL_CONNECTION_URL,
+  process.env.MONGODB_URI || LOCAL_CONNECTION_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -23,7 +23,7 @@ const localMongoDBConnection = mongoose.createConnection(
   }
 );
 const remoteMongoDBConnection = mongoose.createConnection(
-  REMOTE_CONNECTION_URL,
+  process.env.MONGODB_URI || REMOTE_CONNECTION_URL,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Typography } from "@material-ui/core";
 import { useStyles } from "./styles";
 
-const Congratulation = () => {
+const Congratulation = ({ handleResetStep }) => {
   const classes = useStyles();
   const { t } = useTranslation();
   const history = useHistory();
@@ -12,8 +12,9 @@ const Congratulation = () => {
   useEffect(() => {
     setTimeout(() => {
       history.push("/login");
+      handleResetStep();
     }, 2000);
-  }, [history]);
+  }, [history, handleResetStep]);
   return (
     <div className={classes.congratulationBox}>
       <Typography component="h2" variant="h5" color="textPrimary">

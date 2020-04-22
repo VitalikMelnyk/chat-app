@@ -8,6 +8,7 @@ const {
 const {
   LOCAL_CONNECTION_URL,
   REMOTE_CONNECTION_URL,
+  REMOTE_REDIS_ENDPOINT,
   accessTokenSecret,
   refreshTokenSecret,
   port,
@@ -25,6 +26,7 @@ module.exports = {
   decodeTokenExpiresIn,
   LOCAL_CONNECTION_URL,
   REMOTE_CONNECTION_URL,
+  REMOTE_REDIS_ENDPOINT,
   accessTokenSecret,
   refreshTokenSecret,
   port,

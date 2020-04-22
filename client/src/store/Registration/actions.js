@@ -22,9 +22,8 @@ export const handleActiveStepBack = () => ({
   type: ACTIVE_STEP_DECRAMENT,
 });
 
-export const handleActiveStepReset = (payload) => ({
+export const handleActiveStepReset = () => ({
   type: ACTIVE_STEP_RESET,
-  payload,
 });
 export const handleRegistrationPending = () => ({
   type: SEND_REGISTRATION_DATA_PENDING,

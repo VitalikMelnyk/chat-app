@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { port } = require("../helpers/constants");
@@ -26,6 +27,13 @@ app.use(checkEmail);
 app.use(login);
 app.use(users);
 app.use(rooms);
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("/client/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "build", "index.html" ));
+  });
+}
 
 io.on("connection", (socket) => {
   socket.on("join room", async ({ room, user }) => {

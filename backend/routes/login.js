@@ -45,6 +45,7 @@ router.post("/login", async (req, res, next) => {
       );
       const expireDate = await decodeTokenExpiresIn(accessToken);
       const options = { accessToken, refreshToken, expireDate };
+      console.log("userId :", userId);
       redisClient.set(userId, JSON.stringify(options));
       return res.send(options);
     }
