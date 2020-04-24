@@ -54,8 +54,8 @@ const Chat = () => {
   const [openRoomDialog, setOpenRoomDialog] = useState(false);
   const [toggleDrawer] = useState(true);
   const [spinner, setSpinner] = useState(false);
+  const socket = useRef(io.connect(`${SERVER_URL}/`));
   // Functions
-
   // When you click on room automatically scroll to bottom of room
   const scrollToBottomFunction = (isSmoothly) => {
     // console.log("scrollToBottom :", scrollToBottom);
@@ -182,11 +182,25 @@ const Chat = () => {
   };
 
   const onMessageSubmit = (message) => {
+    const date = new Date().toJSON();
+    const messageObject = {
+      date,
+      message,
+      room: currentRoom._id,
+      user: {
+        _id: userId,
+        firstName,
+        secondName,
+      },
+    };
+    console.log("messageObject", messageObject);
+    setMessages((prevMessages) => [...prevMessages, messageObject]);
     socketIO.emit("new message", {
       message,
       userId,
       roomId: currentRoom._id,
       roomName: currentRoom.name,
+      date,
     });
   };
 
@@ -208,7 +222,6 @@ const Chat = () => {
       });
     }, 3000);
   };
-  // Effect
 
   useEffect(() => {
     const getRooms = async () => {
@@ -218,16 +231,37 @@ const Chat = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const socket = io.connect(`${SERVER_URL}/`);
-    setSocketIO(socket);
-    socket.on("receive message", ({ lastMessage }) => {
-      setMessages((prevMessages) => [...prevMessages, lastMessage]);
+    // const socket = io.connect(`${SERVER_URL}/`);
+
+    setSocketIO(socket.current);
+
+    socket.current.on("receive message", ({ lastMessage }) => {
+      const parseLastMessgeDate = Date.parse(lastMessage.date);
+      setMessages((prevMessages) => {
+        const isExistingMessage = prevMessages.some(
+          (currentMessage) =>
+            Date.parse(currentMessage.date) === parseLastMessgeDate
+        );
+        if (isExistingMessage) {
+          const updateMessages = prevMessages.map((currentMessage) =>
+            Date.parse(currentMessage.date) === parseLastMessgeDate
+              ? lastMessage
+              : currentMessage
+          );
+          return [...updateMessages];
+        } else {
+          return [...prevMessages, lastMessage];
+        }
+      });
       scrollToBottomFunction(true);
     });
-    socket.on("user typing", ({ userName }) => {
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    socket.current.on("user typing", ({ userName }) => {
       setTypingUserName(userName);
     });
-    return () => {};
   }, []);
 
   return (
@@ -280,7 +314,7 @@ const Chat = () => {
                     spinner ? (
                       <Spinner
                         color="secondary"
-                        key={1}
+                        keyId={userId}
                         className={classes.loader}
                       />
                     ) : (

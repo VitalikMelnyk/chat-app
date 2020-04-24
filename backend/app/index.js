@@ -60,24 +60,28 @@ io.on("connection", (socket) => {
     );
   });
 
-  socket.on("new message", async ({ message, userId, roomId, roomName }) => {
-    try {
-      const createdMessage = await Message.create({
-        user: userId,
-        room: roomId,
-        message: message,
-      });
+  socket.on(
+    "new message",
+    async ({ message, userId, roomId, roomName, date }) => {
+      try {
+        const createdMessage = await Message.create({
+          user: userId,
+          room: roomId,
+          message: message,
+          date,
+        });
 
-      const lastMessage = await Message.findOne({
-        _id: createdMessage._id,
-      }).populate({ path: "user", select: "firstName secondName" });
-      console.log(lastMessage);
+        const lastMessage = await Message.findOne({
+          _id: createdMessage._id,
+        }).populate({ path: "user", select: "firstName secondName" });
+        console.log(lastMessage);
 
-      io.in(roomName).emit("receive message", { lastMessage });
-    } catch (error) {
-      console.log(error);
+        io.in(roomName).emit("receive message", { lastMessage });
+      } catch (error) {
+        console.log(error);
+      }
     }
-  });
+  );
 
   socket.on("typing", ({ firstName, secondName, roomName, isTyping }) => {
     if (isTyping) {

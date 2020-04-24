@@ -28,7 +28,13 @@ const InfiniteScrollComponent = ({
       hasMore={hasMoreItems}
       initialLoad={initialLoad}
       className={classes.InfiniteScroll}
-      loader={<Spinner color="secondary" key={0} className={classes.loader} />}
+      loader={
+        <Spinner
+          color="secondary"
+          keyId={currentRoomId}
+          className={classes.loader}
+        />
+      }
       useWindow={false}
     >
       {messages &&
