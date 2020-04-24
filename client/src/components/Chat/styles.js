@@ -85,6 +85,14 @@ export const useStyles = makeStyles((theme) => ({
   messagesInnerItemMsgRight: {
     marginLeft: "auto",
   },
+  messagesInnerItemDateLeft: {
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
+  messagesInnerItemDateRight: {
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
   InfiniteScroll: {
     display: "flex",
     flexDirection: "column",

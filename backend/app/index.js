@@ -69,6 +69,7 @@ io.on("connection", (socket) => {
           room: roomId,
           message: message,
           date,
+          isMessageLoading: true,
         });
 
         const lastMessage = await Message.findOne({

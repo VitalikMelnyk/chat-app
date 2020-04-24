@@ -12,6 +12,9 @@ const messageSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  isMessageLoading: {
+    type: Boolean,
+  },
 });
 
 module.exports = { messageSchema };

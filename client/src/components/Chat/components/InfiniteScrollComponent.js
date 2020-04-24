@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from "react";
 import InfiniteScroll from "react-infinite-scroller";
 import { Typography, Box, Avatar } from "@material-ui/core";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import ErrorOutlineTwoToneIcon from "@material-ui/icons/ErrorOutlineTwoTone";
 import Spinner from "../../GeneralComponents/Spinner";
 import { getFirstLetters, getDateOfMessage } from "../../../shared/functions";
 import { useStyles } from "../styles";
@@ -39,8 +41,16 @@ const InfiniteScrollComponent = ({
     >
       {messages &&
         messages.map(
-          ({ message, date, user: { firstName, secondName, _id } }, index) => (
-            <Box key={index}>
+          (
+            {
+              message,
+              date,
+              user: { firstName, secondName, _id },
+              isMessageLoading,
+            },
+            index
+          ) => (
+            <Box key={Date.parse(date)}>
               <Box
                 m={2}
                 className={
@@ -65,9 +75,25 @@ const InfiniteScrollComponent = ({
                   >
                     {message}
                   </Typography>
-                  <Typography variant="subtitle2" color="textSecondary">
-                    {getDateOfMessage(date)}
-                  </Typography>
+                  <Box
+                    display="flex"
+                    className={
+                      userId === _id
+                        ? classes.messagesInnerItemDateLeft
+                        : classes.messagesInnerItemDateRight
+                    }
+                  >
+                    <Box m={0.5}>
+                      {isMessageLoading ? (
+                        <CheckCircleIcon color="secondary" />
+                      ) : (
+                        <ErrorOutlineTwoToneIcon color="error" />
+                      )}
+                    </Box>
+                    <Typography variant="subtitle2" color="textSecondary">
+                      {getDateOfMessage(date)}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             </Box>

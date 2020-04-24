@@ -71,9 +71,12 @@ const Chat = () => {
   const setSelectedRoom = async (index, room) => {
     const page = 0;
     if (index === selectedRoomIndex || room._id === currentRoom._id) {
-      setTimeout(() => {
-        scrollToBottomFunction(true);
-      }, 500);
+      // if there are not messages
+      if (messages.length) {
+        setTimeout(() => {
+          scrollToBottomFunction(true);
+        }, 500);
+      }
     } else {
       setSpinner(true);
       setSelectedRoomIndex(index);
@@ -192,9 +195,11 @@ const Chat = () => {
         firstName,
         secondName,
       },
+      isMessageLoading: false,
     };
     console.log("messageObject", messageObject);
     setMessages((prevMessages) => [...prevMessages, messageObject]);
+    scrollToBottomFunction(true);
     socketIO.emit("new message", {
       message,
       userId,
